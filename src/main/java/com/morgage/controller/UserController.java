@@ -3,11 +3,16 @@ package com.morgage.controller;
 import com.morgage.model.User;
 import com.morgage.repository.UserRepository;
 import com.morgage.service.UserService;
+import org.apache.http.client.ClientProtocolException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -19,22 +24,42 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping("/api/findall")
-    @ResponseBody
-    public List<User> findall() {
-        List<User> list = userService.findAll();
-        return list;
+
+    @RequestMapping(value = "/tao-nguoi-dung")
+    public ResponseEntity<?> createUser(HttpServletRequest request) {
+        try {
+            String userName = request.getParameter("username");
+            String password = request.getParameter("password");
+            String encryptPassword = new BCryptPasswordEncoder().encode(password);
+            try {
+                User user = userService.initUser(userName, encryptPassword);
+                return new ResponseEntity<User>(user, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @RequestMapping(value = "/tao-nguoi-dung", method = RequestMethod.POST)
-    public Boolean createUser() {
-        return false;
-    }
+    @RequestMapping("/login")
+    public ResponseEntity<?> login(HttpServletRequest request) throws ClientProtocolException, IOException {
+        try {
 
-    @RequestMapping(value = "api/chinh-sua-nguoi-dung")
-    public Boolean editUser() {
-        return false;
-    }
+            String userName = request.getParameter("username");
+            String password = request.getParameter("password");
+            User user = userService.getUserByUsername(userName);
+            if (user == null) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            } else {
+                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+                    return new ResponseEntity<User>(user, HttpStatus.OK);
+                } else return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
 
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+    }
 }
-
