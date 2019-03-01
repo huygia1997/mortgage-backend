@@ -13,8 +13,9 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "role_id")
-    private int roleId;
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
@@ -23,6 +24,16 @@ public class User implements Serializable {
     private int status;
     @Column(name = "token")
     private String token;
+//    @Column(name="create_time")
+//    private Timestamp createTime;
+//
+//    public Timestamp getCreateTime() {
+//        return createTime;
+//    }
+//
+//    public void setCreateTime(Timestamp createTime) {
+//        this.createTime = createTime;
+//    }
 
     public Integer getId() {
         return id;
@@ -32,8 +43,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public void setStatus(int status) {
@@ -72,18 +87,11 @@ public class User implements Serializable {
     }
 
     public User(int roleId, String username, int status) {
-        this.roleId = roleId;
+
         this.username = username;
         this.status = status;
     }
 
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
 
     public Integer getStatus() {
         return status;
