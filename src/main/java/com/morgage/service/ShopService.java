@@ -30,4 +30,14 @@ public class ShopService {
         return shop;
     }
 
+    public List<Shop> searchByShopName(String searchValue) {
+        List<Shop> listShop = shopRepository.findAllByShopNameContaining(searchValue);
+
+        return listShop;
+    }
+
+    public List<Shop> findAll() {
+        return shopRepository.findAll();
+    }
+
 }
