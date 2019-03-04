@@ -16,7 +16,16 @@ public class Pawner {
     private String phoneNumber;
     @Column(name = "account_id")
     private Integer accountId;
+    @Column(name = "avatar_url")
+    private String avaURL;
 
+    public String getAvaURL() {
+        return avaURL;
+    }
+
+    public void setAvaURL(String avaURL) {
+        this.avaURL = avaURL;
+    }
 
     public int getId() {
         return id;

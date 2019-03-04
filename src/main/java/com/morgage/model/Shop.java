@@ -19,6 +19,15 @@ public class Shop implements Serializable {
     private String facebook;
     @Column(name = "email")
     private String email;
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
+    }
+
     @Column(name = "status")
     private Integer status;
     @Column(name = "rating")
@@ -27,6 +36,8 @@ public class Shop implements Serializable {
     private Integer policy;
     @Column(name = "account_id")
     private Integer accountId;
+    @Column(name = "address_id")
+    private Integer addressId;
 
     public Integer getAccountId() {
         return accountId;
