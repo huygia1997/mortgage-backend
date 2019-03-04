@@ -15,6 +15,7 @@ public class Const {
     public static class USER_STATUS {
         public static final Integer ACTIVE = 1;
         public static final Integer DEACTIVE = 2;
+        public static final Integer NOT_ACTIVE= 3;
     }
 
     public enum ROLE_TYPE {
