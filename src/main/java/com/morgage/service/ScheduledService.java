@@ -32,8 +32,8 @@ public class ScheduledService {
 
     HashMap<Integer, Integer> shopCountNotification = new HashMap<Integer, Integer>();
 
-    //    @Scheduled(cron = "0 0 8 * * *")
-    @Scheduled(fixedDelay = 3 * 60 * 1000)
+        @Scheduled(cron = "0 0 8 * * *")
+//    @Scheduled(fixedDelay = 3 * 60 * 1000)
     public void createNotification() throws ParseException {
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
         Date parsedDate = null;
