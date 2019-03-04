@@ -9,6 +9,4 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     List<Transaction> findAllByDateEnd(Date dateEnd);
-
-    List<Transaction> findAllByDateEndBetween(Date start, Date end);
 }

@@ -32,12 +32,6 @@ dependencies {
     testCompile('org.springframework.security:spring-security-test')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.3.RELEASE'
-    compile group: 'org.apache.olingo', name: 'olingo-odata2-api', version: '2.0.11'
-    compile group: 'org.apache.olingo', name: 'olingo-odata2-api-annotation', version: '2.0.11'
-    compile group: 'org.apache.olingo', name: 'odata-client-core', version: '4.0.0-beta-01'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
 
-    compile "org.projectlombok:lombok:*"
-    compile "javax.servlet:servlet-api:${version.servlet-api}"
-    compile "com.h2database:h2:*"
-    compile "org.springframework:spring-jdbc:*"
 }

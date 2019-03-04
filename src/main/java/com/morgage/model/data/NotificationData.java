@@ -1,7 +1,7 @@
 package com.morgage.model.data;
 
 public class NotificationData {
-    private int senderId;
+    private Integer senderId;
     private String message;
     private String dateCreate;
     private Integer objectId;
@@ -18,11 +18,11 @@ public class NotificationData {
     public NotificationData() {
     }
 
-    public int getSenderId() {
+    public Integer getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(int senderId) {
+    public void setSenderId(Integer senderId) {
         this.senderId = senderId;
     }
 

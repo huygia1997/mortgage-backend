@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @RequestMapping("/login")
-    public ResponseEntity<?> login(HttpServletRequest request) throws ClientProtocolException, IOException {
+    public ResponseEntity<?> login(HttpServletRequest request) throws ClientProtocolException,SecurityException, IOException {
         try {
 
             String userName = request.getParameter("username");

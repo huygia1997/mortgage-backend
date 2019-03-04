@@ -5,7 +5,6 @@ import com.morgage.model.Transaction;
 import com.morgage.model.TransactionItem;
 import com.morgage.repository.TransactionItemRepository;
 import com.morgage.repository.TransactionRepository;
-import com.morgage.utils.Util;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -40,10 +39,8 @@ public class ScheduledService {
         Date parsedDate = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         parsedDate = dateFormat.parse(timeStamp.toString());
-        Date endOfDay = Util.atEndOfDay(parsedDate);
-        Date start = Util.atStartOfDay(parsedDate);
-//        List<Transaction> list = transactionRepository.findAllByDateEnd(parsedDate);
-        List<Transaction> list = transactionRepository.findAllByDateEndBetween(start, endOfDay);
+
+        List<Transaction> list = transactionRepository.findAllByDateEnd(parsedDate);
         for (Transaction transaction : list) {
             TransactionItem item = transactionItemRepository.findByTransactionId(transaction.getId());
             notificationService.createNotification("Item " + item.getName() + " payment is due", Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, transaction.getPawnerId(), transaction.getId());
@@ -59,7 +56,4 @@ public class ScheduledService {
             notificationService.createNotification("There are " + count + " payments due", Const.NOTIFICATION_TYPE.SYSTEM_SHOP, null, shopId, shopId);
         }
     }
-
-
 }
-
