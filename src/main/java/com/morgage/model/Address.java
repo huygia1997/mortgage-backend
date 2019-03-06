@@ -16,7 +16,7 @@ public class Address {
     private String fullAddress;
     @Column(name = "status")
     private int status;
-    @Column(name = "ward_id")
+    @Column(name = "district_id")
     private Integer wardId;
 
     public Integer getWardId() {
