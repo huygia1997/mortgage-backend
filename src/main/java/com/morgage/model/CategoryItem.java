@@ -12,8 +12,6 @@ public class CategoryItem {
     private String categoryName;
     @Column(name = "description")
     private String description;
-    @Column(name = "group_id")
-    private Integer groupId;
 
     public CategoryItem() {
     }
@@ -24,14 +22,6 @@ public class CategoryItem {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
     }
 
     public String getCategoryName() {
