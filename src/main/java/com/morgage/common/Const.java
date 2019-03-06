@@ -8,7 +8,8 @@ public class Const {
     private static Environment env;
 
     public static class USER_ROLE {
-        public static final String USER = "USER";
+        public static final String PAWNER = "PAWNER";
+        public static final String SHOP = "SHOP";
         public static final String ADMIN = "ADMIN";
     }
 
@@ -19,32 +20,39 @@ public class Const {
     }
 
     public enum ROLE_TYPE {
-        USER,
+        PAWNER,
+        SHOP,
         ADMIN;
 
         public static ROLE_TYPE parse(String role) {
             if (role.equals(USER_ROLE.ADMIN)) {
                 return ADMIN;
-            }
-            return USER;
+            } else if (role.equals(USER_ROLE.SHOP)) {
+                return SHOP;
+            }else
+            return PAWNER;
         }
 
         public String value() {
             switch (this) {
-                case USER:
-                    return USER_ROLE.USER;
+                case PAWNER:
+                    return USER_ROLE.PAWNER;
                 case ADMIN:
                     return USER_ROLE.ADMIN;
+                case SHOP:
+                    return USER_ROLE.SHOP;
             }
             return null;
         }
 
         public int getRoleID() {
             switch (this) {
-                case USER:
-                    return 1;
-                case ADMIN:
+                case PAWNER:
                     return 2;
+                case ADMIN:
+                    return 4;
+                case SHOP:
+                    return 3;
             }
             return 1;
         }

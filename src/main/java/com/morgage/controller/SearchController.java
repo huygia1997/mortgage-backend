@@ -2,7 +2,7 @@ package com.morgage.controller;
 
 import com.morgage.model.Address;
 import com.morgage.model.Shop;
-import com.morgage.model.ShopData;
+import com.morgage.model.data.ShopData;
 import com.morgage.service.AddressService;
 import com.morgage.service.SearchService;
 import com.morgage.service.ShopService;

@@ -1,5 +1,6 @@
 package com.morgage.controller;
 
+import com.morgage.common.Const;
 import com.morgage.model.User;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
@@ -14,6 +15,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +79,7 @@ public class UserController {
             User user = userService.getUserByUsername(userName);
             if (user == null) {
                 return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
-            } else {
+            }else if(user.getStatus()== Const.USER_STATUS.NOT_ACTIVE){ return new ResponseEntity<String>("Unactive account", HttpStatus.UNAUTHORIZED);} else {
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
                     return new ResponseEntity<User>(user, HttpStatus.OK);
@@ -86,6 +88,15 @@ public class UserController {
 
         } catch (Exception e) {
             return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public ResponseEntity<?> displayResetPasswordPage(Model model, @RequestParam("token") String token) {
+        if (userService.activeUserAccount(token)) {
+            return new ResponseEntity < String > ("SUCCESS",HttpStatus.OK);
+        } else {
+            return new ResponseEntity < String > ("Fail", HttpStatus.BAD_REQUEST);
         }
     }
 }

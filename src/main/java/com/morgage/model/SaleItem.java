@@ -17,6 +17,16 @@ public class SaleItem implements Serializable {
     private Integer status;
     @Column(name = "category_Id")
     private Integer categoryId;
+    @Column(name = "view_count")
+    private Integer viewCount;
+
+    public Integer getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
 
     public void setId(Integer id) {
         this.id = id;

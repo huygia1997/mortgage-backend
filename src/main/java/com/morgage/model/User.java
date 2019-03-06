@@ -24,16 +24,6 @@ public class User implements Serializable {
     private int status;
     @Column(name = "token")
     private String token;
-//    @Column(name="create_time")
-//    private Timestamp createTime;
-//
-//    public Timestamp getCreateTime() {
-//        return createTime;
-//    }
-//
-//    public void setCreateTime(Timestamp createTime) {
-//        this.createTime = createTime;
-//    }
 
     public Integer getId() {
         return id;

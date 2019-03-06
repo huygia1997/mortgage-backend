@@ -38,6 +38,16 @@ public class Shop implements Serializable {
     private Integer accountId;
     @Column(name = "address_id")
     private Integer addressId;
+    @Column(name = "view_count")
+    private Integer viewCount;
+
+    public Integer getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
 
     public Integer getAccountId() {
         return accountId;

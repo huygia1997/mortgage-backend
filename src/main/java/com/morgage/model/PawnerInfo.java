@@ -16,6 +16,16 @@ public class PawnerInfo {
     private String phoneNumber;
     @Column(name = "transaction_id")
     private Integer transactionId;
+    @Column(name = "address")
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public PawnerInfo() {
     }
