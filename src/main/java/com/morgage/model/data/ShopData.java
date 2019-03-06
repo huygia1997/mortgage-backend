@@ -1,4 +1,4 @@
-package com.morgage.model;
+package com.morgage.model.data;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +16,6 @@ public class ShopData implements Serializable {
     private String latitude;
     private String longtitude;
     private String fullAddress;
-    private Map<CategoryGroup, List<CategoryItem>> listCate;
 
     public ShopData() {
     }
@@ -109,28 +108,6 @@ public class ShopData implements Serializable {
         this.fullAddress = fullAddress;
     }
 
-    public Map<CategoryGroup, List<CategoryItem>> getListCate() {
-        return listCate;
-    }
 
-    public void setListCate(Map<CategoryGroup, List<CategoryItem>> listCate) {
-        this.listCate = listCate;
-    }
 
-    @Override
-    public String toString() {
-        return "ShopData{" +
-                "shopName='" + shopName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", facebook='" + facebook + '\'' +
-                ", email='" + email + '\'' +
-                ", status=" + status +
-                ", rating=" + rating +
-                ", policy=" + policy +
-                ", latitude='" + latitude + '\'' +
-                ", longtitude='" + longtitude + '\'' +
-                ", fullAddress='" + fullAddress + '\'' +
-                ", listCate=" + listCate +
-                '}';
-    }
 }

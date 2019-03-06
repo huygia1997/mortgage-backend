@@ -38,7 +38,7 @@ public class UserService {
         User user = new User();
         Role role = new Role();
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
-        role.setId(Const.ROLE_TYPE.USER.getRoleID());
+        role.setId(Const.ROLE_TYPE.PAWNER.getRoleID());
         user.setStatus(Const.USER_STATUS.NOT_ACTIVE);
         user.setUsername(name);
         user.setPassword(password);
@@ -54,5 +54,17 @@ public class UserService {
 
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public boolean activeUserAccount(String token) {
+        User user = userRepository.findByToken(token);
+        if (user != null) {
+            user.setStatus(Const.USER_STATUS.ACTIVE);
+            user.setToken(null);
+            save(user);
+            return true;
+        } else return false;
+
+
     }
 }

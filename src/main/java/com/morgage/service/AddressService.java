@@ -3,7 +3,7 @@ package com.morgage.service;
 
 
 import com.morgage.model.Address;
-import com.morgage.model.ShopData;
+import com.morgage.model.data.ShopData;
 import com.morgage.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
