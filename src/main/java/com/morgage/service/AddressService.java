@@ -7,6 +7,8 @@ import com.morgage.model.ShopData;
 import com.morgage.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AddressService {
     private final AddressRepository addressRepository;
@@ -22,6 +24,16 @@ public class AddressService {
         shopData.setLongtitude(address.getLongtitude());
 
         return shopData;
+
+    }
+
+    public List<Address> searchNearby(String latString, String lngString) {
+        Float lat = Float.parseFloat(latString);
+        Float lng = Float.parseFloat(lngString);
+
+        List<Address> listAddress = addressRepository.searchNearby(lat, lng);
+
+        return  listAddress;
 
     }
 }

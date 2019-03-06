@@ -36,6 +36,13 @@ public class ShopService {
         return listShop;
     }
 
+//    public List<Shop> searchNearby(String lat, String lng) {
+//        List<Shop> listShop = shopRepository.findAllByShopNameContaining(searchValue);
+//
+//        return listShop;
+//    }
+
+
     public List<Shop> findAll() {
         return shopRepository.findAll();
     }

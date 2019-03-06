@@ -1,5 +1,6 @@
 package com.morgage.controller;
 
+import com.morgage.model.Address;
 import com.morgage.model.Shop;
 import com.morgage.model.ShopData;
 import com.morgage.service.AddressService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SearchController {
@@ -28,7 +30,7 @@ public class SearchController {
     // search shops by keyword (shopname)
     @RequestMapping("/search/shops")
     @ResponseBody
-    public List<ShopData> searchResult(@RequestParam("keyword") String searchValue) {
+    public List<ShopData> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
         List<ShopData> listData;
         System.out.println("here");
         System.out.println(searchValue);
@@ -53,6 +55,26 @@ public class SearchController {
     }
     // search items by keyword (itemname)
 //    @RequestMapping("/search/shops")
+
+    // search shop nearby (input: lat, lng)
+    @RequestMapping("/search/shops/nearby")
+    @ResponseBody
+    public List<Address> searchShopNearbyResult(@RequestParam Map<String,String> requestParams) {
+        String lat = requestParams.get("lat");
+        String lng = requestParams.get("lng");
+        List<ShopData> listData;
+        List<Address> listAddress = addressService.searchNearby(lat, lng);
+        if (listAddress != null) {
+            System.out.println(listAddress.get(0));
+
+
+            return listAddress;
+        }
+
+
+        return null;
+    }
+
 
 
     //test
