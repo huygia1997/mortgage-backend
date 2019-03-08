@@ -32,8 +32,6 @@ public class SearchController {
     @ResponseBody
     public List<ShopData> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
         List<ShopData> listData;
-        System.out.println("here");
-        System.out.println(searchValue);
         List<Shop> listShop = shopService.searchByShopName(searchValue);
         if (listShop != null) {
             listData = new ArrayList<>();

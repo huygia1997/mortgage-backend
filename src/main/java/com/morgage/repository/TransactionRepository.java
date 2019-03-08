@@ -8,5 +8,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
-    List<Transaction> findAllByDateEnd(Date dateEnd);
+    List<Transaction> findAllByNextPaymentDateBetween(Date start, Date end);
 }
