@@ -10,10 +10,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
-    @Column(name = "date_created")
-    private Date dateCreated;
-    @Column(name = "date_end")
-    private Date dateEnd;
+    @Column(name = "start_payment_date")
+    private Date startDate;
+    @Column(name = "next_payment_date")
+    private Date nextPaymentDate;
     @Column(name = "price")
     private Integer price;
     @Column(name = "status")
@@ -129,20 +129,20 @@ public class Transaction {
         this.id = id;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getDateEnd() {
-        return dateEnd;
+    public Date getNextPaymentDate() {
+        return nextPaymentDate;
     }
 
-    public void setDateEnd(Date dateEnd) {
-        this.dateEnd = dateEnd;
+    public void setNextPaymentDate(Date nextPaymentDate) {
+        this.nextPaymentDate = nextPaymentDate;
     }
 
     public Integer getPrice() {
