@@ -6,6 +6,8 @@ import com.morgage.model.data.ShopData;
 import com.morgage.service.AddressService;
 import com.morgage.service.SearchService;
 import com.morgage.service.ShopService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,27 +33,30 @@ public class SearchController {
     @RequestMapping("/search/shops")
     @ResponseBody
     public List<ShopData> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
-        List<ShopData> listData;
-        System.out.println("here");
-        System.out.println(searchValue);
-        List<Shop> listShop = shopService.searchByShopName(searchValue);
-        if (listShop != null) {
-            listData = new ArrayList<>();
-            for (int i = 0; i < listShop.size(); i++) {
-                ShopData shopData = new ShopData();
-                // fill shop to shop data.
-                shopData = searchService.addShopToShopData(listShop.get(i), shopData);
-                // fill address to shop data.
-                shopData = addressService.addAddressToShopData(listShop.get(i).getAddressId(), shopData);
+        try {
+            List<ShopData> listData;
+            List<Shop> listShop = shopService.searchByShopName(searchValue);
+            if (listShop != null) {
+                listData = new ArrayList<>();
+                for (int i = 0; i < listShop.size(); i++) {
+                    ShopData shopData = new ShopData();
+                    // fill shop to shop data.
+                    shopData = searchService.addShopToShopData(listShop.get(i), shopData);
+                    // fill address to shop data.
+                    shopData = searchService.addAddressToShopData(listShop.get(i).getAddressId(), shopData);
 
-                listData.add(shopData);
+                    listData.add(shopData);
+                }
+
+                return listData;
             }
 
-            return listData;
+
+            return null;
+        } catch (Exception e) {
+            return null;
         }
 
-
-        return null;
     }
     // search items by keyword (itemname)
 //    @RequestMapping("/search/shops")
@@ -59,17 +64,59 @@ public class SearchController {
     // search shop nearby (input: lat, lng)
     @RequestMapping("/search/shops/nearby")
     @ResponseBody
-    public List<Address> searchShopNearbyResult(@RequestParam Map<String,String> requestParams) {
+    public List<ShopData> searchShopNearbyResult(@RequestParam Map<String,String> requestParams) {
         String lat = requestParams.get("lat");
         String lng = requestParams.get("lng");
         List<ShopData> listData;
         List<Address> listAddress = addressService.searchNearby(lat, lng);
         if (listAddress != null) {
-            System.out.println(listAddress.get(0));
+            listData = new ArrayList<>();
+            for (int i = 0; i < listAddress.size(); i++) {
+                ShopData shopData = new ShopData();
+                // fill address to shop data
+                shopData = searchService.addAddressToShopData(listAddress.get(i), shopData);
+                // fill shop to shop data
+                shopData = searchService.addShopToShopData(listAddress.get(i).getId(), shopData);
+                listData.add(shopData);
+            }
 
 
-            return listAddress;
+            return listData;
         }
+
+
+        return null;
+    }
+
+    // search shops by keyword (shopname)
+    @RequestMapping("/search/shops/filters")
+    @ResponseBody
+    public List<ShopData> searchShopFilterResult(@RequestParam Map<String,String> requestParams) {
+        String districtId = requestParams.get("district");
+        String cateId = requestParams.get("cate");
+
+        List<ShopData> listData;
+        List<Address> listAddress = addressService.searchByDistrictId(districtId);
+        List<Shop> listShop = shopService.searchByCateId(cateId);
+
+        if (listAddress != null && listShop != null) {
+            listData = new ArrayList<>();
+            for (int i = 0; i < listShop.size(); i++) {
+                for (int j = 0; j < listAddress.size(); j++) {
+                    if (listShop.get(i).getAddressId() == listAddress.get(j).getId()) {
+                        ShopData shopData = new ShopData();
+                        shopData = searchService.addShopToShopData(listShop.get(i), shopData);
+                        shopData = searchService.addAddressToShopData(listAddress.get(j), shopData);
+                        listData.add(shopData);
+                    }
+                }
+            }
+
+            return listData;
+        }
+
+
+
 
 
         return null;

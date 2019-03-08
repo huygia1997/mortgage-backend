@@ -26,6 +26,8 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
     @Query(value = SEARCH_NEARBY_QUERY, nativeQuery = true)
     List<Address> searchNearby(@Param("lat") Float input, @Param("lng") Float lng);
 
+    List<Address> findAddressesByDistrictId(int districtId);
+
 
 
 
