@@ -9,16 +9,12 @@ public class TransactionLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
-    @Column(name = "date_created")
-    private Date dateCreated;
-    @Column(name = "date_end")
-    private Date dateEnd;
+    @Column(name = "start_payment_date")
+    private Date startDate;
+    @Column(name = "end_payment_date")
+    private Date enđate;
     @Column(name = "status")
     private int status;
-    @Column(name = "count_late")
-    private int countLate;
-    @Column(name = "liquidate_after")
-    private int liquidateAfter;
     @Column(name = "transaction_id")
     private int transactionId;
 
@@ -30,20 +26,20 @@ public class TransactionLog {
         this.id = id;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getDateEnd() {
-        return dateEnd;
+    public Date getEnđate() {
+        return enđate;
     }
 
-    public void setDateEnd(Date dateEnd) {
-        this.dateEnd = dateEnd;
+    public void setEnđate(Date enđate) {
+        this.enđate = enđate;
     }
 
     public int getStatus() {
@@ -52,22 +48,6 @@ public class TransactionLog {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public int getCountLate() {
-        return countLate;
-    }
-
-    public void setCountLate(int countLate) {
-        this.countLate = countLate;
-    }
-
-    public int getLiquidateAfter() {
-        return liquidateAfter;
-    }
-
-    public void setLiquidateAfter(int liquidateAfter) {
-        this.liquidateAfter = liquidateAfter;
     }
 
     public int getTransactionId() {

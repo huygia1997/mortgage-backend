@@ -33,6 +33,7 @@ public class SearchController {
     @RequestMapping("/search/shops")
     @ResponseBody
     public List<ShopData> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
+
         try {
             List<ShopData> listData;
             List<Shop> listShop = shopService.searchByShopName(searchValue);
@@ -49,6 +50,7 @@ public class SearchController {
                 }
 
                 return listData;
+
             }
 
 

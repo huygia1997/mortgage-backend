@@ -83,5 +83,12 @@ public class Const {
         public static final Integer SYSTEM_PAWNER = 3;
         public static final Integer SYSTEM_SHOP = 4;
     }
+    public static class TRANSACTION_STATUS {
+        public static final Integer UNPAID = 1;
+        public static final Integer PAID = 2;
+        public static final Integer WAIT_FOR_LIQUIDATION = 3;
+        public static final Integer LIQUIDATED = 4;
+        public static final Integer REDEEMED = 5;
 
+    }
 }

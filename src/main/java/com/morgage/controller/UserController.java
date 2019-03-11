@@ -70,7 +70,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/dang-nhap")
     public ResponseEntity<?> login(HttpServletRequest request) throws ClientProtocolException, SecurityException, IOException {
         try {
 
@@ -79,7 +79,9 @@ public class UserController {
             User user = userService.getUserByUsername(userName);
             if (user == null) {
                 return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
-            }else if(user.getStatus()== Const.USER_STATUS.NOT_ACTIVE){ return new ResponseEntity<String>("Unactive account", HttpStatus.UNAUTHORIZED);} else {
+            } else if (user.getStatus() == Const.USER_STATUS.NOT_ACTIVE) {
+                return new ResponseEntity<String>("Unactive account", HttpStatus.UNAUTHORIZED);
+            } else {
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
                     return new ResponseEntity<User>(user, HttpStatus.OK);
@@ -92,11 +94,21 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public ResponseEntity<?> displayResetPasswordPage(Model model, @RequestParam("token") String token) {
+    public ResponseEntity<?> displayResetPasswordPage(@RequestParam("token") String token) {
         if (userService.activeUserAccount(token)) {
-            return new ResponseEntity < String > ("SUCCESS",HttpStatus.OK);
+            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
         } else {
-            return new ResponseEntity < String > ("Fail", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
+
+//    @RequestMapping(value = "/quen-mat-khau")
+//    public ResponseEntity<?> forgetPassword(HttpServletRequest request) {
+//        request.getParameter()
+//        if (userService.activeUserAccount()) {
+//            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }
