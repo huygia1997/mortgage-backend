@@ -13,11 +13,14 @@ public class HasCategoryItem {
     @Column(name = "id_category_item")
     private int idCategoryItem;
     @Column(name = "payment_term")
-    private int paymentTerm;
+    private Integer paymentTerm;
     @Column(name = "payment_type")
-    private int paymentType;
+    private Integer paymentType;
     @Column(name = "liquidate_after")
-    private int liquidateAfter;
+    private Integer liquidateAfter;
+
+
+
     @Column(name = "attribute_1_name")
     private String attribute1Name;
     @Column(name = "attribute_2_name")
@@ -30,7 +33,14 @@ public class HasCategoryItem {
     private String attribute4Name;
 
     @Column(name = "status")
-    private int status;
+    private Integer status;
+    public Integer getLiquidateAfter() {
+        return liquidateAfter;
+    }
+
+    public void setLiquidateAfter(Integer liquidateAfter) {
+        this.liquidateAfter = liquidateAfter;
+    }
 
     public int getId() {
         return id;
@@ -56,29 +66,8 @@ public class HasCategoryItem {
         this.idCategoryItem = idCategoryItem;
     }
 
-    public int getPaymentTerm() {
-        return paymentTerm;
-    }
 
-    public void setPaymentTerm(int paymentTerm) {
-        this.paymentTerm = paymentTerm;
-    }
 
-    public int getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(int paymentType) {
-        this.paymentType = paymentType;
-    }
-
-    public int getLiquidateAfter() {
-        return liquidateAfter;
-    }
-
-    public void setLiquidateAfter(int liquidateAfter) {
-        this.liquidateAfter = liquidateAfter;
-    }
 
     public String getAttribute1Name() {
         return attribute1Name;
@@ -112,11 +101,27 @@ public class HasCategoryItem {
         this.attribute4Name = attribute4Name;
     }
 
-    public int getStatus() {
+    public Integer getPaymentTerm() {
+        return paymentTerm;
+    }
+
+    public void setPaymentTerm(Integer paymentTerm) {
+        this.paymentTerm = paymentTerm;
+    }
+
+    public Integer getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(Integer paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

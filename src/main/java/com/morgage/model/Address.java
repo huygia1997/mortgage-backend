@@ -17,14 +17,10 @@ public class Address {
     @Column(name = "status")
     private int status;
     @Column(name = "district_id")
-    private Integer wardId;
+    private Integer districtId;
 
-    public Integer getWardId() {
-        return wardId;
-    }
-
-    public void setWardId(Integer wardId) {
-        this.wardId = wardId;
+    public Integer getDistrictId() {
+        return districtId;
     }
 
     public int getId() {

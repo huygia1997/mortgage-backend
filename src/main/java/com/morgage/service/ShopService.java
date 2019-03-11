@@ -45,11 +45,25 @@ public class ShopService {
         return listShop;
     }
 
-//    public List<Shop> searchNearby(String lat, String lng) {
-//        List<Shop> listShop = shopRepository.findAllByShopNameContaining(searchValue);
-//
-//        return listShop;
-//    }
+    public List<Shop> searchByCateId(String cateString) {
+        int cateId = Integer.parseInt(cateString);
+        List<HasCategoryItem> listHasCategoryItems = hasCategoryItemRepository.findHasCategoryItemsByIdCategoryItem(cateId);
+        if (listHasCategoryItems != null) {
+            List<Shop> listShop = new ArrayList<>();
+            for (int i=0; i < listHasCategoryItems.size(); i++) {
+                Shop shop = shopRepository.findShopById(listHasCategoryItems.get(i).getIdShop());
+                if (shop != null) {
+                    listShop.add(shop);
+                }
+            }
+            return listShop;
+        }
+
+
+        return null;
+    }
+
+
 
 
     public List<Shop> findAll() {

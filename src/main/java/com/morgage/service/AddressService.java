@@ -17,21 +17,23 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
-    public ShopData addAddressToShopData(int id, ShopData shopData) {
-        Address address = addressRepository.findAddressById(id);
-        shopData.setFullAddress(address.getFullAddress());
-        shopData.setLatitude(address.getLatitude());
-        shopData.setLongtitude(address.getLongtitude());
 
-        return shopData;
-
-    }
 
     public List<Address> searchNearby(String latString, String lngString) {
         Float lat = Float.parseFloat(latString);
         Float lng = Float.parseFloat(lngString);
 
         List<Address> listAddress = addressRepository.searchNearby(lat, lng);
+
+        return  listAddress;
+
+    }
+
+    public List<Address> searchByDistrictId(String districtString) {
+        int districtId = Integer.parseInt(districtString);
+
+
+        List<Address> listAddress = addressRepository.findAddressesByDistrictId(districtId);
 
         return  listAddress;
 

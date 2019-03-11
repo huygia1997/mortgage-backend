@@ -20,11 +20,13 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
             " SELECT *," +
                     " 6371 * 2 * ATAN2(SQRT(POWER(SIN(RADIANS(dest.latitude - :lat) / 2),2) + COS(RADIANS(:lat)) * COS(RADIANS(dest.latitude)) * POWER(SIN(RADIANS(dest.longtitude - :lng) / 2),2)), SQRT(1 - POWER(SIN(RADIANS(dest.latitude - :lat) / 2),2) + COS(RADIANS(:lat)) * COS(RADIANS(dest.latitude)) * POWER(SIN(RADIANS(dest.longtitude - :lng) / 2),2))) AS distance" +
                     " FROM address dest" +
-                    " having distance < 1" +
+                    " having distance < 2" +
                     " ORDER BY distance desc;";
 
     @Query(value = SEARCH_NEARBY_QUERY, nativeQuery = true)
     List<Address> searchNearby(@Param("lat") Float input, @Param("lng") Float lng);
+
+    List<Address> findAddressesByDistrictId(int districtId);
 
 
 
