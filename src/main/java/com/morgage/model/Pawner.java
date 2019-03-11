@@ -18,6 +18,16 @@ public class Pawner {
     private Integer accountId;
     @Column(name = "avatar_url")
     private String avaURL;
+    @Column(name = "address")
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getAvaURL() {
         return avaURL;

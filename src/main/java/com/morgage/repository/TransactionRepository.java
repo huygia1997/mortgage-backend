@@ -11,4 +11,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     List<Transaction> findAllByNextPaymentDateBetweenAndStatus(Date start, Date end, int status);
 
     List<Transaction> findAllByNextPaymentDateBeforeAndStatus(Date date, int status);
+
+    List<Transaction> findAllByStatus(int status);
+
+    Transaction findById(int id);
 }
