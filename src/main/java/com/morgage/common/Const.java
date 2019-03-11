@@ -89,6 +89,11 @@ public class Const {
         public static final Integer WAIT_FOR_LIQUIDATION = 3;
         public static final Integer LIQUIDATED = 4;
         public static final Integer REDEEMED = 5;
-
+        public static final Integer LATE=6;
+    }
+    public static class SHOP_STATUS {
+        public static final Integer UNACTIVE = 1;
+        public static final Integer ACTIVE = 2;
+        public static final Integer BANNED = 3;
     }
 }

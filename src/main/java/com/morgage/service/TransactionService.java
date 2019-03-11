@@ -14,6 +14,10 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
+    public void setTransactionStatus(Transaction transaction, int status) {
+        transaction.setStatus(status);
+        transactionRepository.save(transaction);
+    }
     public List<Transaction> findTransByShopId(int shopId) {
         List<Transaction> transactionList = transactionRepository.findAllByShopId(shopId);
 
