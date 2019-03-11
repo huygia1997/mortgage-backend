@@ -1,7 +1,9 @@
 package com.morgage.controller;
 
 import com.morgage.common.Const;
+import com.morgage.model.Pawner;
 import com.morgage.model.User;
+import com.morgage.service.PawnerService;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
 import org.apache.http.client.ClientProtocolException;
@@ -15,7 +17,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +31,13 @@ public class UserController {
     private final UserService userService;
     private final JavaMailSender mailSender;
     private final Environment env;
+    private final PawnerService pawnerService;
 
-    public UserController(UserService userService, JavaMailSender mailSender, Environment env) {
+    public UserController(UserService userService, JavaMailSender mailSender, Environment env, PawnerService pawnerService) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.env = env;
+        this.pawnerService = pawnerService;
     }
 
 
@@ -111,4 +114,15 @@ public class UserController {
 //            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
 //        }
 //    }
+
+    @RequestMapping(value = "/thong-tin-nguoi-dung", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserInformation(@RequestParam("userId") String id) {
+        Pawner pawner = pawnerService.getPawnerByAccountId(Integer.parseInt(id));
+        if (pawner != null) {
+            return new ResponseEntity<Pawner>(pawner    , HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
