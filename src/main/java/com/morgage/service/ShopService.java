@@ -1,15 +1,11 @@
 package com.morgage.service;
 
-import com.morgage.model.Address;
-import com.morgage.model.HasCategoryItem;
-import com.morgage.model.Shop;
+import com.morgage.model.*;
 import com.morgage.model.data.ShopInformation;
-import com.morgage.repository.AddressRepository;
-import com.morgage.repository.CategoryItemRepository;
-import com.morgage.repository.HasCategoryItemRepository;
-import com.morgage.repository.ShopRepository;
+import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +15,17 @@ public class ShopService {
     private final HasCategoryItemRepository hasCategoryItemRepository;
     private final AddressRepository addressRepository;
     private final CategoryItemRepository categoryItemRepository;
+    private final PawnerRepository pawnerRepository;
+    private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
 
-    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryItemRepository categoryItemRepository) {
+
+    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryItemRepository categoryItemRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
         this.shopRepository = shopRepository;
         this.hasCategoryItemRepository = hasCategoryItemRepository;
         this.addressRepository = addressRepository;
         this.categoryItemRepository = categoryItemRepository;
+        this.pawnerRepository = pawnerRepository1;
+        this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
     }
 
     public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
@@ -50,7 +51,7 @@ public class ShopService {
         List<HasCategoryItem> listHasCategoryItems = hasCategoryItemRepository.findHasCategoryItemsByIdCategoryItem(cateId);
         if (listHasCategoryItems != null) {
             List<Shop> listShop = new ArrayList<>();
-            for (int i=0; i < listHasCategoryItems.size(); i++) {
+            for (int i = 0; i < listHasCategoryItems.size(); i++) {
                 Shop shop = shopRepository.findShopById(listHasCategoryItems.get(i).getIdShop());
                 if (shop != null) {
                     listShop.add(shop);
@@ -64,13 +65,11 @@ public class ShopService {
     }
 
 
-
-
     public List<Shop> findAll() {
         return shopRepository.findAll();
     }
 
-    public ShopInformation showShopInformation(int shopId) {
+    public ShopInformation showShopInformation(int shopId, Integer userId) {
         Shop shop = shopRepository.findById(shopId);
         if (shop == null) {
             return null;
@@ -84,6 +83,7 @@ public class ShopService {
             shopInformation.setPolicy(shop.getPolicy());
             shopInformation.setRating(shop.getRating());
             shopInformation.setStatus(shop.getStatus());
+            shopInformation.setViewCount(shop.getViewCount());
             Address address = addressRepository.findAddressById(shop.getAddressId());
             if (address != null) {
                 shopInformation.setFullAddress(address.getFullAddress());
@@ -100,7 +100,28 @@ public class ShopService {
             if (listCategoryName != null) {
                 shopInformation.setCategoryItems(listCategoryName);
             }
+            shop.setViewCount(shop.getViewCount() + 1);
+            shopRepository.save(shop);
+            if (userId == null) {
+                shopInformation.setCheckFavorite(false);
+            } else {
+                Pawner pawner = pawnerRepository.findByAccountId(userId);
+                pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId());
+            }
             return shopInformation;
+        }
+    }
+
+    public boolean followShop(int userId, int shopId) {
+        Pawner pawner = pawnerRepository.findByAccountId(userId);
+        if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId()) != null) {
+            return false;
+        } else {
+            PawnerFavouriteShop pawnerFavouriteShop = new PawnerFavouriteShop();
+            pawnerFavouriteShop.setPawnerId(pawner.getId());
+            pawnerFavouriteShop.setShopId(shopId);
+            pawneeFavoriteShopRepository.saveAndFlush(pawnerFavouriteShop);
+            return true;
         }
     }
 

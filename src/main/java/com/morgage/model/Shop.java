@@ -1,5 +1,7 @@
 package com.morgage.model;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -40,6 +42,16 @@ public class Shop implements Serializable {
     private Integer addressId;
     @Column(name = "view_count")
     private Integer viewCount;
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
     public Integer getViewCount() {
         return viewCount;

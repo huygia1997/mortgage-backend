@@ -16,6 +16,25 @@ public class ShopInformation {
     private String latitude;
     private String longtitude;
     private String fullAddress;
+    private int viewCount;
+    private Boolean checkFavorite;
+
+    public Boolean getCheckFavorite() {
+        return checkFavorite;
+    }
+
+    public void setCheckFavorite(Boolean checkFavorite) {
+        this.checkFavorite = checkFavorite;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
     private List<String> categoryItems;
 
     public ShopInformation() {

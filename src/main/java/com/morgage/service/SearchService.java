@@ -27,7 +27,7 @@ public class SearchService {
         shopData.setPolicy(shop.getPolicy());
         shopData.setRating(shop.getRating());
         shopData.setStatus(shop.getStatus());
-
+        shopData.setAvaURL(shop.getAvatarUrl());
         return shopData;
     }
 
@@ -41,16 +41,16 @@ public class SearchService {
         shopData.setPolicy(shop.getPolicy());
         shopData.setRating(shop.getRating());
         shopData.setStatus(shop.getStatus());
-
+        shopData.setAvaURL(shop.getAvatarUrl());
         return shopData;
     }
+
     // add address to shop data
     public ShopData addAddressToShopData(int id, ShopData shopData) {
         Address address = addressRepository.findAddressById(id);
         shopData.setFullAddress(address.getFullAddress());
         shopData.setLatitude(address.getLatitude());
         shopData.setLongtitude(address.getLongtitude());
-
         return shopData;
 
     }
@@ -59,7 +59,6 @@ public class SearchService {
         shopData.setFullAddress(address.getFullAddress());
         shopData.setLatitude(address.getLatitude());
         shopData.setLongtitude(address.getLongtitude());
-
         return shopData;
 
     }
