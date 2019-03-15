@@ -29,13 +29,13 @@ public class Transaction {
     @Column(name = "liquidate_after")
     private Integer liquidateAfter;
     @Column(name = "attribute_1_value")
-    private String attribute1Name;
+    private String attribute1Value;
     @Column(name = "attribute_2_value")
-    private String attribute2Name;
+    private String attribute2Value;
     @Column(name = "attribute_3_value")
-    private String attribute3Name;
+    private String attribute3Value;
     @Column(name = "attribute_4_value")
-    private String attribute4Name;
+    private String attribute4Value;
     @Column(name = "category_item_id")
     private int categoryItemId;
     @Column(name = "item_name")
@@ -132,36 +132,37 @@ public class Transaction {
         this.liquidateAfter = liquidateAfter;
     }
 
-    public String getAttribute1Name() {
-        return attribute1Name;
+
+    public String getAttribute1Value() {
+        return attribute1Value;
     }
 
-    public void setAttribute1Name(String attribute1Name) {
-        this.attribute1Name = attribute1Name;
+    public void setAttribute1Value(String attribute1Value) {
+        this.attribute1Value = attribute1Value;
     }
 
-    public String getAttribute2Name() {
-        return attribute2Name;
+    public String getAttribute2Value() {
+        return attribute2Value;
     }
 
-    public void setAttribute2Name(String attribute2Name) {
-        this.attribute2Name = attribute2Name;
+    public void setAttribute2Value(String attribute2Value) {
+        this.attribute2Value = attribute2Value;
     }
 
-    public String getAttribute3Name() {
-        return attribute3Name;
+    public String getAttribute3Value() {
+        return attribute3Value;
     }
 
-    public void setAttribute3Name(String attribute3Name) {
-        this.attribute3Name = attribute3Name;
+    public void setAttribute3Value(String attribute3Value) {
+        this.attribute3Value = attribute3Value;
     }
 
-    public String getAttribute4Name() {
-        return attribute4Name;
+    public String getAttribute4Value() {
+        return attribute4Value;
     }
 
-    public void setAttribute4Name(String attribute4Name) {
-        this.attribute4Name = attribute4Name;
+    public void setAttribute4Value(String attribute4Value) {
+        this.attribute4Value = attribute4Value;
     }
 
     public int getCategoryItemId() {

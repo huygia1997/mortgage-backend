@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PawnerRepository extends JpaRepository<Pawner, Integer> {
     Pawner findByAccountId(int accountId);
+
+
+    Pawner findPawnerById(int id);
 }

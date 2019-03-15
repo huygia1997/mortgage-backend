@@ -19,7 +19,16 @@ public class PawnerService {
         pawner.setAvaURL(avaURL);
         return pawnerRepository.save(pawner);
     }
-    public Pawner getPawnerByAccountId(int accountId){
+
+    public Pawner getPawnerByAccountId(int accountId) {
         return pawnerRepository.findByAccountId(accountId);
+    }
+
+    public Integer getAccountIdFromPawnerId(int pawnerId) {
+        Pawner pawner = new Pawner();
+        pawner = pawnerRepository.findPawnerById(pawnerId);
+        if (pawner != null) {
+            return pawner.getAccountId();
+        } else return null;
     }
 }

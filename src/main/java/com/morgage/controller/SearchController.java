@@ -111,14 +111,8 @@ public class SearchController {
                     }
                 }
             }
-
             return listData;
         }
-
-
-
-
-
         return null;
     }
 

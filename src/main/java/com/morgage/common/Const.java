@@ -7,6 +7,8 @@ public class Const {
 
     private static Environment env;
 
+    public static int DEFAULT_PAWNEE_ID = 0;
+
     public static class USER_ROLE {
         public static final String PAWNER = "PAWNER";
         public static final String SHOP = "SHOP";
@@ -16,7 +18,7 @@ public class Const {
     public static class USER_STATUS {
         public static final Integer ACTIVE = 1;
         public static final Integer DEACTIVE = 2;
-        public static final Integer NOT_ACTIVE= 3;
+        public static final Integer NOT_ACTIVE = 3;
     }
 
     public enum ROLE_TYPE {
@@ -29,8 +31,8 @@ public class Const {
                 return ADMIN;
             } else if (role.equals(USER_ROLE.SHOP)) {
                 return SHOP;
-            }else
-            return PAWNER;
+            } else
+                return PAWNER;
         }
 
         public String value() {
@@ -79,21 +81,39 @@ public class Const {
 
     public static class NOTIFICATION_TYPE {
         public static final Integer LIKE = 1;
-        public static final Integer FAVORITE = 2;
+        public static final Integer REQUEST = 2;
         public static final Integer SYSTEM_PAWNER = 3;
         public static final Integer SYSTEM_SHOP = 4;
+        public static final Integer LIQUIDATION = 5;
+
     }
+
     public static class TRANSACTION_STATUS {
         public static final Integer UNPAID = 1;
         public static final Integer PAID = 2;
         public static final Integer WAIT_FOR_LIQUIDATION = 3;
         public static final Integer LIQUIDATED = 4;
         public static final Integer REDEEMED = 5;
-        public static final Integer LATE=6;
+        public static final Integer LATE = 6;
+        public static final Integer LIQUIDATION = 7;
+        public static final Integer UNACCEPTED = 8;
     }
+
     public static class SHOP_STATUS {
         public static final Integer UNACTIVE = 1;
         public static final Integer ACTIVE = 2;
         public static final Integer BANNED = 3;
+    }
+
+    public static class ITEM_STATUS {
+        public static final Integer WAIT_FOR_LIQUIDATION = 1;
+        public static final Integer LIQUIDATED = 2;
+        public static final Integer REDEEMED = 3;
+    }
+
+    public static class PAYMENT_TYPE {
+        public static final Integer DAY = 1;
+        public static final Integer WEEK = 7;
+        public static final Integer MONTH = 30;
     }
 }

@@ -3,7 +3,8 @@ package com.morgage.model;
 import javax.persistence.*;
 
 @Entity
-public class PawnerInfo {
+@Table(name = "otpawnee")
+public class OneTimePawnee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -27,7 +28,7 @@ public class PawnerInfo {
         this.address = address;
     }
 
-    public PawnerInfo() {
+    public OneTimePawnee() {
     }
 
     public int getId() {

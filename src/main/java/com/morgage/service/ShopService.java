@@ -1,6 +1,7 @@
 package com.morgage.service;
 
 import com.morgage.model.*;
+import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
 import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
@@ -102,12 +103,14 @@ public class ShopService {
             }
             shop.setViewCount(shop.getViewCount() + 1);
             shopRepository.save(shop);
-            if (userId == null) {
-                shopInformation.setCheckFavorite(false);
+            Pawner pawner = pawnerRepository.findByAccountId(userId);
+            if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId()) != null) {
+                shopInformation.setCheckFavorite(true);
             } else {
-                Pawner pawner = pawnerRepository.findByAccountId(userId);
-                pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId());
+                shopInformation.setCheckFavorite(false);
             }
+            shopInformation.setViewCount(shop.getViewCount());
+            shopInformation.setAvaUrl(shop.getAvatarUrl());
             return shopInformation;
         }
     }
@@ -125,5 +128,43 @@ public class ShopService {
         }
     }
 
+    public boolean unFollowShop(int userId, int shopId) {
+        Pawner pawner = pawnerRepository.findByAccountId(userId);
+        PawnerFavouriteShop pawnerFavouriteShop = pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId());
+        if (pawnerFavouriteShop == null) {
+            return false;
+        } else {
+            pawneeFavoriteShopRepository.delete(pawnerFavouriteShop);
+            return true;
+        }
+    }
+
+    public ShopDataForGuest showShopInformationForGuest(int shopId) {
+        Shop shop = shopRepository.findById(shopId);
+        if (shop == null) {
+            return null;
+        } else {
+            Address address = addressRepository.findAddressById(shop.getAddressId());
+            List<String> listCategoryName = new ArrayList<>();
+            List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
+            if (listCategory != null) {
+                for (HasCategoryItem item : listCategory) {
+                    listCategoryName.add(categoryItemRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                }
+            }
+            shop.setViewCount(shop.getViewCount() + 1);
+            shopRepository.save(shop);
+            ShopDataForGuest shopDataForGuest = new ShopDataForGuest(shop.getId(), shop.getShopName(), shop.getPhoneNumber(), shop.getFacebook(), shop.getEmail(), address.getLatitude(), address.getLongtitude(), address.getFullAddress(), shop.getAvatarUrl(), listCategoryName);
+            return shopDataForGuest;
+        }
+    }
+
+    public Integer getAccountIdByShopId(int shopId) {
+        Shop shop = new Shop();
+        shop = shopRepository.findShopById(shopId);
+        if (shop != null) {
+            return shop.getAccountId();
+        } else return null;
+    }
 
 }
