@@ -25,7 +25,7 @@ public class TransactionController {
     }
 
 
-    @RequestMapping(value = "/transactions")
+    @RequestMapping(value = "/transactions/shopId")
     @ResponseBody
     public List<Transaction> findTransByShopId(@RequestParam("shopId") int shopId) {
 

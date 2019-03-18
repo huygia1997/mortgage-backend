@@ -1,7 +1,6 @@
 package com.morgage.controller;
 
-import com.morgage.model.Address;
-import com.morgage.model.Shop;
+import com.morgage.model.*;
 import com.morgage.model.data.ShopData;
 import com.morgage.service.AddressService;
 import com.morgage.service.SearchService;
@@ -133,8 +132,33 @@ public class SearchController {
         List<Shop> list = shopService.findAll();
         return list;
     }
-    //Search shop by category ( category, location, ban kinh)
-//    @RequestMapping("/tim/cate")
-//    @ResponseBody
+    @RequestMapping("/getCityDistrictData")
+    @ResponseBody
+    public Map<String, List<District>> getCityDistrictData() {
+        Map<String, List<District>> listData = searchService.searchCityDistrict();
+        return listData;
+    }
+
+    @RequestMapping("/getCity")
+    @ResponseBody
+    public List<City> getCity() {
+        List<City> list = searchService.findAllCities();
+        return list;
+    }
+
+    @RequestMapping("/getDistrict")
+    @ResponseBody
+    public List<District> getDistrict() {
+        List<District> list = searchService.findAllDistrict();
+        return list;
+    }
+
+    @RequestMapping("/getCategory")
+    @ResponseBody
+    public List<CategoryItem> getCategory() {
+        List<CategoryItem> list = searchService.findAllCategory();
+        return list;
+    }
+
 
 }
