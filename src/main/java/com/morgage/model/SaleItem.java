@@ -23,6 +23,16 @@ public class SaleItem implements Serializable {
     private Integer transactionId;
     @Column(name = "picture_id")
     private Integer pictureId;
+    @Column(name = "item_name")
+    private String itemName;
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
     public Integer getTransactionId() {
         return transactionId;
@@ -52,6 +62,10 @@ public class SaleItem implements Serializable {
         this.id = id;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
@@ -66,12 +80,6 @@ public class SaleItem implements Serializable {
 
     public SaleItem() {
     }
-
-    public SaleItem(int price, int status) {
-        this.price = price;
-        this.status = status;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -85,11 +93,4 @@ public class SaleItem implements Serializable {
         this.price = price;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }

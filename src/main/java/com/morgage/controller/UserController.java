@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -115,14 +116,15 @@ public class UserController {
 //        }
 //    }
 
-    @RequestMapping(value = "/thong-tin-nguoi-dung", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserInformation(@RequestParam("userId") String id) {
+    @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
         Pawner pawner = pawnerService.getPawnerByAccountId(Integer.parseInt(id));
         if (pawner != null) {
-            return new ResponseEntity<Pawner>(pawner    , HttpStatus.OK);
+            return new ResponseEntity<Pawner>(pawner, HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
+
 
 }

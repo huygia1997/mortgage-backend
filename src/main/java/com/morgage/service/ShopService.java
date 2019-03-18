@@ -1,13 +1,9 @@
 package com.morgage.service;
 
-import com.morgage.model.Address;
-import com.morgage.model.HasCategoryItem;
-import com.morgage.model.Shop;
+import com.morgage.model.*;
+import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
-import com.morgage.repository.AddressRepository;
-import com.morgage.repository.CategoryItemRepository;
-import com.morgage.repository.HasCategoryItemRepository;
-import com.morgage.repository.ShopRepository;
+import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,13 +14,18 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final HasCategoryItemRepository hasCategoryItemRepository;
     private final AddressRepository addressRepository;
-    private final CategoryItemRepository categoryItemRepository;
+    private final CategoryRepository categoryRepository;
+    private final PawnerRepository pawnerRepository;
+    private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
 
-    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryItemRepository categoryItemRepository) {
+
+    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
         this.shopRepository = shopRepository;
         this.hasCategoryItemRepository = hasCategoryItemRepository;
         this.addressRepository = addressRepository;
-        this.categoryItemRepository = categoryItemRepository;
+        this.categoryRepository = categoryRepository;
+        this.pawnerRepository = pawnerRepository1;
+        this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
     }
 
     public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
@@ -50,7 +51,7 @@ public class ShopService {
         List<HasCategoryItem> listHasCategoryItems = hasCategoryItemRepository.findHasCategoryItemsByIdCategoryItem(cateId);
         if (listHasCategoryItems != null) {
             List<Shop> listShop = new ArrayList<>();
-            for (int i=0; i < listHasCategoryItems.size(); i++) {
+            for (int i = 0; i < listHasCategoryItems.size(); i++) {
                 Shop shop = shopRepository.findShopById(listHasCategoryItems.get(i).getIdShop());
                 if (shop != null) {
                     listShop.add(shop);
@@ -64,13 +65,11 @@ public class ShopService {
     }
 
 
-
-
     public List<Shop> findAll() {
         return shopRepository.findAll();
     }
 
-    public ShopInformation showShopInformation(int shopId) {
+    public ShopInformation showShopInformation(int shopId, Integer userId) {
         Shop shop = shopRepository.findById(shopId);
         if (shop == null) {
             return null;
@@ -84,6 +83,7 @@ public class ShopService {
             shopInformation.setPolicy(shop.getPolicy());
             shopInformation.setRating(shop.getRating());
             shopInformation.setStatus(shop.getStatus());
+            shopInformation.setViewCount(shop.getViewCount());
             Address address = addressRepository.findAddressById(shop.getAddressId());
             if (address != null) {
                 shopInformation.setFullAddress(address.getFullAddress());
@@ -94,15 +94,76 @@ public class ShopService {
             List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
             if (listCategory != null) {
                 for (HasCategoryItem item : listCategory) {
-                    listCategoryName.add(categoryItemRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                    listCategoryName.add(categoryRepository.findById(item.getIdCategoryItem()).getCategoryName());
                 }
             }
             if (listCategoryName != null) {
                 shopInformation.setCategoryItems(listCategoryName);
             }
+            shop.setViewCount(shop.getViewCount() + 1);
+            shopRepository.save(shop);
+            Pawner pawner = pawnerRepository.findByAccountId(userId);
+            if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId()) != null) {
+                shopInformation.setCheckFavorite(true);
+            } else {
+                shopInformation.setCheckFavorite(false);
+            }
+            shopInformation.setViewCount(shop.getViewCount());
+            shopInformation.setAvaUrl(shop.getAvatarUrl());
             return shopInformation;
         }
     }
 
+    public boolean followShop(int userId, int shopId) {
+        Pawner pawner = pawnerRepository.findByAccountId(userId);
+        if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId()) != null) {
+            return false;
+        } else {
+            PawnerFavouriteShop pawnerFavouriteShop = new PawnerFavouriteShop();
+            pawnerFavouriteShop.setPawnerId(pawner.getId());
+            pawnerFavouriteShop.setShopId(shopId);
+            pawneeFavoriteShopRepository.saveAndFlush(pawnerFavouriteShop);
+            return true;
+        }
+    }
+
+    public boolean unFollowShop(int userId, int shopId) {
+        Pawner pawner = pawnerRepository.findByAccountId(userId);
+        PawnerFavouriteShop pawnerFavouriteShop = pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId());
+        if (pawnerFavouriteShop == null) {
+            return false;
+        } else {
+            pawneeFavoriteShopRepository.delete(pawnerFavouriteShop);
+            return true;
+        }
+    }
+
+    public ShopDataForGuest showShopInformationForGuest(int shopId) {
+        Shop shop = shopRepository.findById(shopId);
+        if (shop == null) {
+            return null;
+        } else {
+            Address address = addressRepository.findAddressById(shop.getAddressId());
+            List<String> listCategoryName = new ArrayList<>();
+            List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
+            if (listCategory != null) {
+                for (HasCategoryItem item : listCategory) {
+                    listCategoryName.add(categoryRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                }
+            }
+            shop.setViewCount(shop.getViewCount() + 1);
+            shopRepository.save(shop);
+            ShopDataForGuest shopDataForGuest = new ShopDataForGuest(shop.getId(), shop.getShopName(), shop.getPhoneNumber(), shop.getFacebook(), shop.getEmail(), address.getLatitude(), address.getLongtitude(), address.getFullAddress(), shop.getAvatarUrl(), listCategoryName);
+            return shopDataForGuest;
+        }
+    }
+
+    public Integer getAccountIdByShopId(int shopId) {
+        Shop shop = new Shop();
+        shop = shopRepository.findShopById(shopId);
+        if (shop != null) {
+            return shop.getAccountId();
+        } else return null;
+    }
 
 }

@@ -52,8 +52,6 @@ public class SearchController {
                 return listData;
 
             }
-
-
             return null;
         } catch (Exception e) {
             return null;
@@ -113,14 +111,8 @@ public class SearchController {
                     }
                 }
             }
-
             return listData;
         }
-
-
-
-
-
         return null;
     }
 

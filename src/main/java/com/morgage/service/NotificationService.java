@@ -43,6 +43,15 @@ public class NotificationService {
         }
         return rs;
     }
+    public List<NotificationData> getNewAllNotification(int receiverId, int status) {
+        List<Notification> list = notificationRepository.findAllByReceiverIdAndStatus(receiverId,status);
+        List<NotificationData> rs = new ArrayList<>();
+        for (Notification notification : list) {
+            NotificationData data = getNotificationDataByNotification(notification);
+            rs.add(data);
+        }
+        return rs;
+    }
 
     private NotificationData getNotificationDataByNotification(Notification notification) {
         NotificationData rs = new NotificationData();

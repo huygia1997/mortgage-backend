@@ -12,11 +12,34 @@ public class Picture implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-
     @Column(name = "picture_url")
     private String pictureUrl;
     @Column(name = "descrition")
     private String descrition;
+    @Column(name = "shop_id")
+    private Integer shopId;
+    @Column(name = "transaction_id")
+    private Integer transactionId;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public Integer getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Integer transactionId) {
+        this.transactionId = transactionId;
+    }
 
     public Picture() {
     }
