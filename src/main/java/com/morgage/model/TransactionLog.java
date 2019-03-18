@@ -2,6 +2,7 @@ package com.morgage.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 public class TransactionLog {
@@ -10,9 +11,9 @@ public class TransactionLog {
     @Column(name = "id", nullable = false)
     private int id;
     @Column(name = "start_payment_date")
-    private Date startDate;
+    private Timestamp startDate;
     @Column(name = "end_payment_date")
-    private Date enđate;
+    private Timestamp endDate;
     @Column(name = "status")
     private int status;
     @Column(name = "transaction_id")
@@ -26,20 +27,20 @@ public class TransactionLog {
         this.id = id;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEnđate() {
-        return enđate;
+    public Timestamp getEndDate() {
+        return endDate;
     }
 
-    public void setEnđate(Date enđate) {
-        this.enđate = enđate;
+    public void setEndDate(Timestamp endDate) {
+        this.endDate = endDate;
     }
 
     public int getStatus() {

@@ -1,5 +1,7 @@
 package com.morgage.utils;
 
+import com.morgage.common.Const;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -74,6 +76,7 @@ public class Util {
         String[] listStringDate = stringDate.split(" ");
         return listStringDate[3] + ":" + listStringDate[4] + ", " + listStringDate[2] + " tháng " + listStringDate[1];
     }
+
     public static Date atEndOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -91,6 +94,19 @@ public class Util {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    public static Date getEndDay(Date startDate, int paymentType, int paymentTerm) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        if (paymentType == Const.PAYMENT_TYPE.DAY) {
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + paymentTerm * 1);
+        } else if (paymentType == Const.PAYMENT_TYPE.WEEK) {
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + paymentTerm * 7);
+        } else {
+            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + paymentTerm * 1);
+        }
         return calendar.getTime();
     }
 }

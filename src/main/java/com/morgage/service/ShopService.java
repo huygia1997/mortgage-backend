@@ -6,7 +6,6 @@ import com.morgage.model.data.ShopInformation;
 import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +14,16 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final HasCategoryItemRepository hasCategoryItemRepository;
     private final AddressRepository addressRepository;
-    private final CategoryItemRepository categoryItemRepository;
+    private final CategoryRepository categoryRepository;
     private final PawnerRepository pawnerRepository;
     private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
 
 
-    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryItemRepository categoryItemRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
+    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
         this.shopRepository = shopRepository;
         this.hasCategoryItemRepository = hasCategoryItemRepository;
         this.addressRepository = addressRepository;
-        this.categoryItemRepository = categoryItemRepository;
+        this.categoryRepository = categoryRepository;
         this.pawnerRepository = pawnerRepository1;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
     }
@@ -95,7 +94,7 @@ public class ShopService {
             List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
             if (listCategory != null) {
                 for (HasCategoryItem item : listCategory) {
-                    listCategoryName.add(categoryItemRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                    listCategoryName.add(categoryRepository.findById(item.getIdCategoryItem()).getCategoryName());
                 }
             }
             if (listCategoryName != null) {
@@ -149,7 +148,7 @@ public class ShopService {
             List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
             if (listCategory != null) {
                 for (HasCategoryItem item : listCategory) {
-                    listCategoryName.add(categoryItemRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                    listCategoryName.add(categoryRepository.findById(item.getIdCategoryItem()).getCategoryName());
                 }
             }
             shop.setViewCount(shop.getViewCount() + 1);

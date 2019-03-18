@@ -4,6 +4,7 @@ import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
 import com.morgage.service.PawnerService;
 import com.morgage.service.ShopService;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -59,5 +60,7 @@ public class ShopController {
             }
     }
 //    @RequestMapping(value = "/tro-thanh-cua-hang", method = RequestMethod.POST)
-//    public ResponseEntity<?> registerToShop(@RequestParam("accountId") int accountId, )
+//    public ResponseEntity<?> registerToShop(@RequestParam("accountId") int accountId, @RequestParam("shopName") String shopName, @RequestParam("facebook") String facebook, @RequestParam("email") String email, @RequestParam("phoneNumber")String phone){
+//ShopService
+//    }
 }

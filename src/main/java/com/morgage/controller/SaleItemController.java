@@ -59,7 +59,7 @@ public class SaleItemController {
                     return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
                 } else {
                     transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LIQUIDATION);
-                    if (transaction.getPawnerId() != 0) {
+                    if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
                         notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.LIQUIDATION, shopService.getAccountIdByShopId(transaction.getShopId()), pawnerService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                     }
                     return new ResponseEntity<SaleItem>(item, HttpStatus.OK);

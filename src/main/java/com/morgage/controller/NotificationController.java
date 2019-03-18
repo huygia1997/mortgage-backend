@@ -1,5 +1,6 @@
 package com.morgage.controller;
 
+import com.morgage.common.Const;
 import com.morgage.model.data.NotificationData;
 import com.morgage.service.NotificationService;
 import org.apache.http.client.ClientProtocolException;
@@ -22,11 +23,25 @@ public class NotificationController {
     }
 
     @RequestMapping("/get-notification")
-    public ResponseEntity<?> getnotification(HttpServletRequest request) {
+    public ResponseEntity<?> getNotification(HttpServletRequest request) {
         try {
             String AccountId = request.getParameter("id");
             try {
                 List<NotificationData> listRs = notificationService.getAllNotification(Integer.parseInt(AccountId));
+                return ResponseEntity.ok(listRs);
+            } catch (Exception e) {
+                return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+        }
+    }
+    @RequestMapping("/get-new-notification")
+    public ResponseEntity<?> getNewNotification(HttpServletRequest request) {
+        try {
+            String AccountId = request.getParameter("id");
+            try {
+                List<NotificationData> listRs = notificationService.getNewAllNotification(Integer.parseInt(AccountId), Const.NOTIFICATION_STATUS.NOT_SEEN.value);
                 return ResponseEntity.ok(listRs);
             } catch (Exception e) {
                 return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);

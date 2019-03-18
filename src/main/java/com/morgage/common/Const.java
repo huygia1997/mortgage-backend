@@ -7,7 +7,7 @@ public class Const {
 
     private static Environment env;
 
-    public static int DEFAULT_PAWNEE_ID = 0;
+    public static int DEFAULT_PAWNEE_ID = 4;
 
     public static class USER_ROLE {
         public static final String PAWNER = "PAWNER";
@@ -113,7 +113,11 @@ public class Const {
 
     public static class PAYMENT_TYPE {
         public static final Integer DAY = 1;
-        public static final Integer WEEK = 7;
-        public static final Integer MONTH = 30;
+        public static final Integer WEEK = 2;
+        public static final Integer MONTH = 3;
+    }
+    public static class TRANSACTION_LOG_STATUS {
+        public static final Integer PAID = 1;
+        public static final Integer UNPAID = 2;
     }
 }
