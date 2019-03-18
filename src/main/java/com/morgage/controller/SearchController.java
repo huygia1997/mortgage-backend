@@ -51,8 +51,6 @@ public class SearchController {
                 return listData;
 
             }
-
-
             return null;
         } catch (Exception e) {
             return null;
@@ -112,14 +110,8 @@ public class SearchController {
                     }
                 }
             }
-
             return listData;
         }
-
-
-
-
-
         return null;
     }
 
@@ -155,8 +147,8 @@ public class SearchController {
 
     @RequestMapping("/getCategory")
     @ResponseBody
-    public List<CategoryItem> getCategory() {
-        List<CategoryItem> list = searchService.findAllCategory();
+    public List<Category> getCategory() {
+        List<Category> list = searchService.findAllCategory();
         return list;
     }
 

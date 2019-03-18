@@ -16,6 +16,15 @@ public class ShopData implements Serializable {
     private String latitude;
     private String longtitude;
     private String fullAddress;
+    private String avaURL;
+
+    public String getAvaURL() {
+        return avaURL;
+    }
+
+    public void setAvaURL(String avaURL) {
+        this.avaURL = avaURL;
+    }
 
     public ShopData() {
     }

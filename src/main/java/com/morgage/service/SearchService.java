@@ -16,14 +16,14 @@ public class SearchService {
     private final ShopRepository shopRepository;
     private final CityRepository cityRepository;
     private final DistrictRepository districtRepository;
-    private final CategoryItemRepository categoryItemRepository;
+    private final CategoryRepository categoryRepository;
 
-    public SearchService(AddressRepository addressRepository, ShopRepository shopRepository, CityRepository cityRepository, DistrictRepository districtRepository, CategoryItemRepository categoryItemRepository) {
+    public SearchService(AddressRepository addressRepository, ShopRepository shopRepository, CityRepository cityRepository, DistrictRepository districtRepository, CategoryRepository categoryRepository) {
         this.addressRepository = addressRepository;
         this.shopRepository = shopRepository;
         this.cityRepository = cityRepository;
         this.districtRepository = districtRepository;
-        this.categoryItemRepository = categoryItemRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     //Add Shop to Shop Data.
@@ -36,7 +36,7 @@ public class SearchService {
         shopData.setPolicy(shop.getPolicy());
         shopData.setRating(shop.getRating());
         shopData.setStatus(shop.getStatus());
-
+        shopData.setAvaURL(shop.getAvatarUrl());
         return shopData;
     }
 
@@ -50,16 +50,16 @@ public class SearchService {
         shopData.setPolicy(shop.getPolicy());
         shopData.setRating(shop.getRating());
         shopData.setStatus(shop.getStatus());
-
+        shopData.setAvaURL(shop.getAvatarUrl());
         return shopData;
     }
+
     // add address to shop data
     public ShopData addAddressToShopData(int id, ShopData shopData) {
         Address address = addressRepository.findAddressById(id);
         shopData.setFullAddress(address.getFullAddress());
         shopData.setLatitude(address.getLatitude());
         shopData.setLongtitude(address.getLongtitude());
-
         return shopData;
 
     }
@@ -68,7 +68,6 @@ public class SearchService {
         shopData.setFullAddress(address.getFullAddress());
         shopData.setLatitude(address.getLatitude());
         shopData.setLongtitude(address.getLongtitude());
-
         return shopData;
 
     }
@@ -95,8 +94,8 @@ public class SearchService {
         return districtRepository.findAll();
     }
 
-    public List<CategoryItem> findAllCategory() {
-        return categoryItemRepository.findAll();
+    public List<Category> findAllCategory() {
+        return categoryRepository.findAll();
     }
 
     public void generateDataIntoCityAndDistrict() {

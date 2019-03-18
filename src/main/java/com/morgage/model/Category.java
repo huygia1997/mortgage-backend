@@ -3,7 +3,7 @@ package com.morgage.model;
 import javax.persistence.*;
 
 @Entity
-public class CategoryItem {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -13,7 +13,7 @@ public class CategoryItem {
     @Column(name = "description")
     private String description;
 
-    public CategoryItem() {
+    public Category() {
     }
 
     public int getId() {
