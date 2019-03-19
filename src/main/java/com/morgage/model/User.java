@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id" )
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")

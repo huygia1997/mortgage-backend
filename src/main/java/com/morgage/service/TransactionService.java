@@ -33,9 +33,9 @@ public class TransactionService {
         return transactionRepository.findById(id);
     }
 
-    public Transaction createTransaction(Integer pawneeId, int shopId, String itemName, int basePrice,
+    public Transaction createTransaction(int pawneeId, int shopId, String itemName, int basePrice,
                                          int paymentTerm, int paymentType, int liquidate, Date startDate, int categoryItemId,
-                                         String attribute1, String attribute2, String attribute3, String attribute4) {
+                                         String attribute1, String attribute2, String attribute3, String attribute4, int pawneeInfoId) {
         Date nestPaymentDate = Util.getEndDay(startDate, paymentType, paymentTerm);
         Transaction transaction = new Transaction();
         transaction.setAttribute1Value(attribute1);
@@ -50,6 +50,7 @@ public class TransactionService {
         Timestamp start = new Timestamp(startDate.getTime());
         transaction.setNextPaymentDate(timeStamp);
         transaction.setPawnerId(pawneeId);
+        transaction.setPawneeInfoId(pawneeInfoId);
         transaction.setPaymentTerm(paymentTerm);
         transaction.setPaymentType(paymentType);
         transaction.setPrice(basePrice);
@@ -72,6 +73,9 @@ public class TransactionService {
 
     public List<TransactionLog> getAllTransactionLog(int transactionId) {
         return transactionLogRepository.findAllByTransactionId(transactionId);
+    }
+    public List<Transaction> getAllTransaction(int shopId) {
+        return transactionRepository.findAllByShopId(shopId);
     }
 
     public TransactionLog paymentTransaction(int transactionId) {
@@ -97,4 +101,10 @@ public class TransactionService {
             } else return null;
         } else return null;
     }
+
+    public Transaction getTransById(int transId) {
+        return transactionRepository.findById(transId);
+    }
+
+
 }

@@ -75,4 +75,8 @@ public class PawnerService {
             return pawner.getAccountId();
         } else return null;
     }
+
+    public List<Pawner> getPawnersByEmail(String email) {
+        return pawnerRepository.findAllByEmailContaining(email);
+    }
 }
