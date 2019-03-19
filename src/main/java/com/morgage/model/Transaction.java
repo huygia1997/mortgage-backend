@@ -1,7 +1,6 @@
 package com.morgage.model;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -19,7 +18,7 @@ public class Transaction {
     @Column(name = "status")
     private Integer status;
     @Column(name = "pawner_id")
-    private Integer pawnerId;
+    private int pawnerId;
     @Column(name = "shop_id")
     private Integer shopId;
     @Column(name = "payment_term")
@@ -40,6 +39,40 @@ public class Transaction {
     private int categoryItemId;
     @Column(name = "item_name")
     private String itemName;
+    @Column(name = "pawnee_info_id")
+    private int pawneeInfoId;
+
+    public int getPawneeInfoId() {
+        return pawneeInfoId;
+    }
+
+    public void setPawneeInfoId(int pawneeInfoId) {
+        this.pawneeInfoId = pawneeInfoId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "pawner_id", insertable = false, updatable = false)
+    private Pawner pawner;
+
+    public Pawner getPawner() {
+        return pawner;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "category_item_id", insertable = false, updatable = false)
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "pawnee_info", insertable = false, updatable = false)
+    private PawneeInfo pawneeInfo;
+
+    public PawneeInfo getPawneeInfo() {
+        return pawneeInfo;
+    }
 
     public String getItemName() {
         return itemName;
@@ -92,11 +125,11 @@ public class Transaction {
         this.status = status;
     }
 
-    public Integer getPawnerId() {
+    public int getPawnerId() {
         return pawnerId;
     }
 
-    public void setPawnerId(Integer pawnerId) {
+    public void setPawnerId(int pawnerId) {
         this.pawnerId = pawnerId;
     }
 

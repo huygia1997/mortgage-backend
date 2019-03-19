@@ -8,6 +8,7 @@ public class Const {
     private static Environment env;
 
     public static int DEFAULT_PAWNEE_ID = 4;
+    public static int DEFAULT_PAWNEE_INFO_ID = 4;
 
     public static class USER_ROLE {
         public static final String PAWNER = "PAWNER";

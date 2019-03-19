@@ -4,6 +4,8 @@ import com.morgage.model.Pawner;
 import com.morgage.repository.PawnerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PawnerService {
     private final PawnerRepository pawnerRepository;
@@ -30,5 +32,9 @@ public class PawnerService {
         if (pawner != null) {
             return pawner.getAccountId();
         } else return null;
+    }
+
+    public List<Pawner> getPawnersByEmail(String email) {
+        return pawnerRepository.findAllByEmailContaining(email);
     }
 }

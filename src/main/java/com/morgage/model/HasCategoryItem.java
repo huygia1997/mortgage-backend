@@ -8,8 +8,18 @@ public class HasCategoryItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
+    @ManyToOne
+    @JoinColumn(name = "id_category_item", insertable = false, updatable = false)
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
+
     @Column(name = "id_shop")
     private int idShop;
+    @Column(name = "category_item_name")
+    private String categoryItemName;
     @Column(name = "id_category_item")
     private int idCategoryItem;
     @Column(name = "payment_term")
@@ -125,6 +135,15 @@ public class HasCategoryItem {
         this.status = status;
     }
 
+    public String getCategoryItemName() {
+        return categoryItemName;
+    }
+
+    public void setCategoryItemName(String categoryItemName) {
+        this.categoryItemName = categoryItemName;
+    }
+
     public HasCategoryItem() {
     }
+
 }
