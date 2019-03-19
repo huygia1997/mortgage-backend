@@ -12,7 +12,7 @@ public class ShopInformation {
     private String email;
     private Integer status;
     private Integer rating;
-    private Integer policy;
+    private String policy;
     private String latitude;
     private String longtitude;
     private String fullAddress;
@@ -123,11 +123,7 @@ public class ShopInformation {
         this.rating = rating;
     }
 
-    public Integer getPolicy() {
-        return policy;
-    }
-
-    public void setPolicy(Integer policy) {
+    public void setPolicy(String policy) {
         this.policy = policy;
     }
 

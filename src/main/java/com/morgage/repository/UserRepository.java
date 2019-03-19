@@ -7,6 +7,9 @@ import java.util.List;
 
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-User findByUsername(String name);
-User findByToken(String token);
+    User findByUsername(String name);
+
+    User findByToken(String token);
+
+    User findById(int id);
 }

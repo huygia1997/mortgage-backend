@@ -3,6 +3,7 @@ package com.morgage.model;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "category_item")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

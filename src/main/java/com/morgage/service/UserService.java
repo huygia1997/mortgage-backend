@@ -18,13 +18,9 @@ import java.sql.Timestamp;
 @Service
 public class UserService {
 
-    @PersistenceContext
     private final EntityManager em;
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final RoleRepository roleRepository;
-    @Autowired
     private final PawnerRepository pawnerRepository;
 
     public UserService(EntityManager em, UserRepository userRepository, RoleRepository roleRepository, PawnerRepository pawnerRepository) {
@@ -37,6 +33,7 @@ public class UserService {
     public User initUser(String name, String password) {
         User user = new User();
         Role role = new Role();
+        Pawner pawner = new Pawner();
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
         role.setId(Const.ROLE_TYPE.PAWNER.getRoleID());
         user.setStatus(Const.USER_STATUS.NOT_ACTIVE);
@@ -45,11 +42,24 @@ public class UserService {
         user.setRole(role);
         user.setCreatedTime(timeStamp);
         user = userRepository.saveAndFlush(user);
-        return user;
+        if (user != null) {
+            pawner.setEmail(user.getUsername());
+            pawner.setAccountId(user.getId());
+            pawner = pawnerRepository.saveAndFlush(pawner);
+        }
+        if (pawner != null) {
+            return user;
+        }else return null;
     }
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public User editUserInfo(int userId, String password) {
+        User user = userRepository.findById(userId);
+        user.setPassword(password);
+        return userRepository.save(user);
     }
 
     public void save(User user) {

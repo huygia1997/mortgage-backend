@@ -1,8 +1,11 @@
 package com.morgage.controller;
 
 import com.morgage.common.Const;
+import com.morgage.model.GooglePojo;
+import com.morgage.model.GoogleUtils;
 import com.morgage.model.Pawner;
 import com.morgage.model.User;
+import com.morgage.model.data.UserInfoData;
 import com.morgage.service.PawnerService;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
@@ -15,13 +18,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -33,12 +43,14 @@ public class UserController {
     private final JavaMailSender mailSender;
     private final Environment env;
     private final PawnerService pawnerService;
+    private final GoogleUtils googleUtils;
 
-    public UserController(UserService userService, JavaMailSender mailSender, Environment env, PawnerService pawnerService) {
+    public UserController(UserService userService, JavaMailSender mailSender, Environment env, PawnerService pawnerService, GoogleUtils googleUtils) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.env = env;
         this.pawnerService = pawnerService;
+        this.googleUtils = googleUtils;
     }
 
 
@@ -106,25 +118,66 @@ public class UserController {
         }
     }
 
-//    @RequestMapping(value = "/quen-mat-khau")
-//    public ResponseEntity<?> forgetPassword(HttpServletRequest request) {
-//        request.getParameter()
-//        if (userService.activeUserAccount()) {
-//            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @RequestMapping(value = "/quen-mat-khau")
+    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) {
+        User user = userService.getUserByUsername(email);
+        if (user != null) {
 
-    @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
-        Pawner pawner = pawnerService.getPawnerByAccountId(Integer.parseInt(id));
-        if (pawner != null) {
-            return new ResponseEntity<Pawner>(pawner, HttpStatus.OK);
+            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
 
+    @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
+        UserInfoData pawner = pawnerService.getUserInfo(Integer.parseInt(id));
+        if (pawner != null) {
+            return new ResponseEntity<UserInfoData>(pawner, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    @RequestMapping(value = "/thay-doi-thong-tin-nguoi-dung", method = RequestMethod.POST)
+    public ResponseEntity<?> editUserInformation(@RequestParam("password") String password, @RequestParam("userName") String name, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
+        try {
+            Pawner pawner = pawnerService.setPawnerInfo(acountId, email, phone, urlAva, address);
+            String encryptPassword = new BCryptPasswordEncoder().encode(password);
+            User user = userService.editUserInfo(acountId, encryptPassword);
+            return new ResponseEntity<String>("Success", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+
+
+    }
+
+    // login with social
+    @RequestMapping("/login-google")
+    public ResponseEntity<?> loginGoogle(HttpServletRequest request) throws ClientProtocolException, IOException {
+        try {
+            String code = request.getParameter("code");
+
+            if (code == null || code.isEmpty()) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
+            String accessToken = googleUtils.getToken(code);
+
+            GooglePojo googlePojo = googleUtils.getUserInfo(accessToken);
+            //Save data user
+            User user = userService.getUserByUsername(googlePojo.getEmail());
+            if (user == null) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            } else if (user.getStatus() == Const.USER_STATUS.NOT_ACTIVE) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            } else {
+                return new ResponseEntity<User>(user, HttpStatus.OK);
+            }
+
+        } catch (
+                Exception e) {
+            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+    }
 }

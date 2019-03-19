@@ -52,6 +52,7 @@ public class TransactionController {
         //test
         Calendar calendar = Calendar.getInstance();
         Date startDate = calendar.getTime();
+        //////
         try {
             Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, basePrice, paymentTerm, paymentType, liquidate, startDate, categoryItemId, attribute1, attribute2, attribute3, attribute4);
             if (transaction != null) {

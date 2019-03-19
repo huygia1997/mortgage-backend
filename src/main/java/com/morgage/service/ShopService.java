@@ -28,16 +28,24 @@ public class ShopService {
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
     }
 
-    public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
-        Shop shop = shopRepository.saveAndFlush(shopModel);
-        for (int item :
-                listIdCategory) {
-            HasCategoryItem record = new HasCategoryItem();
-            record.setIdCategoryItem(item);
-            record.setIdShop(shop.getId());
-            hasCategoryItemRepository.saveAndFlush(record);
-        }
-        return shop;
+    //    public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
+//        Shop shop = shopRepository.saveAndFlush(shopModel);
+//        for (int item :
+//                listIdCategory) {
+//            HasCategoryItem record = new HasCategoryItem();
+//            record.setIdCategoryItem(item);
+//            record.setIdShop(shop.getId());
+//            hasCategoryItemRepository.saveAndFlush(record);
+//        }
+//        return shop;
+//    }
+    public Shop createShop(Shop shopModel) {
+
+        Shop shop = shopRepository.findByAccountId(shopModel.getAccountId());
+        if (shop == null) {
+            return shopRepository.saveAndFlush(shopModel);
+        } else
+            return null;
     }
 
     public List<Shop> searchByShopName(String searchValue) {
