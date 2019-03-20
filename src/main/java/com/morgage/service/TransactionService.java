@@ -2,8 +2,10 @@ package com.morgage.service;
 
 import com.morgage.common.Const;
 import com.morgage.model.Transaction;
+import com.morgage.model.TransactionHistory;
 import com.morgage.model.TransactionItemAttribute;
 import com.morgage.model.TransactionLog;
+import com.morgage.repository.TransactionHistoryRepository;
 import com.morgage.repository.TransactionItemAttributeRepository;
 import com.morgage.repository.TransactionLogRepository;
 import com.morgage.repository.TransactionRepository;
@@ -19,12 +21,14 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionLogRepository transactionLogRepository;
     private final TransactionItemAttributeRepository transactionItemAttributeRepository;
+    private final TransactionHistoryRepository transactionHistoryRepository;
 
 
-    public TransactionService(TransactionRepository transactionRepository, TransactionLogRepository transactionLogRepository, TransactionItemAttributeRepository transactionItemAttributeRepository) {
+    public TransactionService(TransactionRepository transactionRepository, TransactionLogRepository transactionLogRepository, TransactionItemAttributeRepository transactionItemAttributeRepository, TransactionHistoryRepository transactionHistoryRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionLogRepository = transactionLogRepository;
         this.transactionItemAttributeRepository = transactionItemAttributeRepository;
+        this.transactionHistoryRepository = transactionHistoryRepository;
     }
 
     public void setTransactionStatus(Transaction transaction, int status) {
@@ -117,6 +121,10 @@ public class TransactionService {
 
     public List<TransactionItemAttribute> getAllTransAttr(int transId) {
         return transactionItemAttributeRepository.findAllByTransactionId(transId);
+    }
+
+    public List<TransactionHistory> getAllTransHis(int transId) {
+        return transactionHistoryRepository.findAllByTransactionId(transId);
     }
 
 

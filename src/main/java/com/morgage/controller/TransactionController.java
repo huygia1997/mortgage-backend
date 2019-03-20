@@ -146,6 +146,8 @@ public class TransactionController {
                 rs.setPictureList(pictures);
                 List<TransactionItemAttribute> transactionItemAttributes = transactionService.getAllTransAttr(transId);
                 rs.setTransactionItemAttributes(transactionItemAttributes);
+                List<TransactionHistory> transactionHistories = transactionService.getAllTransHis(transId);
+                rs.setTransactionHistories(transactionHistories);
 
             }
             return new ResponseEntity<TransactionDetail>(rs, HttpStatus.OK);

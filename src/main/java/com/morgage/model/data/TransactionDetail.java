@@ -10,6 +10,7 @@ public class TransactionDetail implements Serializable {
     private List<Picture> pictureList;
     private List<TransactionLog> transactionLogs;
     private List<TransactionItemAttribute> transactionItemAttributes;
+    private List<TransactionHistory> transactionHistories;
 
     public TransactionDetail() {
     }
@@ -45,5 +46,13 @@ public class TransactionDetail implements Serializable {
 
     public void setTransactionItemAttributes(List<TransactionItemAttribute> transactionItemAttributes) {
         this.transactionItemAttributes = transactionItemAttributes;
+    }
+
+    public List<TransactionHistory> getTransactionHistories() {
+        return transactionHistories;
+    }
+
+    public void setTransactionHistories(List<TransactionHistory> transactionHistories) {
+        this.transactionHistories = transactionHistories;
     }
 }
