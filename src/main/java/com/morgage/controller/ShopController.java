@@ -6,7 +6,7 @@ import com.morgage.model.Shop;
 import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
 import com.morgage.service.AddressService;
-import com.morgage.service.PawnerService;
+import com.morgage.service.PawneeService;
 import com.morgage.service.ShopService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ShopController {
     private final ShopService shopService;
-    private final PawnerService pawnerService;
     private final AddressService addressService;
+    private final PawneeService pawneeService;
 
-    public ShopController(ShopService shopService, PawnerService pawnerService, AddressService addressService) {
+    public ShopController(ShopService shopService,  AddressService addressService, PawneeService pawneeService) {
         this.shopService = shopService;
-        this.pawnerService = pawnerService;
         this.addressService = addressService;
+        this.pawneeService = pawneeService;
     }
 
     @RequestMapping(value = "/thong-tin-shop", method = RequestMethod.GET)

@@ -27,21 +27,21 @@ public class SaleItemController {
     private final TransactionService transactionService;
     private final NotificationService notificationService;
     private final ShopService shopService;
-    private final PawnerService pawnerService;
+    private final PawneeService pawneeService;
     private final Environment env;
 
-    public SaleItemController(SaleItemService saleItemService, TransactionService transactionService, NotificationService notificationService, ShopService shopService, PawnerService pawnerService, Environment env) {
+    public SaleItemController(SaleItemService saleItemService, TransactionService transactionService, NotificationService notificationService, ShopService shopService, PawneeService pawneeService, Environment env) {
         this.saleItemService = saleItemService;
         this.transactionService = transactionService;
         this.notificationService = notificationService;
         this.shopService = shopService;
-        this.pawnerService = pawnerService;
+        this.pawneeService = pawneeService;
         this.env = env;
     }
 
     @RequestMapping(value = "/thong-tin-san-pham", method = RequestMethod.GET)
-    public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId) {
-        SaleItem item = saleItemService.getSaleItemInformation(itemId);
+    public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId, @RequestParam(value = "userId", required = false) Integer userId) {
+        SaleItem item = saleItemService.getSaleItemInformation(itemId, userId);
         if (item != null) {
             return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
         } else {
@@ -60,7 +60,7 @@ public class SaleItemController {
                 } else {
                     transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LIQUIDATION);
                     if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
-                        notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.LIQUIDATION, shopService.getAccountIdByShopId(transaction.getShopId()), pawnerService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                        notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.LIQUIDATION, shopService.getAccountIdByShopId(transaction.getShopId()), pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                     }
                     return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
                 }
@@ -97,11 +97,11 @@ public class SaleItemController {
             List<PawnerFavoriteItem> listFavorite = saleItemService.findAllFavoeiteByItemId(itemId);
             if (status == Const.TRANSACTION_STATUS.LIQUIDATION) {
                 for (PawnerFavoriteItem record : listFavorite) {
-                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.liquidation"), Const.NOTIFICATION_TYPE.LIQUIDATION, null, pawnerService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
+                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.liquidation"), Const.NOTIFICATION_TYPE.LIQUIDATION, null, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
                 }
             } else {
                 for (PawnerFavoriteItem record : listFavorite) {
-                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.redeem"), Const.NOTIFICATION_TYPE.LIQUIDATION, null, pawnerService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
+                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.redeem"), Const.NOTIFICATION_TYPE.LIQUIDATION, null, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
                 }
             }
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -110,7 +110,7 @@ public class SaleItemController {
         }
     }
 
-    @RequestMapping(value = "/hang-thanh-ly")
+    @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
     public ResponseEntity<?> changeItemStatus() {
         return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
     }

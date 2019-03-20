@@ -3,6 +3,7 @@ package com.morgage.controller;
 import com.morgage.common.Const;
 import com.morgage.model.*;
 import com.morgage.model.data.CategoryData;
+import com.morgage.model.data.ExistPawneeData;
 import com.morgage.model.data.TransactionDetail;
 import com.morgage.service.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -29,17 +30,17 @@ public class TransactionController {
     private final ShopService shopService;
     private final HasCategoryItemService hasCategoryItemService;
     private final PictureService pictureService;
-    private final PawnerService pawnerService;
+    private final PawneeService pawneeService;
     private final TransactionService transactionService;
     private final NotificationService notificationService;
     private final Environment env;
     private final PawneeInfoService pawneeInfoService;
 
-    public TransactionController(ShopService shopService, HasCategoryItemService hasCategoryItemService, PictureService pictureService, PawnerService pawnerService, TransactionService transactionService, NotificationService notificationService, Environment env, PawneeInfoService pawneeInfoService) {
+    public TransactionController(ShopService shopService, HasCategoryItemService hasCategoryItemService, PictureService pictureService, PawneeService pawneeService, TransactionService transactionService, NotificationService notificationService, Environment env, PawneeInfoService pawneeInfoService) {
         this.shopService = shopService;
         this.hasCategoryItemService = hasCategoryItemService;
         this.pictureService = pictureService;
-        this.pawnerService = pawnerService;
+        this.pawneeService = pawneeService;
         this.transactionService = transactionService;
         this.notificationService = notificationService;
         this.env = env;
@@ -48,10 +49,10 @@ public class TransactionController {
 
     @RequestMapping(value = "/tao-hop-dong", method = RequestMethod.POST)
     public ResponseEntity<?> createTransaction(@RequestParam("pawneeId") int pawneeId, @RequestParam("shopId") int shopId, @RequestParam("itemName") String itemName, @RequestParam("basePrice") int basePrice, @RequestParam("pawneeInfoId") int pawneeInfoId,
-                                               @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate/*, @RequestParam("startDate") Date startDate*/, @RequestParam("categoryId") int categoryItemId,
-                                               @RequestParam("attribute1") String attribute1, @RequestParam("attribute2") String attribute2, @RequestParam("attribute3") String attribute3, @RequestParam("attribute4") String attribute4,
-                                               @RequestParam("userName") String userName, @RequestParam("email") String userEmail, @RequestParam("phone") String userPhone, @RequestParam("address") String address, @RequestParam("identifyNumber") String identifyNumber
-                                               ,@RequestParam("pictures") List<String> pictures) {
+                                               @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate/*, @RequestParam("startDate") Date startDate*/, @RequestParam("categoryId") int categoryId,
+                                               @RequestParam("userName") String userName, @RequestParam("email") String userEmail, @RequestParam("phone") String userPhone, @RequestParam("address") String address, @RequestParam("identityNumber") String identityNumber
+                                               ,@RequestParam("pictures") List<String> pictures,
+                                               @RequestParam("attributes") List<String> attributes) {
         //test
         Calendar calendar = Calendar.getInstance();
         Date startDate = calendar.getTime();
@@ -59,18 +60,26 @@ public class TransactionController {
         try {
             int pawneeInfoIdX;
             if (pawneeInfoId == Const.DEFAULT_PAWNEE_INFO_ID) {
-                PawneeInfo pawneeInfo = pawneeInfoService.createOneTimePawnee(userName, userEmail, userPhone, identifyNumber, address);
+                PawneeInfo pawneeInfo = pawneeInfoService.createPawneeInfo(userName, userEmail, userPhone, identityNumber, address);
                 pawneeInfoIdX = pawneeInfo.getId();
             } else {
                 pawneeInfoIdX = pawneeInfoId;
             }
 
-            Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, basePrice, paymentTerm, paymentType, liquidate, startDate, categoryItemId, attribute1, attribute2, attribute3, attribute4, pawneeInfoId);
+            Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, basePrice, paymentTerm, paymentType, liquidate, startDate, categoryId, pawneeInfoIdX);
             if (transaction != null) {
                 //create trans log
                 transactionService.createTransactionLog(transaction.getStartDate(), transaction.getNextPaymentDate(), Const.TRANSACTION_LOG_STATUS.UNPAID, transaction.getId());
+                // insert attribute to db
+                if (attributes.size() != 0) {
+                    for (int i=0; i < attributes.size(); i++) {
+                        String attributeName = attributes.get(i).split(":")[0];
+                        String attributeValue = attributes.get(i).split(":")[1];
+                        transactionService.createTransAttribute(attributeName, attributeValue, transaction.getId());
+                    }
+                }
                 // insert picture to db
-                if (pictures != null) {
+                if (pictures.size() != 0) {
                     for (int i=0; i < pictures.size(); i++) {
                         pictureService.savePictureOfTransaction(pictures.get(i), transaction.getId());
                     }
@@ -136,6 +145,9 @@ public class TransactionController {
                 rs.setTransactionLogs(transactionLogs);
                 List<Picture> pictures = pictureService.getAllPicturesByTransId(transId);
                 rs.setPictureList(pictures);
+                List<TransactionItemAttribute> transactionItemAttributes = transactionService.getAllTransAttr(transId);
+                rs.setTransactionItemAttributes(transactionItemAttributes);
+
             }
             return new ResponseEntity<TransactionDetail>(rs, HttpStatus.OK);
         } catch (Exception e) {
@@ -146,8 +158,18 @@ public class TransactionController {
     @RequestMapping(value = "/checkExistPawnee", method = RequestMethod.GET)
     public ResponseEntity<?> checkExistPawnee(@RequestParam("email") String email) {
         try {
-            List<Pawner> rs = pawnerService.getPawnersByEmail(email);
-            return new ResponseEntity<List<Pawner>>(rs, HttpStatus.OK);
+            ExistPawneeData existPawneeData = new ExistPawneeData();
+            // link with pawnee
+            List<Pawnee> pawneeList = pawneeService.getPawneeFromEmail(email);
+            if (pawneeList.size() != 0) {
+                existPawneeData.setPawnee(pawneeList.get(0));
+            }
+            // return exist pawneeinfo data
+            List<PawneeInfo> pawneeInfos = pawneeInfoService.getPawneesByEmail(email);
+            if (pawneeInfos.size() != 0) {
+                existPawneeData.setPawneeInfo(pawneeInfos.get(0));
+            }
+            return new ResponseEntity<ExistPawneeData>(existPawneeData, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }

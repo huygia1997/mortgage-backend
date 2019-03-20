@@ -3,10 +3,10 @@ package com.morgage.controller;
 import com.morgage.common.Const;
 import com.morgage.model.GooglePojo;
 import com.morgage.model.GoogleUtils;
-import com.morgage.model.Pawner;
+import com.morgage.model.Pawnee;
 import com.morgage.model.User;
 import com.morgage.model.data.UserInfoData;
-import com.morgage.service.PawnerService;
+import com.morgage.service.PawneeService;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
 import org.apache.http.client.ClientProtocolException;
@@ -34,15 +34,15 @@ public class UserController {
     private final UserService userService;
     private final JavaMailSender mailSender;
     private final Environment env;
-    private final PawnerService pawnerService;
     private final GoogleUtils googleUtils;
+    private final PawneeService pawneeService;
 
-    public UserController(UserService userService, JavaMailSender mailSender, Environment env, PawnerService pawnerService, GoogleUtils googleUtils) {
+    public UserController(UserService userService, JavaMailSender mailSender, Environment env, GoogleUtils googleUtils, PawneeService pawneeService) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.env = env;
-        this.pawnerService = pawnerService;
         this.googleUtils = googleUtils;
+        this.pawneeService = pawneeService;
     }
 
 
@@ -143,9 +143,9 @@ public class UserController {
 
     @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
-        UserInfoData pawner = pawnerService.getUserInfo(Integer.parseInt(id));
-        if (pawner != null) {
-            return new ResponseEntity<UserInfoData>(pawner, HttpStatus.OK);
+        UserInfoData pawnee = pawneeService.getUserInfo(Integer.parseInt(id));
+        if (pawnee != null) {
+            return new ResponseEntity<UserInfoData>(pawnee, HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
@@ -154,7 +154,7 @@ public class UserController {
     @RequestMapping(value = "/thay-doi-thong-tin-nguoi-dung", method = RequestMethod.POST)
     public ResponseEntity<?> editUserInformation(@RequestParam("password") String password, @RequestParam("userName") String name, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
         try {
-            Pawner pawner = pawnerService.setPawnerInfo(acountId, email, phone, urlAva, address);
+            Pawnee pawnee = pawneeService.setPawnerInfo(acountId, email, phone, urlAva, address);
             return new ResponseEntity<String>("Success", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);

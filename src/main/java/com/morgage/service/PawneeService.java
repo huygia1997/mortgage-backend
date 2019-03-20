@@ -9,48 +9,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PawnerService {
-    private final PawnerRepository pawnerRepository;
+public class PawneeService {
+    private final PawneeRepository pawneeRepository;
     private final PawnerFavoriteItemRepository pawnerFavoriteItemRepository;
     private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
     private final SaleItemRepository saleItemRepository;
-    private final TransactionRepository transactionRepository;
     private final ShopRepository shopRepository;
+    private final TransactionRepository transactionRepository;
     private final NotificationRepository notificationRepository;
 
-    public PawnerService(PawnerRepository pawnerRepository, PawnerFavoriteItemRepository pawnerFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, TransactionRepository transactionRepository, ShopRepository shopRepository, NotificationRepository notificationRepository) {
-        this.pawnerRepository = pawnerRepository;
+    public PawneeService(PawneeRepository pawneeRepository, PawnerFavoriteItemRepository pawnerFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, ShopRepository shopRepository, TransactionRepository transactionRepository, NotificationRepository notificationRepository) {
+        this.pawneeRepository = pawneeRepository;
         this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
         this.saleItemRepository = saleItemRepository;
-        this.transactionRepository = transactionRepository;
         this.shopRepository = shopRepository;
+        this.transactionRepository = transactionRepository;
         this.notificationRepository = notificationRepository;
     }
 
-    public Pawner setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL, String address) {
-        Pawner pawner = getPawnerByAccountId(accountId);
-        pawner.setEmail(email);
-        pawner.setAddress(address);
-        pawner.setPhoneNumber(phoneNumber);
-        pawner.setAvaURL(avaURL);
-        return pawnerRepository.save(pawner);
+    public Pawnee setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL) {
+        Pawnee pawnee = getPawneeByAccountId(accountId);
+        pawnee.setEmail(email);
+        pawnee.setPhoneNumber(phoneNumber);
+        pawnee.setAvaURL(avaURL);
+        return pawneeRepository.save(pawnee);
     }
 
-    public Pawner getPawnerByAccountId(int accountId) {
-        return pawnerRepository.findByAccountId(accountId);
+    public Pawnee setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL, String address) {
+        Pawnee pawnee = getPawneeByAccountId(accountId);
+        pawnee.setEmail(email);
+        pawnee.setAddress(address);
+        pawnee.setPhoneNumber(phoneNumber);
+        pawnee.setAvaURL(avaURL);
+        return pawneeRepository.save(pawnee);
+    }
+
+    public Pawnee getPawneeByAccountId(int accountId) {
+        return pawneeRepository.findByAccountId(accountId);
     }
 
     public UserInfoData getUserInfo(int accountId) {
-        Pawner pawner = getPawnerByAccountId(accountId);
+        Pawnee pawnee = getPawneeByAccountId(accountId);
         UserInfoData rs = new UserInfoData();
-        rs.setAccountId(pawner.getAccountId());
-        rs.setAddress(pawner.getAddress());
-        rs.setAvaURL(pawner.getAvaURL());
-        rs.setEmail(pawner.getEmail());
-        rs.setId(pawner.getId());
-        rs.setName(pawner.getName());
-        rs.setPhoneNumber(pawner.getPhoneNumber());
+        rs.setAccountId(pawnee.getAccountId());
+        rs.setAddress(pawnee.getAddress());
+        rs.setAvaURL(pawnee.getAvaURL());
+        rs.setEmail(pawnee.getEmail());
+        rs.setId(pawnee.getId());
+        rs.setName(pawnee.getName());
+        rs.setPhoneNumber(pawnee.getPhoneNumber());
         List<SaleItem> saleItemsList = new ArrayList<>();
         List<Shop> shopList = new ArrayList<>();
         List<PawnerFavoriteItem> pawnerFavoriteItemList = pawnerFavoriteItemRepository.findAllByPawnerId(rs.getId());
@@ -69,14 +77,15 @@ public class PawnerService {
     }
 
     public Integer getAccountIdFromPawnerId(int pawnerId) {
-        Pawner pawner = new Pawner();
-        pawner = pawnerRepository.findPawnerById(pawnerId);
-        if (pawner != null) {
-            return pawner.getAccountId();
+        Pawnee pawnee = new Pawnee();
+        pawnee = pawneeRepository.findPawneeById(pawnerId);
+        if (pawnee != null) {
+            return pawnee.getAccountId();
         } else return null;
     }
 
-    public List<Pawner> getPawnersByEmail(String email) {
-        return pawnerRepository.findAllByEmailContaining(email);
+    public List<Pawnee> getPawneeFromEmail(String email) {
+        return pawneeRepository.findAllByEmail(email);
     }
+
 }

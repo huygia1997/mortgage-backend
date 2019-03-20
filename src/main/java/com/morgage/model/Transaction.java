@@ -27,14 +27,6 @@ public class Transaction {
     private Integer paymentType;
     @Column(name = "liquidate_after")
     private Integer liquidateAfter;
-    @Column(name = "attribute_1_value")
-    private String attribute1Value;
-    @Column(name = "attribute_2_value")
-    private String attribute2Value;
-    @Column(name = "attribute_3_value")
-    private String attribute3Value;
-    @Column(name = "attribute_4_value")
-    private String attribute4Value;
     @Column(name = "category_item_id")
     private int categoryItemId;
     @Column(name = "item_name")
@@ -50,13 +42,6 @@ public class Transaction {
         this.pawneeInfoId = pawneeInfoId;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "pawner_id", insertable = false, updatable = false)
-    private Pawner pawner;
-
-    public Pawner getPawner() {
-        return pawner;
-    }
 
     @ManyToOne
     @JoinColumn(name = "category_item_id", insertable = false, updatable = false)
@@ -67,7 +52,7 @@ public class Transaction {
     }
 
     @ManyToOne
-    @JoinColumn(name = "pawnee_info", insertable = false, updatable = false)
+    @JoinColumn(name = "pawnee_info_id", insertable = false, updatable = false)
     private PawneeInfo pawneeInfo;
 
     public PawneeInfo getPawneeInfo() {
@@ -163,39 +148,6 @@ public class Transaction {
 
     public void setLiquidateAfter(Integer liquidateAfter) {
         this.liquidateAfter = liquidateAfter;
-    }
-
-
-    public String getAttribute1Value() {
-        return attribute1Value;
-    }
-
-    public void setAttribute1Value(String attribute1Value) {
-        this.attribute1Value = attribute1Value;
-    }
-
-    public String getAttribute2Value() {
-        return attribute2Value;
-    }
-
-    public void setAttribute2Value(String attribute2Value) {
-        this.attribute2Value = attribute2Value;
-    }
-
-    public String getAttribute3Value() {
-        return attribute3Value;
-    }
-
-    public void setAttribute3Value(String attribute3Value) {
-        this.attribute3Value = attribute3Value;
-    }
-
-    public String getAttribute4Value() {
-        return attribute4Value;
-    }
-
-    public void setAttribute4Value(String attribute4Value) {
-        this.attribute4Value = attribute4Value;
     }
 
     public int getCategoryItemId() {

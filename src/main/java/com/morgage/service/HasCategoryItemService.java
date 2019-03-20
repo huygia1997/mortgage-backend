@@ -56,4 +56,6 @@ public class HasCategoryItemService {
         hasCategoryItem.setLiquidateAfter(liquidate);
         return hasCategoryItemRepository.saveAndFlush(hasCategoryItem);
     }
+
+
 }

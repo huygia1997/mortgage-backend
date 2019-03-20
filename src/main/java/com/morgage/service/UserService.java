@@ -2,17 +2,15 @@ package com.morgage.service;
 
 
 import com.morgage.common.Const;
-import com.morgage.model.Pawner;
+import com.morgage.model.Pawnee;
 import com.morgage.model.Role;
 import com.morgage.model.User;
-import com.morgage.repository.PawnerRepository;
+import com.morgage.repository.PawneeRepository;
 import com.morgage.repository.RoleRepository;
 import com.morgage.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 
 @Service
@@ -21,19 +19,20 @@ public class UserService {
     private final EntityManager em;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PawnerRepository pawnerRepository;
+    private final PawneeRepository pawnerRepository;
 
-    public UserService(EntityManager em, UserRepository userRepository, RoleRepository roleRepository, PawnerRepository pawnerRepository) {
+    public UserService(EntityManager em, UserRepository userRepository, RoleRepository roleRepository, PawneeRepository pawnerRepository) {
         this.em = em;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.pawnerRepository = pawnerRepository;
     }
 
+
     public User initUser(String name, String password) {
         User user = new User();
         Role role = new Role();
-        Pawner pawner = new Pawner();
+        Pawnee pawnee = new Pawnee();
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
         role.setId(Const.ROLE_TYPE.PAWNER.getRoleID());
         user.setStatus(Const.USER_STATUS.NOT_ACTIVE);
@@ -43,11 +42,11 @@ public class UserService {
         user.setCreatedTime(timeStamp);
         user = userRepository.saveAndFlush(user);
         if (user != null) {
-            pawner.setEmail(user.getUsername());
-            pawner.setAccountId(user.getId());
-            pawner = pawnerRepository.saveAndFlush(pawner);
+            pawnee.setEmail(user.getUsername());
+            pawnee.setAccountId(user.getId());
+            pawnee = pawnerRepository.saveAndFlush(pawnee);
         }
-        if (pawner != null) {
+        if (pawnee != null) {
             return user;
         }else return null;
     }
@@ -82,7 +81,6 @@ public class UserService {
             user.setToken(null);
             save(user);
             return user;
-        } else return null;
+        } else return user;
     }
-
 }
