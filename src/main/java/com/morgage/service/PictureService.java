@@ -16,13 +16,13 @@ public class PictureService {
 
     public List<Picture> getAllPicturesByTransId(int transId) {
 
-        return pictureRepository.findAllByTransactionId(transId);
+        return pictureRepository.findAllByObjectId(transId);
     }
 
     public Picture savePictureOfTransaction(String picUrl, int transId) {
         Picture picture = new Picture();
         picture.setPictureUrl(picUrl);
-        picture.setTransactionId(transId);
+        picture.setObjectId(transId);
         return pictureRepository.saveAndFlush(picture);
     }
 }

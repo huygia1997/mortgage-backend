@@ -9,4 +9,6 @@ public interface PawnerFavoriteItemRepository extends JpaRepository<PawnerFavori
     PawnerFavoriteItem findByPawnerIdAndItemId(int pawnerId, int itemId);
 
     List<PawnerFavoriteItem> findAllByItemId(int itemId);
+    List<PawnerFavoriteItem> findAllByPawnerId(int itemId);
+
 }

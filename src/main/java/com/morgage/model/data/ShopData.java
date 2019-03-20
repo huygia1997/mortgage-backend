@@ -6,13 +6,18 @@ import java.util.Map;
 
 public class ShopData implements Serializable {
     private int id;
+
+    public void setPolicy(String policy) {
+        this.policy = policy;
+    }
+
     private String shopName;
     private String phoneNumber;
     private String facebook;
     private String email;
     private Integer status;
     private Integer rating;
-    private Integer policy;
+    private String policy;
     private String latitude;
     private String longtitude;
     private String fullAddress;
@@ -85,13 +90,6 @@ public class ShopData implements Serializable {
         this.rating = rating;
     }
 
-    public Integer getPolicy() {
-        return policy;
-    }
-
-    public void setPolicy(Integer policy) {
-        this.policy = policy;
-    }
 
     public String getLatitude() {
         return latitude;

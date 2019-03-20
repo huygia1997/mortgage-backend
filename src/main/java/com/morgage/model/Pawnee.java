@@ -3,7 +3,7 @@ package com.morgage.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "pawner")
+@Table(name = "pawnee")
 public class Pawnee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

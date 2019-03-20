@@ -40,8 +40,8 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/thong-tin-san-pham", method = RequestMethod.GET)
-    public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId) {
-        SaleItem item = saleItemService.getSaleItemInformation(itemId);
+    public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId, @RequestParam(value = "userId", required = false) Integer userId) {
+        SaleItem item = saleItemService.getSaleItemInformation(itemId, userId);
         if (item != null) {
             return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
         } else {
@@ -108,5 +108,10 @@ public class SaleItemController {
         } else {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
+    public ResponseEntity<?> changeItemStatus() {
+        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
     }
 }

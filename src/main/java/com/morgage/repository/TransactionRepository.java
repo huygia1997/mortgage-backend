@@ -16,5 +16,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     List<Transaction> findAllByStatus(int status);
 
     Transaction findById(int id);
+    List<Transaction> findAllByPawnerId(int pawneeId);
+
 
 }

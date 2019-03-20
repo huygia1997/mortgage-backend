@@ -1,8 +1,11 @@
 package com.morgage.controller;
 
 import com.morgage.common.Const;
+import com.morgage.model.GooglePojo;
+import com.morgage.model.GoogleUtils;
 import com.morgage.model.Pawnee;
 import com.morgage.model.User;
+import com.morgage.model.data.UserInfoData;
 import com.morgage.service.PawneeService;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
@@ -31,12 +34,14 @@ public class UserController {
     private final UserService userService;
     private final JavaMailSender mailSender;
     private final Environment env;
+    private final GoogleUtils googleUtils;
     private final PawneeService pawneeService;
 
-    public UserController(UserService userService, JavaMailSender mailSender, Environment env, PawneeService pawneeService) {
+    public UserController(UserService userService, JavaMailSender mailSender, Environment env, GoogleUtils googleUtils, PawneeService pawneeService) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.env = env;
+        this.googleUtils = googleUtils;
         this.pawneeService = pawneeService;
     }
 
@@ -105,25 +110,93 @@ public class UserController {
         }
     }
 
-//    @RequestMapping(value = "/quen-mat-khau")
-//    public ResponseEntity<?> forgetPassword(HttpServletRequest request) {
-//        request.getParameter()
-//        if (userService.activeUserAccount()) {
-//            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
-    @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
-        Pawnee pawnee = pawneeService.getPawneeByAccountId(Integer.parseInt(id));
-        if (pawnee != null) {
-            return new ResponseEntity<Pawnee>(pawnee, HttpStatus.OK);
+    @RequestMapping(value = "/quen-mat-khau")
+    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) {
+        User user = userService.getUserByUsername(email);
+        if (user != null) {
+            user.setToken(UUID.randomUUID().toString());
+            userService.save(user);
+            String appUrl = env.getProperty("appUrl");
+            SimpleMailMessage registerEmail = new SimpleMailMessage();
+            registerEmail.setFrom(env.getProperty("register.emailFrom"));
+            registerEmail.setTo(user.getUsername());
+            registerEmail.setSubject(env.getProperty("forget.emailSubject"));
+            registerEmail.setText(env.getProperty("forget.emailText") + appUrl
+                    + "/thay-doi-mat-khau?token=" + user.getToken());
+            mailSender.send(registerEmail);
+            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
 
+    @RequestMapping(value = "/thay-doi-mat-khau")
+    public ResponseEntity<?> changePasswordWithToken(@RequestParam("token") String token, @RequestParam("password") String password) {
+        String encryptPassword = new BCryptPasswordEncoder().encode(password);
+        User user = userService.changePasswordWithToken(token, encryptPassword);
+        if (user != null) {
+            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
+        UserInfoData pawnee = pawneeService.getUserInfo(Integer.parseInt(id));
+        if (pawnee != null) {
+            return new ResponseEntity<UserInfoData>(pawnee, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/thay-doi-thong-tin-nguoi-dung", method = RequestMethod.POST)
+    public ResponseEntity<?> editUserInformation(@RequestParam("password") String password, @RequestParam("userName") String name, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
+        try {
+            Pawnee pawnee = pawneeService.setPawnerInfo(acountId, email, phone, urlAva, address);
+            return new ResponseEntity<String>("Success", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value = "/thay-doi-mat-khau", method = RequestMethod.POST)
+    public ResponseEntity<?> editPassword(@RequestParam("password") String password, @RequestParam("userName") String name) {
+        try {
+            String encryptPassword = new BCryptPasswordEncoder().encode(password);
+            User user = userService.editUserInfo(name, encryptPassword);
+            return new ResponseEntity<String>("Success", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // login with social
+    @RequestMapping("/login-google")
+    public ResponseEntity<?> loginGoogle(HttpServletRequest request) throws ClientProtocolException, IOException {
+        try {
+            String code = request.getParameter("code");
+
+            if (code == null || code.isEmpty()) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
+            String accessToken = googleUtils.getToken(code);
+
+            GooglePojo googlePojo = googleUtils.getUserInfo(accessToken);
+            //Save data user
+            User user = userService.getUserByUsername(googlePojo.getEmail());
+            if (user == null) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            } else if (user.getStatus() == Const.USER_STATUS.NOT_ACTIVE) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            } else {
+                return new ResponseEntity<User>(user, HttpStatus.OK);
+            }
+
+        } catch (
+                Exception e) {
+            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+    }
 }

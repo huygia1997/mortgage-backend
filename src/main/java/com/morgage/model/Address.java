@@ -19,6 +19,10 @@ public class Address {
     @Column(name = "district_id")
     private Integer districtId;
 
+    public void setDistrictId(Integer districtId) {
+        this.districtId = districtId;
+    }
+
     public Integer getDistrictId() {
         return districtId;
     }

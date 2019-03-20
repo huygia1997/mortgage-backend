@@ -1,7 +1,6 @@
 package com.morgage.service;
 
 
-
 import com.morgage.model.Address;
 import com.morgage.model.data.ShopData;
 import com.morgage.repository.AddressRepository;
@@ -18,14 +17,13 @@ public class AddressService {
     }
 
 
-
     public List<Address> searchNearby(String latString, String lngString) {
         Float lat = Float.parseFloat(latString);
         Float lng = Float.parseFloat(lngString);
 
         List<Address> listAddress = addressRepository.searchNearby(lat, lng);
 
-        return  listAddress;
+        return listAddress;
 
     }
 
@@ -35,7 +33,21 @@ public class AddressService {
 
         List<Address> listAddress = addressRepository.findAddressesByDistrictId(districtId);
 
-        return  listAddress;
+        return listAddress;
+
+    }
+
+    public Address addAddress(String longtitude, String latitude, String fullAddress, int districtId) {
+        if (longtitude == null || latitude == null) {
+            return null;
+        } else {
+            Address address = new Address();
+            address.setLatitude(latitude);
+            address.setLongtitude(longtitude);
+            address.setFullAddress(fullAddress);
+            address.setDistrictId(districtId);
+            return addressRepository.saveAndFlush(address);
+        }
 
     }
 }

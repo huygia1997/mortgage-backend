@@ -56,6 +56,7 @@ public class TransactionController {
         //test
         Calendar calendar = Calendar.getInstance();
         Date startDate = calendar.getTime();
+        //////
         try {
             int pawneeInfoIdX;
             if (pawneeInfoId == Const.DEFAULT_PAWNEE_INFO_ID) {
@@ -159,7 +160,7 @@ public class TransactionController {
         try {
             ExistPawneeData existPawneeData = new ExistPawneeData();
             // link with pawnee
-            List<Pawnee> pawneeList = pawneeService.getPawneesByEmail(email);
+            List<Pawnee> pawneeList = pawneeService.getPawneeFromEmail(email);
             if (pawneeList.size() != 0) {
                 existPawneeData.setPawnee(pawneeList.get(0));
             }

@@ -34,9 +34,15 @@ public class SaleItemService {
         return saleItemRepository.saveAndFlush(item);
     }
 
-    public SaleItem getSaleItemInformation(int itemId) {
+    public SaleItem getSaleItemInformation(int itemId, Integer userId) {
         SaleItem saleItem = saleItemRepository.findById(itemId);
         if (saleItem != null) {
+//            if (userId != null) {
+//                Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
+//                if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
+//                    saleItem.setCheckFavorite(true);
+//                } else saleItem.setCheckFavorite(false);
+//            }
             saleItem.setViewCount(saleItem.getViewCount() + 1);
             saleItemRepository.save(saleItem);
             return saleItem;
@@ -80,7 +86,12 @@ public class SaleItemService {
             return saleItem;
         } else return null;
     }
-    public SaleItem findItemById(int id){
+
+    public SaleItem findItemById(int id) {
         return saleItemRepository.findById(id);
+    }
+
+    public List<SaleItem> getItemList() {
+        return saleItemRepository.findAll();
     }
 }
