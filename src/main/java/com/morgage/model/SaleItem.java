@@ -25,15 +25,6 @@ public class SaleItem implements Serializable {
     private Integer pictureId;
     @Column(name = "item_name")
     private String itemName;
-    private Boolean checkFavorite;
-
-    public Boolean getCheckFavorite() {
-        return checkFavorite;
-    }
-
-    public void setCheckFavorite(Boolean checkFavorite) {
-        this.checkFavorite = checkFavorite;
-    }
 
     public String getItemName() {
         return itemName;

@@ -37,12 +37,12 @@ public class SaleItemService {
     public SaleItem getSaleItemInformation(int itemId, Integer userId) {
         SaleItem saleItem = saleItemRepository.findById(itemId);
         if (saleItem != null) {
-            if (userId != null) {
-                Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
-                if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
-                    saleItem.setCheckFavorite(true);
-                } else saleItem.setCheckFavorite(false);
-            }
+//            if (userId != null) {
+//                Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
+//                if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
+//                    saleItem.setCheckFavorite(true);
+//                } else saleItem.setCheckFavorite(false);
+//            }
             saleItem.setViewCount(saleItem.getViewCount() + 1);
             saleItemRepository.save(saleItem);
             return saleItem;

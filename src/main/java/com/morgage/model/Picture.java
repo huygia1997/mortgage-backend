@@ -16,29 +16,30 @@ public class Picture implements Serializable {
     private String pictureUrl;
     @Column(name = "descrition")
     private String descrition;
-    @Column(name = "shop_id")
-    private Integer shopId;
-    @Column(name = "transaction_id")
-    private Integer transactionId;
+    @Column(name = "object_id")
+    private Integer objectId;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    @Column(name = "status")
+    private int status;
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public Integer getShopId() {
-        return shopId;
+    public Integer getObjectId() {
+        return objectId;
     }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
-    }
-
-    public Integer getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(Integer transactionId) {
-        this.transactionId = transactionId;
+    public void setObjectId(Integer objectId) {
+        this.objectId = objectId;
     }
 
     public Picture() {
