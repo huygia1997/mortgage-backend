@@ -84,7 +84,7 @@ public class TransactionService {
     public TransactionLog paymentTransaction(int transactionId) {
         Transaction transaction = transactionRepository.findById(transactionId);
         if (transaction != null) {
-            transaction.setStartDate(transaction.getNextPaymentDate());
+//            transaction.setStartDate(transaction.getNextPaymentDate());
             Date nestPaymentDate = Util.getEndDay(transaction.getNextPaymentDate(), transaction.getPaymentType(), transaction.getPaymentTerm());
             Timestamp timeStamp = new Timestamp(nestPaymentDate.getTime());
             transaction.setNextPaymentDate(timeStamp);

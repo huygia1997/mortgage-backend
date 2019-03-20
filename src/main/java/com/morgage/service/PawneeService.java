@@ -1,17 +1,31 @@
 package com.morgage.service;
 
-import com.morgage.model.Pawnee;
-import com.morgage.repository.PawneeRepository;
+import com.morgage.model.*;
+import com.morgage.model.data.UserInfoData;
+import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PawneeService {
     private final PawneeRepository pawneeRepository;
+    private final PawnerFavoriteItemRepository pawnerFavoriteItemRepository;
+    private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
+    private final SaleItemRepository saleItemRepository;
+    private final ShopRepository shopRepository;
+    private final TransactionRepository transactionRepository;
+    private final NotificationRepository notificationRepository;
 
-    public PawneeService(PawneeRepository pawneeRepository) {
+    public PawneeService(PawneeRepository pawneeRepository, PawnerFavoriteItemRepository pawnerFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, ShopRepository shopRepository, TransactionRepository transactionRepository, NotificationRepository notificationRepository) {
         this.pawneeRepository = pawneeRepository;
+        this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
+        this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
+        this.saleItemRepository = saleItemRepository;
+        this.shopRepository = shopRepository;
+        this.transactionRepository = transactionRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     public Pawnee setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL) {
@@ -22,8 +36,44 @@ public class PawneeService {
         return pawneeRepository.save(pawnee);
     }
 
+    public Pawnee setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL, String address) {
+        Pawnee pawnee = getPawneeByAccountId(accountId);
+        pawnee.setEmail(email);
+        pawnee.setAddress(address);
+        pawnee.setPhoneNumber(phoneNumber);
+        pawnee.setAvaURL(avaURL);
+        return pawneeRepository.save(pawnee);
+    }
+
     public Pawnee getPawneeByAccountId(int accountId) {
         return pawneeRepository.findByAccountId(accountId);
+    }
+
+    public UserInfoData getUserInfo(int accountId) {
+        Pawnee pawnee = getPawneeByAccountId(accountId);
+        UserInfoData rs = new UserInfoData();
+        rs.setAccountId(pawnee.getAccountId());
+        rs.setAddress(pawnee.getAddress());
+        rs.setAvaURL(pawnee.getAvaURL());
+        rs.setEmail(pawnee.getEmail());
+        rs.setId(pawnee.getId());
+        rs.setName(pawnee.getName());
+        rs.setPhoneNumber(pawnee.getPhoneNumber());
+        List<SaleItem> saleItemsList = new ArrayList<>();
+        List<Shop> shopList = new ArrayList<>();
+        List<PawnerFavoriteItem> pawnerFavoriteItemList = pawnerFavoriteItemRepository.findAllByPawnerId(rs.getId());
+        List<PawnerFavouriteShop> pawnerFavouriteShopsList = pawneeFavoriteShopRepository.findAllByPawnerId(rs.getId());
+        for (PawnerFavoriteItem favoriteItem : pawnerFavoriteItemList) {
+            saleItemsList.add(saleItemRepository.findById(favoriteItem.getId()));
+        }
+        rs.setListFavoriteItem(saleItemsList);
+        for (PawnerFavouriteShop favouriteShop : pawnerFavouriteShopsList) {
+            shopList.add(shopRepository.findShopById(favouriteShop.getShopId()));
+        }
+        rs.setListFavoriteShop(shopList);
+        rs.setListTransaction(transactionRepository.findAllByPawnerId(rs.getId()));
+        rs.setListNotification(notificationRepository.findAllByReceiverId(rs.getId()));
+        return rs;
     }
 
     public Integer getAccountIdFromPawnerId(int pawnerId) {
@@ -34,7 +84,8 @@ public class PawneeService {
         } else return null;
     }
 
-    public List<Pawnee> getPawneesByEmail(String email) {
+    public List<Pawnee> getPawneeFromEmail(String email) {
         return pawneeRepository.findAllByEmail(email);
     }
+
 }

@@ -29,8 +29,6 @@ public class HasCategoryItem {
     @Column(name = "liquidate_after")
     private Integer liquidateAfter;
 
-
-
     @Column(name = "attribute_1_name")
     private String attribute1Name;
     @Column(name = "attribute_2_name")

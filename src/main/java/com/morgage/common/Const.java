@@ -121,4 +121,9 @@ public class Const {
         public static final Integer PAID = 1;
         public static final Integer UNPAID = 2;
     }
+    public static class PICTURE_STATUS {
+        public static final Integer TRANSACTION = 1;
+        public static final Integer ITEM = 2;
+        public static final Integer SHOP = 3;
+    }
 }

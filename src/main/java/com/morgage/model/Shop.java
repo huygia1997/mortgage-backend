@@ -35,7 +35,7 @@ public class Shop implements Serializable {
     @Column(name = "rating")
     private Integer rating;
     @Column(name = "policy")
-    private Integer policy;
+    private String policy;
     @Column(name = "account_id")
     private Integer accountId;
     @Column(name = "address_id")
@@ -125,24 +125,35 @@ public class Shop implements Serializable {
         this.rating = rating;
     }
 
-    public Integer getPolicy() {
+    public String getPolicy() {
         return policy;
     }
 
-    public void setPolicy(Integer policy) {
+    public void setPolicy(String policy) {
         this.policy = policy;
     }
 
-    public Shop(String shopName, String phoneNumber, String facebook, String email, Integer status, Integer rating, Integer policy) {
+    public Shop(String shopName, String phoneNumber, String facebook, String email, Integer status, Integer rating) {
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
         this.facebook = facebook;
         this.email = email;
         this.status = status;
         this.rating = rating;
-        this.policy = policy;
     }
 
     public Shop() {
+    }
+
+    public Shop(String shopName, String phoneNumber, String email, Integer status, Integer rating, String policy, Integer accountId, Integer addressId, Integer viewCount) {
+        this.shopName = shopName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.status = status;
+        this.rating = rating;
+        this.policy = policy;
+        this.accountId = accountId;
+        this.addressId = addressId;
+        this.viewCount = viewCount;
     }
 }
