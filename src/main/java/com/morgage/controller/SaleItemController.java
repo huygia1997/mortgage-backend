@@ -4,6 +4,7 @@ import com.morgage.common.Const;
 import com.morgage.model.PawnerFavoriteItem;
 import com.morgage.model.SaleItem;
 import com.morgage.model.Transaction;
+import com.morgage.model.data.SaleItemDetail;
 import com.morgage.service.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Configuration
@@ -41,9 +43,9 @@ public class SaleItemController {
 
     @RequestMapping(value = "/thong-tin-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId, @RequestParam(value = "userId", required = false) Integer userId) {
-        SaleItem item = saleItemService.getSaleItemInformation(itemId, userId);
+        SaleItemDetail item = saleItemService.getSaleItemInformation(itemId, userId);
         if (item != null) {
-            return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
+            return new ResponseEntity<SaleItemDetail>(item, HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Can't find item", HttpStatus.BAD_REQUEST);
         }
@@ -53,7 +55,8 @@ public class SaleItemController {
     public ResponseEntity<?> liquidationItem(@RequestParam("transactionId") Integer transactionId, @RequestParam("picId") Integer picId, @RequestParam("price") Integer price, @RequestParam("status") int status) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         if (transaction != null) {
-            SaleItem item = saleItemService.publicItemForSale(transaction, picId, price, status);
+            Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+            SaleItem item = saleItemService.publicItemForSale(transaction, picId, price, status,timeStamp);
             if (item != null) {
                 if (status != Const.TRANSACTION_STATUS.LIQUIDATION) {
                     return new ResponseEntity<SaleItem>(item, HttpStatus.OK);

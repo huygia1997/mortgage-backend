@@ -77,17 +77,18 @@ public class TransactionService {
         return transactionRepository.findAllByShopId(shopId);
     }
 
-    public TransactionLog paymentTransaction(int transactionId) {
+    public TransactionLog paymentTransaction(int transactionId, Date paidDate) {
         Transaction transaction = transactionRepository.findById(transactionId);
         if (transaction != null) {
-//            transaction.setStartDate(transaction.getNextPaymentDate());
             Date nestPaymentDate = Util.getEndDay(transaction.getNextPaymentDate(), transaction.getPaymentType(), transaction.getPaymentTerm());
             Timestamp timeStamp = new Timestamp(nestPaymentDate.getTime());
             transaction.setNextPaymentDate(timeStamp);
             transactionRepository.save(transaction);
             TransactionLog transactionLog = transactionLogRepository.findByStatusAndTransactionId(Const.TRANSACTION_LOG_STATUS.UNPAID, transactionId);
             if (transactionLog != null) {
-                transaction.setStatus(Const.TRANSACTION_LOG_STATUS.PAID);
+                transactionLog.setStatus(Const.TRANSACTION_LOG_STATUS.PAID);
+                Timestamp paidDateTimeStamp = new Timestamp(paidDate.getTime());
+                transactionLog.setPaidDate(paidDateTimeStamp);
                 transactionLogRepository.save(transactionLog);
                 TransactionLog transactionLogNew = new TransactionLog();
                 transactionLogNew.setTransactionId(transaction.getId());
