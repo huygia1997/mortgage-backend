@@ -1,7 +1,6 @@
 package com.morgage.service;
 
-import com.morgage.common.Const;
-import com.morgage.model.Pawner;
+import com.morgage.model.Pawnee;
 import com.morgage.model.PawnerFavoriteItem;
 import com.morgage.model.SaleItem;
 import com.morgage.model.Transaction;
@@ -9,18 +8,17 @@ import com.morgage.repository.PawnerFavoriteItemRepository;
 import com.morgage.repository.SaleItemRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SaleItemService {
     private final SaleItemRepository saleItemRepository;
-    private final PawnerService pawnerService;
+    private final PawneeService pawneeService;
     private final PawnerFavoriteItemRepository pawnerFavoriteItemRepository;
 
-    public SaleItemService(SaleItemRepository saleItemRepository, PawnerService pawnerService, PawnerFavoriteItemRepository pawnerFavoriteItemRepository) {
+    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawnerFavoriteItemRepository pawnerFavoriteItemRepository) {
         this.saleItemRepository = saleItemRepository;
-        this.pawnerService = pawnerService;
+        this.pawneeService = pawneeService;
         this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
     }
 
@@ -46,12 +44,12 @@ public class SaleItemService {
     }
 
     public Boolean followItem(int itemId, int userId) {
-        Pawner pawner = pawnerService.getPawnerByAccountId(userId);
-        if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawner.getId(), itemId) != null) {
+        Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
+        if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
             return false;
         } else {
             PawnerFavoriteItem pawnerFavoriteItem = new PawnerFavoriteItem();
-            pawnerFavoriteItem.setPawnerId(pawner.getId());
+            pawnerFavoriteItem.setPawnerId(pawnee.getId());
             pawnerFavoriteItem.setItemId(itemId);
             pawnerFavoriteItemRepository.saveAndFlush(pawnerFavoriteItem);
             return true;
@@ -59,8 +57,8 @@ public class SaleItemService {
     }
 
     public Boolean unFollowItem(int itemId, int userId) {
-        Pawner pawner = pawnerService.getPawnerByAccountId(userId);
-        PawnerFavoriteItem pawnerFavoriteItem = pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawner.getId(), itemId);
+        Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
+        PawnerFavoriteItem pawnerFavoriteItem = pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId);
         if (pawnerFavoriteItem == null) {
             return false;
         } else {

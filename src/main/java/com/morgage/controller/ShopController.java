@@ -2,9 +2,8 @@ package com.morgage.controller;
 
 import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
-import com.morgage.service.PawnerService;
+import com.morgage.service.PawneeService;
 import com.morgage.service.ShopService;
-import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ShopController {
     private final ShopService shopService;
-    private final PawnerService pawnerService;
+    private final PawneeService pawneeService;
 
-    public ShopController(ShopService shopService, PawnerService pawnerService) {
+    public ShopController(ShopService shopService, PawneeService pawneeService) {
         this.shopService = shopService;
-        this.pawnerService = pawnerService;
+        this.pawneeService = pawneeService;
     }
 
     @RequestMapping(value = "/thong-tin-shop", method = RequestMethod.GET)

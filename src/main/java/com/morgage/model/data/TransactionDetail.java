@@ -1,8 +1,6 @@
 package com.morgage.model.data;
 
-import com.morgage.model.Picture;
-import com.morgage.model.Transaction;
-import com.morgage.model.TransactionLog;
+import com.morgage.model.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,9 +9,11 @@ public class TransactionDetail implements Serializable {
     private Transaction transaction;
     private List<Picture> pictureList;
     private List<TransactionLog> transactionLogs;
+    private List<TransactionItemAttribute> transactionItemAttributes;
 
     public TransactionDetail() {
     }
+
 
     public Transaction getTransaction() {
         return transaction;
@@ -37,5 +37,13 @@ public class TransactionDetail implements Serializable {
 
     public void setTransactionLogs(List<TransactionLog> transactionLogs) {
         this.transactionLogs = transactionLogs;
+    }
+
+    public List<TransactionItemAttribute> getTransactionItemAttributes() {
+        return transactionItemAttributes;
+    }
+
+    public void setTransactionItemAttributes(List<TransactionItemAttribute> transactionItemAttributes) {
+        this.transactionItemAttributes = transactionItemAttributes;
     }
 }

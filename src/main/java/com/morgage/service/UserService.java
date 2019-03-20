@@ -2,10 +2,9 @@ package com.morgage.service;
 
 
 import com.morgage.common.Const;
-import com.morgage.model.Pawner;
 import com.morgage.model.Role;
 import com.morgage.model.User;
-import com.morgage.repository.PawnerRepository;
+import com.morgage.repository.PawneeRepository;
 import com.morgage.repository.RoleRepository;
 import com.morgage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +24,13 @@ public class UserService {
     @Autowired
     private final RoleRepository roleRepository;
     @Autowired
-    private final PawnerRepository pawnerRepository;
+    private final PawneeRepository pawneeRepository;
 
-    public UserService(EntityManager em, UserRepository userRepository, RoleRepository roleRepository, PawnerRepository pawnerRepository) {
+    public UserService(EntityManager em, UserRepository userRepository, RoleRepository roleRepository, PawneeRepository pawneeRepository) {
         this.em = em;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.pawnerRepository = pawnerRepository;
+        this.pawneeRepository = pawneeRepository;
     }
 
     public User initUser(String name, String password) {

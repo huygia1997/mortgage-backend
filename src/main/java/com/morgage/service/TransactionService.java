@@ -2,14 +2,15 @@ package com.morgage.service;
 
 import com.morgage.common.Const;
 import com.morgage.model.Transaction;
+import com.morgage.model.TransactionItemAttribute;
 import com.morgage.model.TransactionLog;
+import com.morgage.repository.TransactionItemAttributeRepository;
 import com.morgage.repository.TransactionLogRepository;
 import com.morgage.repository.TransactionRepository;
 import com.morgage.utils.Util;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,11 +18,13 @@ import java.util.List;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionLogRepository transactionLogRepository;
+    private final TransactionItemAttributeRepository transactionItemAttributeRepository;
 
 
-    public TransactionService(TransactionRepository transactionRepository, TransactionLogRepository transactionLogRepository) {
+    public TransactionService(TransactionRepository transactionRepository, TransactionLogRepository transactionLogRepository, TransactionItemAttributeRepository transactionItemAttributeRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionLogRepository = transactionLogRepository;
+        this.transactionItemAttributeRepository = transactionItemAttributeRepository;
     }
 
     public void setTransactionStatus(Transaction transaction, int status) {
@@ -35,13 +38,9 @@ public class TransactionService {
 
     public Transaction createTransaction(int pawneeId, int shopId, String itemName, int basePrice,
                                          int paymentTerm, int paymentType, int liquidate, Date startDate, int categoryItemId,
-                                         String attribute1, String attribute2, String attribute3, String attribute4, int pawneeInfoId) {
+                                         int pawneeInfoId) {
         Date nestPaymentDate = Util.getEndDay(startDate, paymentType, paymentTerm);
         Transaction transaction = new Transaction();
-        transaction.setAttribute1Value(attribute1);
-        transaction.setAttribute3Value(attribute3);
-        transaction.setAttribute2Value(attribute2);
-        transaction.setAttribute4Value(attribute4);
         transaction.setStatus(Const.TRANSACTION_STATUS.UNPAID);
         transaction.setCategoryItemId(categoryItemId);
         transaction.setItemName(itemName);
@@ -104,6 +103,20 @@ public class TransactionService {
 
     public Transaction getTransById(int transId) {
         return transactionRepository.findById(transId);
+    }
+
+    public TransactionItemAttribute createTransAttribute(String attributeName, String attributeValue, int transId) {
+        TransactionItemAttribute transactionItemAttribute = new TransactionItemAttribute();
+        transactionItemAttribute.setAttributeName(attributeName);
+        transactionItemAttribute.setAttributeValue(attributeValue);
+        transactionItemAttribute.setTransactionId(transId);
+
+        return transactionItemAttributeRepository.saveAndFlush(transactionItemAttribute);
+
+    }
+
+    public List<TransactionItemAttribute> getAllTransAttr(int transId) {
+        return transactionItemAttributeRepository.findAllByTransactionId(transId);
     }
 
 

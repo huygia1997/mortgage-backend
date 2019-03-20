@@ -1,8 +1,6 @@
 package com.morgage.service;
 
 import com.morgage.common.Const;
-import com.morgage.model.Pawner;
-import com.morgage.model.Shop;
 import com.morgage.model.Transaction;
 import com.morgage.repository.TransactionRepository;
 import com.morgage.utils.Util;
@@ -26,16 +24,16 @@ public class ScheduledService {
     private final NotificationService notificationService;
     private final TransactionService transactionService;
     private final ShopService shopService;
-    private final PawnerService pawnerService;
+    private final PawneeService pawneeService;
 
     private final Environment env;
 
-    public ScheduledService(TransactionRepository transactionRepository, TransactionService transactionService, NotificationService notificationService, TransactionService transactionService1, ShopService shopService, PawnerService pawnerService, Environment env) {
+    public ScheduledService(TransactionRepository transactionRepository, TransactionService transactionService, NotificationService notificationService, TransactionService transactionService1, ShopService shopService, PawneeService pawneeService, Environment env) {
         this.transactionRepository = transactionRepository;
         this.notificationService = notificationService;
         this.transactionService = transactionService1;
         this.shopService = shopService;
-        this.pawnerService = pawnerService;
+        this.pawneeService = pawneeService;
 
         this.env = env;
     }
@@ -51,7 +49,7 @@ public class ScheduledService {
         List<Transaction> list = transactionRepository.findAllByNextPaymentDateBetweenAndStatus(start, endOfDay, Const.TRANSACTION_STATUS.UNPAID);
         for (Transaction transaction : list) {
             if(transaction.getPawnerId()!= Const.DEFAULT_PAWNEE_ID){
-                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.expire"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawnerService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.expire"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 if (shopCountNotification.containsKey(transaction.getShopId())) {
                     shopCountNotification.put(transaction.getShopId(), shopCountNotification.get(transaction.getShopId()) + 1);
                 } else {
@@ -76,7 +74,7 @@ public class ScheduledService {
         for (Transaction transaction : list) {
             if(transaction.getPawnerId()!= Const.DEFAULT_PAWNEE_ID) {
                 transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LATE);
-                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.late"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawnerService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.late"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 if (shopCountNotification.containsKey(transaction.getShopId())) {
                     shopCountNotification.put(transaction.getShopId(), shopCountNotification.get(transaction.getShopId()) + 1);
                 } else {

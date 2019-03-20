@@ -15,16 +15,16 @@ public class ShopService {
     private final HasCategoryItemRepository hasCategoryItemRepository;
     private final AddressRepository addressRepository;
     private final CategoryRepository categoryRepository;
-    private final PawnerRepository pawnerRepository;
+    private final PawneeRepository pawneeRepository;
     private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
 
 
-    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
+    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawneeRepository pawneeRepository, PawneeRepository pawneeRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
         this.shopRepository = shopRepository;
         this.hasCategoryItemRepository = hasCategoryItemRepository;
         this.addressRepository = addressRepository;
         this.categoryRepository = categoryRepository;
-        this.pawnerRepository = pawnerRepository1;
+        this.pawneeRepository = pawneeRepository1;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
     }
 
@@ -102,8 +102,8 @@ public class ShopService {
             }
             shop.setViewCount(shop.getViewCount() + 1);
             shopRepository.save(shop);
-            Pawner pawner = pawnerRepository.findByAccountId(userId);
-            if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId()) != null) {
+            Pawnee pawnee = pawneeRepository.findByAccountId(userId);
+            if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId()) != null) {
                 shopInformation.setCheckFavorite(true);
             } else {
                 shopInformation.setCheckFavorite(false);
@@ -115,12 +115,12 @@ public class ShopService {
     }
 
     public boolean followShop(int userId, int shopId) {
-        Pawner pawner = pawnerRepository.findByAccountId(userId);
-        if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId()) != null) {
+        Pawnee pawnee = pawneeRepository.findByAccountId(userId);
+        if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId()) != null) {
             return false;
         } else {
             PawnerFavouriteShop pawnerFavouriteShop = new PawnerFavouriteShop();
-            pawnerFavouriteShop.setPawnerId(pawner.getId());
+            pawnerFavouriteShop.setPawnerId(pawnee.getId());
             pawnerFavouriteShop.setShopId(shopId);
             pawneeFavoriteShopRepository.saveAndFlush(pawnerFavouriteShop);
             return true;
@@ -128,8 +128,8 @@ public class ShopService {
     }
 
     public boolean unFollowShop(int userId, int shopId) {
-        Pawner pawner = pawnerRepository.findByAccountId(userId);
-        PawnerFavouriteShop pawnerFavouriteShop = pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawner.getId());
+        Pawnee pawnee = pawneeRepository.findByAccountId(userId);
+        PawnerFavouriteShop pawnerFavouriteShop = pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId());
         if (pawnerFavouriteShop == null) {
             return false;
         } else {
