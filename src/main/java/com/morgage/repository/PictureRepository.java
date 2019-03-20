@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PictureRepository extends JpaRepository<Picture,Integer> {
     List<Picture> findAllByObjectId(int transId);
+    List<Picture> findAllByObjectIdAndStatus(int objId, int status);
 }

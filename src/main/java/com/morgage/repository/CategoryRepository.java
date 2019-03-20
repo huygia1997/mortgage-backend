@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Category findById(int id);
+
+    Category findCategoryById(int id);
 }

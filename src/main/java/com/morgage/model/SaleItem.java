@@ -2,6 +2,7 @@ package com.morgage.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "sales_item")
@@ -25,6 +26,16 @@ public class SaleItem implements Serializable {
     private Integer pictureId;
     @Column(name = "item_name")
     private String itemName;
+    @Column(name = "liquidation_date")
+    private Timestamp liquidationDate;
+
+    public Timestamp getLiquidationDate() {
+        return liquidationDate;
+    }
+
+    public void setLiquidationDate(Timestamp liquidationDate) {
+        this.liquidationDate = liquidationDate;
+    }
 
     public String getItemName() {
         return itemName;
@@ -80,6 +91,7 @@ public class SaleItem implements Serializable {
 
     public SaleItem() {
     }
+
     public Integer getId() {
         return id;
     }
