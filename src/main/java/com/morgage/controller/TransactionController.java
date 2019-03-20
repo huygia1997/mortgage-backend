@@ -81,7 +81,7 @@ public class TransactionController {
                 // insert picture to db
                 if (pictures.size() != 0) {
                     for (int i=0; i < pictures.size(); i++) {
-                        pictureService.savePictureOfTransaction(pictures.get(i), transaction.getId());
+                        pictureService.savePictureOfTransaction(pictures.get(i), transaction.getId(), Const.PICTURE_STATUS.TRANSACTION);
                     }
                 }
                 if (pawneeId != Const.DEFAULT_PAWNEE_ID) {
@@ -143,11 +143,11 @@ public class TransactionController {
                 rs.setTransaction(transaction);
                 List<TransactionLog> transactionLogs = transactionService.getAllTransactionLog(transId);
                 rs.setTransactionLogs(transactionLogs);
-                List<Picture> pictures = pictureService.getAllPicturesByTransId(transId);
+                List<Picture> pictures = pictureService.getAllPicturesByTransId(transId, Const.PICTURE_STATUS.TRANSACTION);
                 rs.setPictureList(pictures);
                 List<TransactionItemAttribute> transactionItemAttributes = transactionService.getAllTransAttr(transId);
                 rs.setTransactionItemAttributes(transactionItemAttributes);
-                List<TransactionHistory> transactionHistories = transactionService.getAllTransHis(transId);
+                List<TransactionHistory> transactionHistories = transactionService.getTop10TransHis(transId);
                 rs.setTransactionHistories(transactionHistories);
 
             }

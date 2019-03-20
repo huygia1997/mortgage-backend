@@ -22,12 +22,12 @@ public class SaleItemService {
         this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
     }
 
-    public SaleItem publicItemForSale(Transaction transaction, int picId, int price, int status) {
+    public SaleItem publicItemForSale(Transaction transaction, String picUrl, int price, int status) {
         SaleItem item = new SaleItem();
         item.setStatus(status);
         item.setCategoryId(transaction.getCategoryItemId());
         item.setItemName(transaction.getItemName());
-        item.setPictureId(picId);
+        item.setPicUrl(picUrl);
         item.setTransactionId(transaction.getId());
         item.setViewCount(0);
         item.setPrice(price);

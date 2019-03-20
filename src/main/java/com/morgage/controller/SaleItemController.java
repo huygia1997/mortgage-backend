@@ -50,10 +50,10 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/thanh-ly-san-pham", method = RequestMethod.POST)
-    public ResponseEntity<?> liquidationItem(@RequestParam("transactionId") Integer transactionId, @RequestParam("picId") Integer picId, @RequestParam("price") Integer price, @RequestParam("status") int status) {
+    public ResponseEntity<?> liquidationItem(@RequestParam("transactionId") Integer transactionId, @RequestParam("picUrl") String picUrl, @RequestParam("price") Integer price, @RequestParam("status") int status) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         if (transaction != null) {
-            SaleItem item = saleItemService.publicItemForSale(transaction, picId, price, status);
+            SaleItem item = saleItemService.publicItemForSale(transaction, picUrl, price, status);
             if (item != null) {
                 if (status != Const.TRANSACTION_STATUS.LIQUIDATION) {
                     return new ResponseEntity<SaleItem>(item, HttpStatus.OK);

@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Integer> {
-    List<TransactionHistory> findTop10TransactionIdOrderByDateEventDesc(int transId);
+    List<TransactionHistory> findTop10ByTransactionIdOrderByDateEventDesc(int transId);
+    List<TransactionHistory> findAllByTransactionId(int transId);
 }

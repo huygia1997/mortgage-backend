@@ -14,12 +14,12 @@ public class PictureService {
         this.pictureRepository = pictureRepository;
     }
 
-    public List<Picture> getAllPicturesByTransId(int transId) {
+    public List<Picture> getAllPicturesByTransId(int transId, int status) {
 
-        return pictureRepository.findAllByObjectId(transId);
+        return pictureRepository.findAllByObjectIdAndAndStatus(transId, status);
     }
 
-    public Picture savePictureOfTransaction(String picUrl, int transId) {
+    public Picture savePictureOfTransaction(String picUrl, int transId, int status) {
         Picture picture = new Picture();
         picture.setPictureUrl(picUrl);
         picture.setObjectId(transId);

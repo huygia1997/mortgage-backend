@@ -123,8 +123,8 @@ public class TransactionService {
         return transactionItemAttributeRepository.findAllByTransactionId(transId);
     }
 
-    public List<TransactionHistory> getAllTransHis(int transId) {
-        return transactionHistoryRepository.findAllByTransactionId(transId);
+    public List<TransactionHistory> getTop10TransHis(int transId) {
+        return transactionHistoryRepository.findTop10ByTransactionIdOrderByDateEventDesc(transId);
     }
 
 

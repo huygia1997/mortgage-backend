@@ -21,10 +21,10 @@ public class SaleItem implements Serializable {
     private Integer viewCount;
     @Column(name = "transaction_id")
     private Integer transactionId;
-    @Column(name = "picture_id")
-    private Integer pictureId;
     @Column(name = "item_name")
     private String itemName;
+    @Column(name = "pic_url")
+    private String picUrl;
 
     public String getItemName() {
         return itemName;
@@ -40,14 +40,6 @@ public class SaleItem implements Serializable {
 
     public void setTransactionId(Integer transactionId) {
         this.transactionId = transactionId;
-    }
-
-    public Integer getPictureId() {
-        return pictureId;
-    }
-
-    public void setPictureId(Integer pictureId) {
-        this.pictureId = pictureId;
     }
 
     public Integer getViewCount() {
@@ -93,4 +85,11 @@ public class SaleItem implements Serializable {
         this.price = price;
     }
 
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+    }
 }
