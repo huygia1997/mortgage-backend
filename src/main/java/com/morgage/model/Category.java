@@ -13,8 +13,18 @@ public class Category {
     private String categoryName;
     @Column(name = "description")
     private String description;
+    @Column(name = "icon_url")
+    private String iconUrl;
 
     public Category() {
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public int getId() {

@@ -82,7 +82,12 @@ public class SaleItemService {
             return saleItem;
         } else return null;
     }
-    public SaleItem findItemById(int id){
+
+    public SaleItem findItemById(int id) {
         return saleItemRepository.findById(id);
+    }
+
+    public List<SaleItem> getItemList() {
+        return saleItemRepository.findAll();
     }
 }

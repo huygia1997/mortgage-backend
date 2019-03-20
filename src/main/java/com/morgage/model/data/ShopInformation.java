@@ -1,5 +1,6 @@
 package com.morgage.model.data;
 
+import com.morgage.model.Category;
 import com.morgage.model.HasCategoryItem;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ShopInformation {
     private Boolean checkFavorite;
     private String AvaUrl;
 
-    public ShopInformation(int id, String shopName, String phoneNumber, String facebook, String email, String latitude, String longtitude, String fullAddress, String avaUrl, List<String> categoryItems) {
+    public ShopInformation(int id, String shopName, String phoneNumber, String facebook, String email, String latitude, String longtitude, String fullAddress, String avaUrl, List<Category> categoryItems) {
         this.id = id;
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
@@ -62,7 +63,7 @@ public class ShopInformation {
         this.viewCount = viewCount;
     }
 
-    private List<String> categoryItems;
+    private List<Category> categoryItems;
 
     public ShopInformation() {
     }
@@ -151,11 +152,11 @@ public class ShopInformation {
         this.fullAddress = fullAddress;
     }
 
-    public List<String> getCategoryItems() {
+    public List<Category> getCategoryItems() {
         return categoryItems;
     }
 
-    public void setCategoryItems(List<String> categoryItems) {
+    public void setCategoryItems(List<Category> categoryItems) {
         this.categoryItems = categoryItems;
     }
 }

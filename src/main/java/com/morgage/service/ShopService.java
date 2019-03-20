@@ -6,6 +6,7 @@ import com.morgage.model.data.ShopInformation;
 import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +18,17 @@ public class ShopService {
     private final CategoryRepository categoryRepository;
     private final PawnerRepository pawnerRepository;
     private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
+    private final EntityManager entityManager;
 
 
-    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository) {
+    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawnerRepository pawnerRepository, PawnerRepository pawnerRepository1, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, EntityManager entityManager) {
         this.shopRepository = shopRepository;
         this.hasCategoryItemRepository = hasCategoryItemRepository;
         this.addressRepository = addressRepository;
         this.categoryRepository = categoryRepository;
         this.pawnerRepository = pawnerRepository1;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
+        this.entityManager = entityManager;
     }
 
     //    public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
@@ -98,11 +101,11 @@ public class ShopService {
                 shopInformation.setLatitude(address.getLatitude());
                 shopInformation.setLongtitude(address.getLongtitude());
             }
-            List<String> listCategoryName = new ArrayList<>();
-            List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
+            List<Category> listCategoryName = new ArrayList<>();
+            List<Integer> listCategory = entityManager.createQuery( "SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
             if (listCategory != null) {
-                for (HasCategoryItem item : listCategory) {
-                    listCategoryName.add(categoryRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                for (int item : listCategory) {
+                    listCategoryName.add(categoryRepository.findById(item));
                 }
             }
             if (listCategoryName != null) {
@@ -152,11 +155,11 @@ public class ShopService {
             return null;
         } else {
             Address address = addressRepository.findAddressById(shop.getAddressId());
-            List<String> listCategoryName = new ArrayList<>();
-            List<HasCategoryItem> listCategory = hasCategoryItemRepository.findAllByIdShop(shopId);
+            List<Category> listCategoryName = new ArrayList<>();
+            List<Integer> listCategory = entityManager.createQuery( "SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
             if (listCategory != null) {
-                for (HasCategoryItem item : listCategory) {
-                    listCategoryName.add(categoryRepository.findById(item.getIdCategoryItem()).getCategoryName());
+                for (int item : listCategory) {
+                    listCategoryName.add(categoryRepository.findById(item));
                 }
             }
             shop.setViewCount(shop.getViewCount() + 1);

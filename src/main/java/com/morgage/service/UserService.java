@@ -56,8 +56,8 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public User editUserInfo(int userId, String password) {
-        User user = userRepository.findById(userId);
+    public User editUserInfo(String name, String password) {
+        User user = userRepository.findByUsername(name);
         user.setPassword(password);
         return userRepository.save(user);
     }
@@ -74,6 +74,15 @@ public class UserService {
             save(user);
             return true;
         } else return false;
+    }
+    public User changePasswordWithToken(String token, String pass){
+        User user = userRepository.findByToken(token);
+        if (user != null) {
+            user.setPassword(pass);
+            user.setToken(null);
+            save(user);
+            return user;
+        } else return null;
     }
 
 }

@@ -6,6 +6,7 @@ import com.morgage.repository.CategoryRepository;
 import com.morgage.repository.HasCategoryItemRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 

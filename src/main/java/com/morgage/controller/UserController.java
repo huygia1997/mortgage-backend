@@ -18,20 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -122,7 +114,27 @@ public class UserController {
     public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) {
         User user = userService.getUserByUsername(email);
         if (user != null) {
+            user.setToken(UUID.randomUUID().toString());
+            userService.save(user);
+            String appUrl = env.getProperty("appUrl");
+            SimpleMailMessage registerEmail = new SimpleMailMessage();
+            registerEmail.setFrom(env.getProperty("register.emailFrom"));
+            registerEmail.setTo(user.getUsername());
+            registerEmail.setSubject(env.getProperty("forget.emailSubject"));
+            registerEmail.setText(env.getProperty("forget.emailText") + appUrl
+                    + "/thay-doi-mat-khau?token=" + user.getToken());
+            mailSender.send(registerEmail);
+            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    @RequestMapping(value = "/thay-doi-mat-khau")
+    public ResponseEntity<?> changePasswordWithToken(@RequestParam("token") String token, @RequestParam("password") String password) {
+        String encryptPassword = new BCryptPasswordEncoder().encode(password);
+        User user = userService.changePasswordWithToken(token, encryptPassword);
+        if (user != null) {
             return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
@@ -143,14 +155,21 @@ public class UserController {
     public ResponseEntity<?> editUserInformation(@RequestParam("password") String password, @RequestParam("userName") String name, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
         try {
             Pawner pawner = pawnerService.setPawnerInfo(acountId, email, phone, urlAva, address);
-            String encryptPassword = new BCryptPasswordEncoder().encode(password);
-            User user = userService.editUserInfo(acountId, encryptPassword);
             return new ResponseEntity<String>("Success", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
+    }
 
-
+    @RequestMapping(value = "/thay-doi-mat-khau", method = RequestMethod.POST)
+    public ResponseEntity<?> editPassword(@RequestParam("password") String password, @RequestParam("userName") String name) {
+        try {
+            String encryptPassword = new BCryptPasswordEncoder().encode(password);
+            User user = userService.editUserInfo(name, encryptPassword);
+            return new ResponseEntity<String>("Success", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
     }
 
     // login with social

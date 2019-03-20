@@ -109,4 +109,9 @@ public class SaleItemController {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value = "/hang-thanh-ly")
+    public ResponseEntity<?> changeItemStatus() {
+        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
+    }
 }
