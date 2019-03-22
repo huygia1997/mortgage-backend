@@ -94,6 +94,7 @@ public class SaleItem implements Serializable {
 
     public SaleItem() {
     }
+
     public Integer getId() {
         return id;
     }

@@ -55,6 +55,7 @@ public class Shop implements Serializable {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+
     @ManyToOne
     @JoinColumn(name = "address_id", insertable = false, updatable = false)
     private Address address;
@@ -163,7 +164,7 @@ public class Shop implements Serializable {
     public Shop() {
     }
 
-    public Shop(String shopName, String phoneNumber, String email, Integer status, Integer rating, String policy, Integer accountId, Integer addressId, Integer viewCount) {
+    public Shop(String shopName, String phoneNumber, String email, Integer status, Integer rating, String policy, Integer accountId, Integer addressId, Integer viewCount, Integer favoriteCount) {
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -173,5 +174,6 @@ public class Shop implements Serializable {
         this.accountId = accountId;
         this.addressId = addressId;
         this.viewCount = viewCount;
+        this.favoriteCount = favoriteCount;
     }
 }

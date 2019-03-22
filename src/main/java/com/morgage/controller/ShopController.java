@@ -23,29 +23,28 @@ public class ShopController {
     private final AddressService addressService;
     private final PawneeService pawneeService;
 
-    public ShopController(ShopService shopService,  AddressService addressService, PawneeService pawneeService) {
+    public ShopController(ShopService shopService, AddressService addressService, PawneeService pawneeService) {
         this.shopService = shopService;
         this.addressService = addressService;
         this.pawneeService = pawneeService;
     }
 
     @RequestMapping(value = "/thong-tin-shop", method = RequestMethod.GET)
-    public ResponseEntity<?> getShopInformation(@RequestParam("shopId") int shopId, @RequestParam("userId") Integer userId) {
-        ShopInformation shopInformation = shopService.showShopInformation(shopId, userId);
-        if (shopInformation != null) {
-            return new ResponseEntity<ShopInformation>(shopInformation, HttpStatus.OK);
+    public ResponseEntity<?> getShopInformation(@RequestParam("shopId") int shopId, @RequestParam(value = "userId", required = false) Integer userId) {
+        if (userId != null) {
+            ShopInformation shopInformation = shopService.showShopInformation(shopId, userId);
+            if (shopInformation != null) {
+                return new ResponseEntity<ShopInformation>(shopInformation, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+            }
         } else {
-            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @RequestMapping(value = "/khach/thong-tin-cua-hang")
-    public ResponseEntity<?> getShopInformation(@RequestParam("shopId") String shopId) {
-        ShopDataForGuest shopInformation = shopService.showShopInformationForGuest(Integer.parseInt(shopId));
-        if (shopInformation != null) {
-            return new ResponseEntity<ShopDataForGuest>(shopInformation, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+            ShopDataForGuest shopInformation = shopService.showShopInformationForGuest(shopId);
+            if (shopInformation != null) {
+                return new ResponseEntity<ShopDataForGuest>(shopInformation, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+            }
         }
     }
 
@@ -89,12 +88,13 @@ public class ShopController {
     public ResponseEntity<?> registerToShop(@RequestParam("accountId") int accountId, @RequestParam("shopName") String shopName, @RequestParam("email") String email, @RequestParam("phoneNumber") String phone, @RequestParam("districtId") int districtid,
                                             @RequestParam("address") String fullAddress, @RequestParam("longtitude") String longtitude, @RequestParam("latitude") String latitude) {
         try {
-            Address address = addressService.addAddress(longtitude,latitude, fullAddress, districtid);
+            Address address = addressService.addAddress(longtitude, latitude, fullAddress, districtid);
             if (address != null) {
-                Shop shop = new Shop(shopName, phone, email, Const.SHOP_STATUS.UNACTIVE, 0, "", accountId, address.getId(), 0);
+                Shop shop = new Shop(shopName, phone, email, Const.SHOP_STATUS.UNACTIVE, 0, "", accountId, address.getId(), 0, 0);
                 if (shopService.createShop(shop) != null) {
                     return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
-                } else return new ResponseEntity<String>("Tài khoản này đã được đăng ký thành chủ tiệm", HttpStatus.NOT_ACCEPTABLE);
+                } else
+                    return new ResponseEntity<String>("Tài khoản này đã được đăng ký thành chủ tiệm", HttpStatus.NOT_ACCEPTABLE);
             } else {
                 return new ResponseEntity<String>("Lỗi dữ liệu", HttpStatus.BAD_REQUEST);
             }
