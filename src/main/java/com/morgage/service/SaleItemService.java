@@ -1,9 +1,8 @@
 package com.morgage.service;
 
-import com.morgage.model.Pawnee;
-import com.morgage.model.PawnerFavoriteItem;
-import com.morgage.model.SaleItem;
-import com.morgage.model.Transaction;
+import com.morgage.common.Const;
+import com.morgage.model.*;
+import com.morgage.model.data.SaleItemDetail;
 import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -44,18 +43,38 @@ public class SaleItemService {
         return saleItemRepository.saveAndFlush(item);
     }
 
-    public SaleItem getSaleItemInformation(int itemId, Integer userId) {
+    public SaleItemDetail getSaleItemInformation(int itemId, Integer userId) {
         SaleItem saleItem = saleItemRepository.findById(itemId);
         if (saleItem != null) {
-//            if (userId != null) {
-//                Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
-//                if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
-//                    saleItem.setCheckFavorite(true);
-//                } else saleItem.setCheckFavorite(false);
-//            }
             saleItem.setViewCount(saleItem.getViewCount() + 1);
             saleItemRepository.save(saleItem);
-            return saleItem;
+            SaleItemDetail saleItemDetail = new SaleItemDetail();
+            saleItemDetail.setStatus(saleItem.getStatus());
+            Category category = categoryRepository.findCategoryById(saleItem.getCategoryId());
+            saleItemDetail.setCategoryId(saleItem.getCategoryId());
+            saleItemDetail.setCategoryImgUrl(category.getIconUrl());
+            saleItemDetail.setCategoryName(category.getCategoryName());
+            saleItemDetail.setId(saleItem.getId());
+            saleItemDetail.setName(saleItem.getItemName());
+            saleItemDetail.setPrice(saleItem.getPrice());
+            saleItemDetail.setView(saleItem.getViewCount());
+            if (userId != null) {
+                Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
+                if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
+                    saleItemDetail.setCheckFavorite(true);
+                } else saleItemDetail.setCheckFavorite(false);
+            } else saleItemDetail.setCheckFavorite(false);
+            Transaction transaction = transactionRepository.findTransactionById(saleItem.getTransactionId());
+            saleItemDetail.setShopId(transaction.getShopId());
+            List<Picture> listPicture = pictureRepository.findAllByObjectIdAndStatus(itemId, Const.PICTURE_STATUS.ITEM);
+            List<String> listUrlPicture = new ArrayList<>();
+            if (listPicture != null) {
+                for (Picture picture : listPicture) {
+                    listUrlPicture.add(picture.getPictureUrl());
+                }
+            }
+            saleItemDetail.setPictureURL(listUrlPicture);
+            return saleItemDetail;
         } else return null;
     }
 

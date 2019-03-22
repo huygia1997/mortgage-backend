@@ -19,6 +19,13 @@ public class TransactionHistory {
     @Column(name = "transaction_id")
     private int transactionId;
 
+    public TransactionHistory(Timestamp dateEvent, String eventString, String status, int transactionId) {
+        this.dateEvent = dateEvent;
+        this.eventString = eventString;
+        this.status = status;
+        this.transactionId = transactionId;
+    }
+
     public TransactionHistory() {
     }
 

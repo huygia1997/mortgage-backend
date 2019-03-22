@@ -90,14 +90,17 @@ public class Const {
     }
 
     public static class TRANSACTION_STATUS {
-        public static final Integer UNPAID = 1;
-//        public static final Integer PAID = 2;
+        //        public static final Integer UNPAID = 1;
+        //        public static final Integer PAID = 2;
         public static final Integer WAIT_FOR_LIQUIDATION = 2;
-//        public static final Integer LIQUIDATED = 4;
+        //        public static final Integer LIQUIDATED = 4;
         public static final Integer REDEEMED = 3;
         public static final Integer LATE = 4;
         public static final Integer LIQUIDATION = 5;
         public static final Integer CANCELED = 6;
+        public static final Integer NOT_YET_OVERDUE = 1;
+        public static final Integer OVERDUE = 7;
+
     }
 
     public static class SHOP_STATUS {
@@ -117,13 +120,26 @@ public class Const {
         public static final Integer WEEK = 2;
         public static final Integer MONTH = 3;
     }
+
     public static class TRANSACTION_LOG_STATUS {
         public static final Integer PAID = 1;
         public static final Integer UNPAID = 2;
     }
+
     public static class PICTURE_STATUS {
         public static final Integer TRANSACTION = 1;
         public static final Integer ITEM = 2;
         public static final Integer SHOP = 3;
+    }
+
+    public static class TRANSACTION_HISTORY {
+        public static final String REDEEM = "Chuộc đồ";
+        public static final String CLOSE = "Đóng";
+        public static final String PAID = "Đóng lãi";
+        public static final String OPEN_AGAIN = "Mở lại";
+        public static final String CHANGE_STATUS = "Thay đổi trạng thái ";
+        public static final String CREATE = "Khởi tạo";
+
+
     }
 }
