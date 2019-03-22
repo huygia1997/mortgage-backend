@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Configuration
@@ -53,7 +54,8 @@ public class SaleItemController {
     public ResponseEntity<?> liquidationItem(@RequestParam("transactionId") Integer transactionId, @RequestParam("picUrl") String picUrl, @RequestParam("price") Integer price, @RequestParam("status") int status) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         if (transaction != null) {
-            SaleItem item = saleItemService.publicItemForSale(transaction, picUrl, price, status);
+            Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+            SaleItem item = saleItemService.publicItemForSale(transaction, picUrl, price, status,timeStamp);
             if (item != null) {
                 if (status != Const.TRANSACTION_STATUS.LIQUIDATION) {
                     return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
@@ -113,5 +115,22 @@ public class SaleItemController {
     @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
     public ResponseEntity<?> changeItemStatus() {
         return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
+    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString) {
+        try {
+            if (latString.equals("none") || lngString.equals("none")) {
+                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItemWithoutDistance(), HttpStatus.OK);
+            } else {
+                Float lat = Float.parseFloat(latString);
+                Float lng = Float.parseFloat(lngString);
+                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItem(lat, lng), HttpStatus.OK);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

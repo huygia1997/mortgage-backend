@@ -40,7 +40,7 @@ public class TransactionService {
         return transactionRepository.findById(id);
     }
 
-    public Transaction createTransaction(int pawneeId, int shopId, String itemName, int basePrice,
+    public Transaction createTransaction(int pawneeId, int shopId, String itemName, String description,
                                          int paymentTerm, int paymentType, int liquidate, Date startDate, int categoryItemId,
                                          int pawneeInfoId) {
         Date nestPaymentDate = Util.getEndDay(startDate, paymentType, paymentTerm);
@@ -56,7 +56,7 @@ public class TransactionService {
         transaction.setPawneeInfoId(pawneeInfoId);
         transaction.setPaymentTerm(paymentTerm);
         transaction.setPaymentType(paymentType);
-        transaction.setPrice(basePrice);
+        transaction.setDescription(description);
         transaction.setShopId(shopId);
         transaction.setStartDate(start);
         return transactionRepository.saveAndFlush(transaction);
@@ -81,17 +81,18 @@ public class TransactionService {
         return transactionRepository.findAllByShopId(shopId);
     }
 
-    public TransactionLog paymentTransaction(int transactionId) {
+    public TransactionLog paymentTransaction(int transactionId, Date paidDate) {
         Transaction transaction = transactionRepository.findById(transactionId);
         if (transaction != null) {
-//            transaction.setStartDate(transaction.getNextPaymentDate());
             Date nestPaymentDate = Util.getEndDay(transaction.getNextPaymentDate(), transaction.getPaymentType(), transaction.getPaymentTerm());
             Timestamp timeStamp = new Timestamp(nestPaymentDate.getTime());
             transaction.setNextPaymentDate(timeStamp);
             transactionRepository.save(transaction);
             TransactionLog transactionLog = transactionLogRepository.findByStatusAndTransactionId(Const.TRANSACTION_LOG_STATUS.UNPAID, transactionId);
             if (transactionLog != null) {
-                transaction.setStatus(Const.TRANSACTION_LOG_STATUS.PAID);
+                transactionLog.setStatus(Const.TRANSACTION_LOG_STATUS.PAID);
+                Timestamp paidDateTimeStamp = new Timestamp(paidDate.getTime());
+                transactionLog.setPaidDate(paidDateTimeStamp);
                 transactionLogRepository.save(transactionLog);
                 TransactionLog transactionLogNew = new TransactionLog();
                 transactionLogNew.setTransactionId(transaction.getId());

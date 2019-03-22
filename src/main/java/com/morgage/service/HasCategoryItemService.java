@@ -26,7 +26,7 @@ public class HasCategoryItemService {
         List<HasCategoryItem> list = hasCategoryItemRepository.findAllByIdShop(shopId);
         for (HasCategoryItem item : list) {
             CategoryData categoryData = new CategoryData();
-            categoryData.setId(item.getIdCategoryItem());
+            categoryData.setId(item.getId());
             categoryData.setName(item.getCategoryItemName());
             categoryData.setValue1(item.getAttribute1Name());
             categoryData.setValue2(item.getAttribute2Name());
@@ -36,6 +36,7 @@ public class HasCategoryItemService {
             categoryData.setPaymentType(item.getPaymentType());
             categoryData.setLiquidateAfter(item.getLiquidateAfter());
             categoryData.setCategory(item.getCategory());
+            categoryData.setStatus(item.getStatus());
             listData.add(categoryData);
         }
         return listData;

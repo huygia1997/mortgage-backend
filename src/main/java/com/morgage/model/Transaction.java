@@ -13,8 +13,8 @@ public class Transaction {
     private Timestamp startDate;
     @Column(name = "next_payment_date")
     private Timestamp nextPaymentDate;
-    @Column(name = "base_price")
-    private Integer price;
+    @Column(name = "description")
+    private String description;
     @Column(name = "status")
     private Integer status;
     @Column(name = "pawner_id")
@@ -94,12 +94,12 @@ public class Transaction {
         this.nextPaymentDate = nextPaymentDate;
     }
 
-    public Integer getPrice() {
-        return price;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getStatus() {

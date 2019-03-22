@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PictureRepository extends JpaRepository<Picture,Integer> {
-    List<Picture> findAllByObjectIdAndAndStatus(int transId, int status);
+    List<Picture> findAllByObjectId(int transId);
+    List<Picture> findAllByObjectIdAndStatus(int objId, int status);
 }

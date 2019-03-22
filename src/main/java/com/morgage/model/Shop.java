@@ -21,6 +21,16 @@ public class Shop implements Serializable {
     private String facebook;
     @Column(name = "email")
     private String email;
+    @Column(name = "favorite_count")
+    private int favoriteCount;
+
+    public int getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
 
     public Integer getAddressId() {
         return addressId;
@@ -44,6 +54,14 @@ public class Shop implements Serializable {
     private Integer viewCount;
     @Column(name = "avatar_url")
     private String avatarUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id", insertable = false, updatable = false)
+    private Address address;
+
+    public Address getAddress() {
+        return address;
+    }
 
     public String getAvatarUrl() {
         return avatarUrl;

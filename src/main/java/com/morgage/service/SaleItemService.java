@@ -4,10 +4,12 @@ import com.morgage.model.Pawnee;
 import com.morgage.model.PawnerFavoriteItem;
 import com.morgage.model.SaleItem;
 import com.morgage.model.Transaction;
-import com.morgage.repository.PawnerFavoriteItemRepository;
-import com.morgage.repository.SaleItemRepository;
+import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,14 +17,20 @@ public class SaleItemService {
     private final SaleItemRepository saleItemRepository;
     private final PawneeService pawneeService;
     private final PawnerFavoriteItemRepository pawnerFavoriteItemRepository;
+    private final CategoryRepository categoryRepository;
+    private final TransactionRepository transactionRepository;
+    private final PictureRepository pictureRepository;
 
-    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawnerFavoriteItemRepository pawnerFavoriteItemRepository) {
+    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawnerFavoriteItemRepository pawnerFavoriteItemRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, PictureRepository pictureRepository) {
         this.saleItemRepository = saleItemRepository;
         this.pawneeService = pawneeService;
         this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
+        this.categoryRepository = categoryRepository;
+        this.transactionRepository = transactionRepository;
+        this.pictureRepository = pictureRepository;
     }
 
-    public SaleItem publicItemForSale(Transaction transaction, String picUrl, int price, int status) {
+    public SaleItem publicItemForSale(Transaction transaction, String picUrl, int price, int status, Timestamp liquidationDate) {
         SaleItem item = new SaleItem();
         item.setStatus(status);
         item.setCategoryId(transaction.getCategoryItemId());
@@ -31,6 +39,7 @@ public class SaleItemService {
         item.setTransactionId(transaction.getId());
         item.setViewCount(0);
         item.setPrice(price);
+        item.setLiquidationDate(liquidationDate);
         return saleItemRepository.saveAndFlush(item);
     }
 
@@ -93,5 +102,12 @@ public class SaleItemService {
 
     public List<SaleItem> getItemList() {
         return saleItemRepository.findAll();
+    }
+
+    public List<SaleItem> suggestItem(Float lat, Float lng) {
+            return saleItemRepository.suggestItem(lat, lng);
+    }
+    public List<SaleItem> suggestItemWithoutDistance() {
+        return saleItemRepository.suggestItemWithoutDistance();
     }
 }

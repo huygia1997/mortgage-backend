@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class ShopController {
     private final ShopService shopService;
@@ -64,6 +66,24 @@ public class ShopController {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value = "/de-xuat-cua-hang", method = RequestMethod.GET)
+    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString) {
+        try {
+            if (latString.equals("none") || lngString.equals("none")) {
+                return new ResponseEntity<List<Shop>>(shopService.suggestShopWithoutDistance(), HttpStatus.OK);
+            } else {
+                Float lat = Float.parseFloat(latString);
+                Float lng = Float.parseFloat(lngString);
+                return new ResponseEntity<List<Shop>>(shopService.suggestShop(lat, lng), HttpStatus.OK);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 
     @RequestMapping(value = "/tro-thanh-cua-hang", method = RequestMethod.POST)
     public ResponseEntity<?> registerToShop(@RequestParam("accountId") int accountId, @RequestParam("shopName") String shopName, @RequestParam("email") String email, @RequestParam("phoneNumber") String phone, @RequestParam("districtId") int districtid,

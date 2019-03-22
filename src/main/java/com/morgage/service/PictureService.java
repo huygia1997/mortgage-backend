@@ -16,7 +16,7 @@ public class PictureService {
 
     public List<Picture> getAllPicturesByTransId(int transId, int status) {
 
-        return pictureRepository.findAllByObjectIdAndAndStatus(transId, status);
+        return pictureRepository.findAllByObjectIdAndStatus(transId, status);
     }
 
     public Picture savePictureOfTransaction(String picUrl, int transId, int status) {

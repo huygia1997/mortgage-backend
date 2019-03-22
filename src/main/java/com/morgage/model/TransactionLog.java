@@ -18,6 +18,16 @@ public class TransactionLog {
     private int status;
     @Column(name = "transaction_id")
     private int transactionId;
+    @Column(name = "paid_date")
+    private Timestamp paidDate;
+
+    public Timestamp getPaidDate() {
+        return paidDate;
+    }
+
+    public void setPaidDate(Timestamp paidDate) {
+        this.paidDate = paidDate;
+    }
 
     public int getId() {
         return id;

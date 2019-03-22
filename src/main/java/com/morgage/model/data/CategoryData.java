@@ -22,10 +22,18 @@ public class CategoryData {
     private int paymentType;
     private int liquidateAfter;
     private Category category;
+    private int status;
 
     public CategoryData() {
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public String getValue1() {
         return value1;

@@ -48,25 +48,26 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/tao-hop-dong", method = RequestMethod.POST)
-    public ResponseEntity<?> createTransaction(@RequestParam("pawneeId") int pawneeId, @RequestParam("shopId") int shopId, @RequestParam("itemName") String itemName, @RequestParam("basePrice") int basePrice, @RequestParam("pawneeInfoId") int pawneeInfoId,
-                                               @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate/*, @RequestParam("startDate") Date startDate*/, @RequestParam("categoryId") int categoryId,
-                                               @RequestParam("userName") String userName, @RequestParam("email") String userEmail, @RequestParam("phone") String userPhone, @RequestParam("address") String address, @RequestParam("identityNumber") String identityNumber
+    public ResponseEntity<?> createTransaction(@RequestParam("pawneeId") int pawneeId, @RequestParam("shopId") int shopId, @RequestParam("itemName") String itemName, @RequestParam("pawneeInfoId") int pawneeInfoId, @RequestParam("note") String description,
+                                               @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate, @RequestParam("startDate") Date startDate, @RequestParam("categoryId") int categoryId,
+                                               @RequestParam("pawneeName") String pawneeName, @RequestParam("email") String userEmail, @RequestParam("phone") String userPhone, @RequestParam("address") String address, @RequestParam("identityNumber") String identityNumber
                                                ,@RequestParam("pictures") List<String> pictures,
                                                @RequestParam("attributes") List<String> attributes) {
         //test
-        Calendar calendar = Calendar.getInstance();
-        Date startDate = calendar.getTime();
+//        Calendar calendar = Calendar.getInstance();
+//        Date startDate = startDateX;
+//        System.out.println(startDateX);
         //////
         try {
             int pawneeInfoIdX;
             if (pawneeInfoId == Const.DEFAULT_PAWNEE_INFO_ID) {
-                PawneeInfo pawneeInfo = pawneeInfoService.createPawneeInfo(userName, userEmail, userPhone, identityNumber, address);
+                PawneeInfo pawneeInfo = pawneeInfoService.createPawneeInfo(pawneeName, userEmail, userPhone, identityNumber, address);
                 pawneeInfoIdX = pawneeInfo.getId();
             } else {
                 pawneeInfoIdX = pawneeInfoId;
             }
 
-            Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, basePrice, paymentTerm, paymentType, liquidate, startDate, categoryId, pawneeInfoIdX);
+            Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, description, paymentTerm, paymentType, liquidate, startDate, categoryId, pawneeInfoIdX);
             if (transaction != null) {
                 //create trans log
                 transactionService.createTransactionLog(transaction.getStartDate(), transaction.getNextPaymentDate(), Const.TRANSACTION_LOG_STATUS.UNPAID, transaction.getId());

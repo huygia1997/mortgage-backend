@@ -1,12 +1,11 @@
 package com.morgage.controller;
 
 import com.morgage.common.Const;
-import com.morgage.model.GooglePojo;
-import com.morgage.model.GoogleUtils;
-import com.morgage.model.Pawnee;
-import com.morgage.model.User;
+import com.morgage.model.*;
 import com.morgage.model.data.UserInfoData;
+import com.morgage.model.data.UserShop;
 import com.morgage.service.PawneeService;
+import com.morgage.service.ShopService;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
 import org.apache.http.client.ClientProtocolException;
@@ -36,13 +35,15 @@ public class UserController {
     private final Environment env;
     private final GoogleUtils googleUtils;
     private final PawneeService pawneeService;
+    private final ShopService shopService;
 
-    public UserController(UserService userService, JavaMailSender mailSender, Environment env, GoogleUtils googleUtils, PawneeService pawneeService) {
+    public UserController(UserService userService, JavaMailSender mailSender, Environment env, GoogleUtils googleUtils, PawneeService pawneeService, ShopService shopService) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.env = env;
         this.googleUtils = googleUtils;
         this.pawneeService = pawneeService;
+        this.shopService = shopService;
     }
 
 
@@ -100,6 +101,35 @@ public class UserController {
             return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @PostMapping("/dang-nhap-shop")
+    public ResponseEntity<?> loginShop(HttpServletRequest request) throws ClientProtocolException, SecurityException, IOException {
+        try {
+
+            String userName = request.getParameter("username");
+            String password = request.getParameter("password");
+            User user = userService.getUserByUsername(userName);
+            if (user == null) {
+                return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            } else if (user.getStatus() == Const.USER_STATUS.NOT_ACTIVE) {
+                return new ResponseEntity<String>("Unactive account", HttpStatus.UNAUTHORIZED);
+            } else {
+                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
+                    UserShop userShop = new UserShop();
+                    userShop.setUser(user);
+                    Shop shop = shopService.findShopByAccountId(user.getId());
+                    userShop.setShop(shop);
+                    return new ResponseEntity<UserShop>(userShop, HttpStatus.OK);
+                } else return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ResponseEntity<?> displayResetPasswordPage(@RequestParam("token") String token) {

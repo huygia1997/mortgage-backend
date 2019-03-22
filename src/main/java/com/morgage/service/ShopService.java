@@ -82,6 +82,10 @@ public class ShopService {
         return shopRepository.findAll();
     }
 
+    public Shop findShopByAccountId(int accId) {
+        return shopRepository.findByAccountId(accId);
+    }
+
     public ShopInformation showShopInformation(int shopId, Integer userId) {
         Shop shop = shopRepository.findById(shopId);
         if (shop == null) {
@@ -104,7 +108,7 @@ public class ShopService {
                 shopInformation.setLongtitude(address.getLongtitude());
             }
             List<Category> listCategoryName = new ArrayList<>();
-            List<Integer> listCategory = entityManager.createQuery( "SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
+            List<Integer> listCategory = entityManager.createQuery(" SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id ").setParameter("id", shopId).getResultList();
             if (listCategory != null) {
                 for (int item : listCategory) {
                     listCategoryName.add(categoryRepository.findById(item));
@@ -177,6 +181,13 @@ public class ShopService {
         if (shop != null) {
             return shop.getAccountId();
         } else return null;
+    }
+
+    public List<Shop> suggestShop(Float lat, Float lng) {
+        return shopRepository.suggestShop(lat, lng);
+    }
+    public List<Shop> suggestShopWithoutDistance() {
+        return shopRepository.suggestShopWithoutDistance();
     }
 
 }
