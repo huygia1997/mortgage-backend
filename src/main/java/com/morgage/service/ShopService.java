@@ -31,7 +31,7 @@ public class ShopService {
     }
 
 
-//    public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
+    //    public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
 //        //    public Shop createShop(Shop shopModel, List<Integer> listIdCategory) {
 ////        Shop shop = shopRepository.saveAndFlush(shopModel);
 ////        for (int item :
@@ -104,7 +104,7 @@ public class ShopService {
                 shopInformation.setLongtitude(address.getLongtitude());
             }
             List<Category> listCategoryName = new ArrayList<>();
-            List<Integer> listCategory = entityManager.createQuery( "SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
+            List<Integer> listCategory = entityManager.createQuery("SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
             if (listCategory != null) {
                 for (int item : listCategory) {
                     listCategoryName.add(categoryRepository.findById(item));
@@ -132,6 +132,9 @@ public class ShopService {
         if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId()) != null) {
             return false;
         } else {
+            Shop shop = shopRepository.findById(shopId);
+            shop.setFavoriteCount(shop.getFavoriteCount() + 1);
+            shopRepository.save(shop);
             PawnerFavouriteShop pawnerFavouriteShop = new PawnerFavouriteShop();
             pawnerFavouriteShop.setPawnerId(pawnee.getId());
             pawnerFavouriteShop.setShopId(shopId);
@@ -146,6 +149,9 @@ public class ShopService {
         if (pawnerFavouriteShop == null) {
             return false;
         } else {
+            Shop shop = shopRepository.findById(shopId);
+            shop.setFavoriteCount(shop.getFavoriteCount() - 1);
+            shopRepository.save(shop);
             pawneeFavoriteShopRepository.delete(pawnerFavouriteShop);
             return true;
         }
@@ -158,7 +164,7 @@ public class ShopService {
         } else {
             Address address = addressRepository.findAddressById(shop.getAddressId());
             List<Category> listCategoryName = new ArrayList<>();
-            List<Integer> listCategory = entityManager.createQuery( "SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
+            List<Integer> listCategory = entityManager.createQuery("SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
             if (listCategory != null) {
                 for (int item : listCategory) {
                     listCategoryName.add(categoryRepository.findById(item));

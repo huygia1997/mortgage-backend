@@ -28,6 +28,16 @@ public class SaleItem implements Serializable {
     private String itemName;
     @Column(name = "liquidation_date")
     private Timestamp liquidationDate;
+    @Column(name = "favoriteCount")
+    private int favoriteCount;
+
+    public int getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
 
     public Timestamp getLiquidationDate() {
         return liquidationDate;
