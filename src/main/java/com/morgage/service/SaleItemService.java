@@ -38,6 +38,7 @@ public class SaleItemService {
         item.setTransactionId(transaction.getId());
         item.setViewCount(0);
         item.setPrice(price);
+        item.setFavoriteCount(0);
         item.setLiquidationDate(liquidationDate);
         return saleItemRepository.saveAndFlush(item);
     }
@@ -82,6 +83,9 @@ public class SaleItemService {
         if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
             return false;
         } else {
+            SaleItem saleItem = saleItemRepository.findById(itemId);
+            saleItem.setFavoriteCount(saleItem.getFavoriteCount() + 1);
+            saleItemRepository.save(saleItem);
             PawnerFavoriteItem pawnerFavoriteItem = new PawnerFavoriteItem();
             pawnerFavoriteItem.setPawnerId(pawnee.getId());
             pawnerFavoriteItem.setItemId(itemId);
@@ -96,6 +100,9 @@ public class SaleItemService {
         if (pawnerFavoriteItem == null) {
             return false;
         } else {
+            SaleItem saleItem = saleItemRepository.findById(itemId);
+            saleItem.setFavoriteCount(saleItem.getFavoriteCount() - 1);
+            saleItemRepository.save(saleItem);
             pawnerFavoriteItemRepository.delete(pawnerFavoriteItem);
             return true;
         }
