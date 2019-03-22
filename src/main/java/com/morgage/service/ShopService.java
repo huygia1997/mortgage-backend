@@ -196,4 +196,12 @@ public class ShopService {
         return shopRepository.suggestShopWithoutDistance();
     }
 
+    public List<Shop> searchNearby(Float lat, Float lng) {
+        return shopRepository.searchNearby(lat, lng);
+    }
+
+    public List<Shop> getShopFilter(int cateId, int disId) {
+        return shopRepository.getShopFilter(cateId, disId);
+    }
+
 }

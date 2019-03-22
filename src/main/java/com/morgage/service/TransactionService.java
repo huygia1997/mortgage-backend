@@ -42,7 +42,7 @@ public class TransactionService {
 
     public Transaction createTransaction(int pawneeId, int shopId, String itemName, String description,
                                          int paymentTerm, int paymentType, int liquidate, Date startDate, int categoryItemId,
-                                         int pawneeInfoId) {
+                                         int pawneeInfoId, String basePrice) {
         Date nestPaymentDate = Util.getEndDay(startDate, paymentType, paymentTerm);
         Transaction transaction = new Transaction();
         transaction.setStatus(Const.TRANSACTION_STATUS.UNPAID);
@@ -57,6 +57,7 @@ public class TransactionService {
         transaction.setPaymentTerm(paymentTerm);
         transaction.setPaymentType(paymentType);
         transaction.setDescription(description);
+        transaction.setBasePrice(basePrice);
         transaction.setShopId(shopId);
         transaction.setStartDate(start);
         return transactionRepository.saveAndFlush(transaction);

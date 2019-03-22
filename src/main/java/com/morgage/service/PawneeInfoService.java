@@ -25,8 +25,8 @@ public class PawneeInfoService {
         return pawneeInfo;
     }
 
-    public List<PawneeInfo> getPawneesByEmail(String email) {
-        return pawneeInfoRepository.findAllByEmail(email);
+    public List<PawneeInfo> getPawneesByEmail(String email, int shopId) {
+        return pawneeInfoRepository.checkPawneeInfo(email, shopId);
     }
 
 
