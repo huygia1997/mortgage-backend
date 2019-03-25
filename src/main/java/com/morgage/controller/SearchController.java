@@ -78,12 +78,12 @@ public class SearchController {
 
 
     //test
-    @RequestMapping("/findall")
-    @ResponseBody
-    public List<Shop> findall() {
-        List<Shop> list = shopService.findAll();
-        return list;
-    }
+//    @RequestMapping("/findall")
+//    @ResponseBody
+//    public List<Shop> findall() {
+//        List<Shop> list = shopService.findAll();
+//        return list;
+//    }
     @RequestMapping("/getCityDistrictData")
     @ResponseBody
     public Map<String, List<District>> getCityDistrictData() {

@@ -139,7 +139,20 @@ public class Const {
         public static final String OPEN_AGAIN = "Mở lại";
         public static final String CHANGE_STATUS = "Thay đổi trạng thái ";
         public static final String CREATE = "Khởi tạo";
+    }
 
+    public static final Integer DEFAULT_ITEM_PER_PAGE = 5;
 
+    public static class SORT_SHOP {
+        public static final Integer RATING = 1;
+        public static final Integer VIEW = 2;
+    }
+
+    public static class SORT_ITEM {
+        public static final Integer DATE_CREATED = 1;
+        public static final Integer VIEW = 2;
+        public static final Integer PRICE_ASC = 5;
+        public static final Integer LIKE = 3;
+        public static final Integer PRICE_DESC = 4;
     }
 }

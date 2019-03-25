@@ -28,14 +28,16 @@ public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
 
     String queryWithoutDistance = "select *, " + countPointWithoutDistance
             + " from sales_item sal join transaction trans on sal.transaction_id = trans.id join shop sho on sho.id = trans.shop_id join address dest on dest.id = sho.address_id "
-            + " order by point_i DESC LIMIT 10";
+            + " order by point_i DESC";
 
     @Query(value = query, nativeQuery = true)
-    List<SaleItem> suggestItem(@Param("lat") Float input, @Param("lng") Float lng);
+    List<SaleItem> suggestItem(@Param("lat") Float input, @Param("lng") Float lng, Pageable pageable);
 
     @Query(value = queryWithoutDistance, nativeQuery = true)
-    List<SaleItem> suggestItemWithoutDistance();
+    List<SaleItem> suggestItemWithoutDistance(Pageable pageable);
 
     @Query(value = "SELECT c FROM SaleItem c")
     List<SaleItem> getAllItemPaging(Pageable pageable);
+
+    List<SaleItem> findAllByCategoryId(Pageable pageable, int categoryId);
 }

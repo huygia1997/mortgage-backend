@@ -4,6 +4,7 @@ import com.morgage.model.*;
 import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
 import com.morgage.repository.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -78,8 +79,8 @@ public class ShopService {
     }
 
 
-    public List<Shop> findAll() {
-        return shopRepository.findAll();
+    public List<Shop> findAll(Pageable pageable) {
+        return shopRepository.paging(pageable);
     }
 
     public Shop findShopByAccountId(int accId) {
@@ -189,11 +190,11 @@ public class ShopService {
         } else return null;
     }
 
-    public List<Shop> suggestShop(Float lat, Float lng) {
-        return shopRepository.suggestShop(lat, lng);
+    public List<Shop> suggestShop(Float lat, Float lng,Pageable pageable) {
+        return shopRepository.suggestShop(lat, lng,pageable);
     }
-    public List<Shop> suggestShopWithoutDistance() {
-        return shopRepository.suggestShopWithoutDistance();
+    public List<Shop> suggestShopWithoutDistance(Pageable pageable) {
+        return shopRepository.suggestShopWithoutDistance(pageable);
     }
 
     public List<Shop> searchNearby(Float lat, Float lng) {

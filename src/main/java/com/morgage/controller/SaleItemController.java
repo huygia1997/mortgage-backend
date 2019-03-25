@@ -113,25 +113,42 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
-    public ResponseEntity<?> changeItemStatus(@RequestParam(value = "page", required = false) Integer page) {
+    public ResponseEntity<?> getAllSaleItem(@RequestParam(value = "sort", required = false) Integer sortType, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "categoryid", required = false) Integer categoryId) {
         if (page == null) {
             page = 0;
         }
-        int pageSize =2;
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
-        Pageable pageable = new PageRequest(page, pageSize, sort);
-        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(pageable), HttpStatus.OK);
+        Sort sort = null;
+        if (sortType == null) {
+            sort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
+        } else if (sortType == Const.SORT_ITEM.DATE_CREATED) {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "liquidationDate"));
+        } else if (sortType == Const.SORT_ITEM.LIKE) {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "favoriteCount"));
+        } else if (sortType == Const.SORT_ITEM.PRICE_ASC) {
+            sort = new Sort(new Sort.Order(Sort.Direction.ASC, "price"));
+        } else if (sortType == Const.SORT_ITEM.PRICE_DESC) {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "price"));
+        } else {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "viewCount"));
+        }
+        Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
+        if (categoryId != null) {
+            return new ResponseEntity<List<SaleItem>>(saleItemService.getItemListByCategoryId(categoryId, pageable), HttpStatus.OK);
+        } else
+            return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(pageable), HttpStatus.OK);
+
     }
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
-    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString) {
+    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString, @RequestParam(value = "page", required = false) Integer page) {
         try {
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, null);
             if (latString.equals("none") || lngString.equals("none")) {
-                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItemWithoutDistance(), HttpStatus.OK);
+                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItemWithoutDistance(pageable), HttpStatus.OK);
             } else {
                 Float lat = Float.parseFloat(latString);
                 Float lng = Float.parseFloat(lngString);
-                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItem(lat, lng), HttpStatus.OK);
+                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItem(lat, lng, pageable), HttpStatus.OK);
             }
 
         } catch (Exception e) {

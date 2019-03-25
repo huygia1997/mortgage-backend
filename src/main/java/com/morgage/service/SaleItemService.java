@@ -7,6 +7,7 @@ import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -131,10 +132,15 @@ public class SaleItemService {
         return saleItemRepository.getAllItemPaging(pageable);
     }
 
-    public List<SaleItem> suggestItem(Float lat, Float lng) {
-            return saleItemRepository.suggestItem(lat, lng);
+    public List<SaleItem> getItemListByCategoryId(int categoryId, Pageable pageable) {
+        return saleItemRepository.findAllByCategoryId(pageable, categoryId);
     }
-    public List<SaleItem> suggestItemWithoutDistance() {
-        return saleItemRepository.suggestItemWithoutDistance();
+
+    public List<SaleItem> suggestItem(Float lat, Float lng, Pageable pageable) {
+        return saleItemRepository.suggestItem(lat, lng, pageable);
+    }
+
+    public List<SaleItem> suggestItemWithoutDistance(Pageable pageable) {
+        return saleItemRepository.suggestItemWithoutDistance(pageable);
     }
 }
