@@ -9,8 +9,6 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
-    @Column(name = "sender_id")
-    private Integer senderId;
     @Column(name = "receiver_id")
     private Integer receiverId;
     @Column(name = "object_id")
@@ -21,6 +19,8 @@ public class Notification {
     private int status;
     @Column(name = "type")
     private int type;
+    @Column(name = "create_time")
+    private Timestamp createTime;
 
     public int getId() {
         return id;
@@ -28,14 +28,6 @@ public class Notification {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(Integer senderId) {
-        this.senderId = senderId;
     }
 
     public Integer getReceiverId() {
@@ -89,7 +81,5 @@ public class Notification {
     public Notification() {
     }
 
-    @Column(name = "create_time")
-    private Timestamp createTime;
 
 }

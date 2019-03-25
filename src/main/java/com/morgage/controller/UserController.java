@@ -171,9 +171,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/thong-tin-nguoi-dung/{userId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserInformation(@PathVariable("userId") String id) {
-        UserInfoData pawnee = pawneeService.getUserInfo(Integer.parseInt(id));
+    @RequestMapping(value = "/thong-tin-nguoi-dung", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserInformation(@RequestParam("userId") int id) {
+        UserInfoData pawnee = pawneeService.getUserInfo(id);
         if (pawnee != null) {
             return new ResponseEntity<UserInfoData>(pawnee, HttpStatus.OK);
         } else {
@@ -182,10 +182,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/thay-doi-thong-tin-nguoi-dung", method = RequestMethod.POST)
-    public ResponseEntity<?> editUserInformation(@RequestParam("password") String password, @RequestParam("userName") String name, @RequestParam("email") String email, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
+    public ResponseEntity<?> editUserInformation( @RequestParam("userName") String name, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
         try {
-            Pawnee pawnee = pawneeService.setPawnerInfo(acountId, email, phone, urlAva, address);
-            return new ResponseEntity<String>("Success", HttpStatus.OK);
+            Pawnee pawnee = pawneeService.setPawneeInfo(acountId, phone, urlAva, address,name);
+            return new ResponseEntity<Pawnee>(pawnee, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }

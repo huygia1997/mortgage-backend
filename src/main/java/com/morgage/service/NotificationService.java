@@ -19,12 +19,11 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    public Notification createNotification(String message, int type, Integer senderId, int receiverId, Integer objectId) {
+    public Notification createNotification(String message, int type, int receiverId, Integer objectId) {
         Notification notification = new Notification();
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
         notification.setCreateTime(timeStamp);
         notification.setMessage(message);
-        notification.setSenderId(senderId);
         notification.setReceiverId(receiverId);
         notification.setType(type);
         notification.setStatus(Const.NOTIFICATION_STATUS.NOT_SEEN.value);
@@ -35,7 +34,7 @@ public class NotificationService {
     }
 
     public List<NotificationData> getAllNotification(int receiverId) {
-        List<Notification> list = notificationRepository.findAllByReceiverId(receiverId);
+        List<Notification> list = notificationRepository.findAllByReceiverIdOrderByCreateTimeDesc(receiverId);
         List<NotificationData> rs = new ArrayList<>();
         for (Notification notification : list) {
             NotificationData data = getNotificationDataByNotification(notification);
@@ -44,7 +43,7 @@ public class NotificationService {
         return rs;
     }
     public List<NotificationData> getNewAllNotification(int receiverId, int status) {
-        List<Notification> list = notificationRepository.findAllByReceiverIdAndStatus(receiverId,status);
+        List<Notification> list = notificationRepository.findAllByReceiverIdAndStatusOrderByCreateTimeDesc(receiverId,status);
         List<NotificationData> rs = new ArrayList<>();
         for (Notification notification : list) {
             NotificationData data = getNotificationDataByNotification(notification);
@@ -55,11 +54,11 @@ public class NotificationService {
 
     private NotificationData getNotificationDataByNotification(Notification notification) {
         NotificationData rs = new NotificationData();
-        rs.setSenderId(notification.getSenderId());
         rs.setMessage(notification.getMessage());
         rs.setObjectId(notification.getObjectId());
         rs.setDateCreate(Util.getTimeAgo(notification.getCreateTime().toString()));
         rs.setStatus(notification.getStatus());
+        rs.setType(notification.getType());
         return rs;
     }
 

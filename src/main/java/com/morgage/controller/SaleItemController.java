@@ -63,7 +63,7 @@ public class SaleItemController {
             if (item != null) {
                 transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LIQUIDATION);
                 if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
-                    notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.LIQUIDATION, shopService.getAccountIdByShopId(transaction.getShopId()), pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                    notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 }
                 return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
             } else return new ResponseEntity<String>("Can't find item", HttpStatus.BAD_REQUEST);
@@ -99,11 +99,11 @@ public class SaleItemController {
             List<PawnerFavoriteItem> listFavorite = saleItemService.findAllFavoeiteByItemId(itemId);
             if (status == Const.TRANSACTION_STATUS.LIQUIDATION) {
                 for (PawnerFavoriteItem record : listFavorite) {
-                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.liquidation"), Const.NOTIFICATION_TYPE.LIQUIDATION, null, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
+                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.liquidation"), Const.NOTIFICATION_TYPE.ITEM_PAWNEE, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
                 }
             } else {
                 for (PawnerFavoriteItem record : listFavorite) {
-                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.redeem"), Const.NOTIFICATION_TYPE.LIQUIDATION, null, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
+                    notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.redeem"), Const.NOTIFICATION_TYPE.ITEM_PAWNEE, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
                 }
             }
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -140,10 +140,13 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
-    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString, @RequestParam(value = "page", required = false) Integer page) {
+    public ResponseEntity<?> suggestItem(@RequestParam(value = "lat", required = false) String latString, @RequestParam(value = "lng", required = false) String lngString, @RequestParam(value = "page", required = false) Integer page) {
         try {
-            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, null);
-            if (latString.equals("none") || lngString.equals("none")) {
+            if (page == null) {
+                page = 0;
+            }
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE);
+            if (latString == null || lngString == null) {
                 return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItemWithoutDistance(pageable), HttpStatus.OK);
             } else {
                 Float lat = Float.parseFloat(latString);

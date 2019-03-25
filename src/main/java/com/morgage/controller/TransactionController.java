@@ -88,7 +88,7 @@ public class TransactionController {
                     }
                 }
                 if (pawneeId != Const.DEFAULT_PAWNEE_ID) {
-                    notificationService.createNotification(env.getProperty("acceptMessage"), Const.NOTIFICATION_TYPE.REQUEST, shopId, pawneeId, transaction.getId());
+                    notificationService.createNotification(env.getProperty("acceptMessage"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE, pawneeService.getAccountIdFromPawnerId(pawneeId), transaction.getId());
                     return new ResponseEntity<Boolean>(true, HttpStatus.OK);
                 } else {
                     //Create pawnee account (optional)
