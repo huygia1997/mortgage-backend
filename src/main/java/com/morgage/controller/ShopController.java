@@ -71,13 +71,13 @@ public class ShopController {
     }
 
     @RequestMapping(value = "/de-xuat-cua-hang", method = RequestMethod.GET)
-    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false) Integer sortType) {
+    public ResponseEntity<?> suggestItem(@RequestParam(value = "lat", required = false) String latString, @RequestParam(value = "lng", required = false) String lngString, @RequestParam(value = "page", required = false) Integer page) {
         try {
             if (page == null) {
                 page = 0;
             }
-            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, null);
-            if (latString.equals("none") || lngString.equals("none")) {
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE);
+            if (latString == null || lngString == null) {
                 return new ResponseEntity<List<Shop>>(shopService.suggestShopWithoutDistance(pageable), HttpStatus.OK);
             } else {
                 Float lat = Float.parseFloat(latString);
@@ -89,8 +89,9 @@ public class ShopController {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
+
     @RequestMapping(value = "/tat-ca-cua-hang", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllShop( @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false)Integer sortType){
+    public ResponseEntity<?> getAllShop(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false) Integer sortType) {
         try {
             if (page == null) {
                 page = 0;

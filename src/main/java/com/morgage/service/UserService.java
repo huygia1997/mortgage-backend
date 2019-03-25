@@ -44,6 +44,7 @@ public class UserService {
         if (user != null) {
             pawnee.setEmail(user.getUsername());
             pawnee.setAccountId(user.getId());
+            pawnee.setName(user.getUsername());
             pawnee = pawnerRepository.saveAndFlush(pawnee);
         }
         if (pawnee != null) {

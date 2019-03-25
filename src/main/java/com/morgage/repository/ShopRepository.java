@@ -49,11 +49,11 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     // 0.4 x (0.2 x view + 01 x like + 0.7 x 10 x rate) + 0.6 x (4.8 - dist)
     String query = "select *, " + countPoint + " as point_s"
             + " from shop sho join address dest on sho.address_id = dest.id "
-            + "order by point_s desc limit 10";
+            + "order by point_s desc";
 
     String queryWithoutDistance = "select *, " + countPointWithoutDistance + " as point_s"
             + " from shop sho join address dest on sho.address_id = dest.id "
-            + "order by point_s desc limit 10";
+            + "order by point_s desc";
 
     @Query(value = query, nativeQuery = true)
     List<Shop> suggestShop(@Param("lat") Float input, @Param("lng") Float lng, Pageable pageable);

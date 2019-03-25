@@ -28,24 +28,16 @@ public class PawneeService {
         this.notificationRepository = notificationRepository;
     }
 
-    public Pawnee setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL) {
+    public Pawnee setPawneeInfo(int accountId, String phoneNumber, String avaURL, String address, String name) {
         Pawnee pawnee = getPawneeByAccountId(accountId);
-        pawnee.setEmail(email);
+            pawnee.setAddress(address);
         pawnee.setPhoneNumber(phoneNumber);
         pawnee.setAvaURL(avaURL);
+        pawnee.setName(name);
         return pawneeRepository.save(pawnee);
     }
 
-    public Pawnee setPawnerInfo(int accountId, String email, String phoneNumber, String avaURL, String address) {
-        Pawnee pawnee = getPawneeByAccountId(accountId);
-        pawnee.setEmail(email);
-        pawnee.setAddress(address);
-        pawnee.setPhoneNumber(phoneNumber);
-        pawnee.setAvaURL(avaURL);
-        return pawneeRepository.save(pawnee);
-    }
-
-    public Pawnee getPawneeByAccountId(int accountId) {
+    public Pawnee   getPawneeByAccountId(int accountId) {
         return pawneeRepository.findByAccountId(accountId);
     }
 
@@ -72,7 +64,7 @@ public class PawneeService {
         }
         rs.setListFavoriteShop(shopList);
         rs.setListTransaction(transactionRepository.findAllByPawnerId(rs.getId()));
-        rs.setListNotification(notificationRepository.findAllByReceiverId(rs.getId()));
+        rs.setListNotification(notificationRepository.findAllByReceiverIdOrderByCreateTimeDesc(rs.getId()));
         return rs;
     }
 

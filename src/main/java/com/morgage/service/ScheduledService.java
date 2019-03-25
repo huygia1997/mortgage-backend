@@ -53,7 +53,7 @@ public class ScheduledService {
         for (Map.Entry entry : shopCountNotification.entrySet()) {
             String count = entry.getValue().toString();
             int shopId = Integer.parseInt(entry.getKey().toString());
-            notificationService.createNotification(count + env.getProperty("notification.shop.expire"), Const.NOTIFICATION_TYPE.SYSTEM_SHOP, null, shopService.getAccountIdByShopId(shopId), null);
+            notificationService.createNotification(count + env.getProperty("notification.shop.expire"), Const.NOTIFICATION_TYPE.TRANSACTION_SHOP, shopService.getAccountIdByShopId(shopId), null);
         }
         shopCountNotification.clear();
     }
@@ -63,7 +63,7 @@ public class ScheduledService {
         for (Transaction transaction : list) {
             if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
                 transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.OVERDUE);
-                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.expire"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.expire"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 if (shopCountNotification.containsKey(transaction.getShopId())) {
                     shopCountNotification.put(transaction.getShopId(), shopCountNotification.get(transaction.getShopId()) + 1);
                 } else {
@@ -78,7 +78,7 @@ public class ScheduledService {
         for (Transaction transaction : list) {
             if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
                 transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LATE);
-                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.late"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.late"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 if (shopCountNotification.containsKey(transaction.getShopId())) {
                     shopCountNotification.put(transaction.getShopId(), shopCountNotification.get(transaction.getShopId()) + 1);
                 } else {
@@ -102,7 +102,7 @@ public class ScheduledService {
             transactionDate.setTime(dateFormat.parse(transaction.getNextPaymentDate().toString()));
             int lateDays = today.get(Calendar.DATE) - transactionDate.get(Calendar.DATE);
             if (lateDays < transaction.getLiquidateAfter()) {
-                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.late.begin") + lateDays + env.getProperty("notification.late.end"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.late.begin") + lateDays + env.getProperty("notification.late.end"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 if (shopCountNotification.containsKey(transaction.getShopId())) {
                     shopCountNotification.put(transaction.getShopId(), shopCountNotification.get(transaction.getShopId()) + 1);
                 } else {
@@ -110,8 +110,8 @@ public class ScheduledService {
                 }
             } else {
                 transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.WAIT_FOR_LIQUIDATION);
-                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.overDue"), Const.NOTIFICATION_TYPE.SYSTEM_PAWNER, null, pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
-                notificationService.createNotification("Hợp đồng" + transaction.getId() + env.getProperty("notification.shop.overDue"), Const.NOTIFICATION_TYPE.SYSTEM_SHOP, null, shopService.getAccountIdByShopId(transaction.getShopId()), transaction.getId());
+                notificationService.createNotification(transaction.getItemName() + env.getProperty("notification.overDue"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE,  pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
+                notificationService.createNotification("Hợp đồng" + transaction.getId() + env.getProperty("notification.shop.overDue"), Const.NOTIFICATION_TYPE.TRANSACTION_SHOP, shopService.getAccountIdByShopId(transaction.getShopId()), transaction.getId());
             }
         }
     }

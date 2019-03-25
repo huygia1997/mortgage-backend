@@ -81,11 +81,10 @@ public class Const {
     }
 
     public static class NOTIFICATION_TYPE {
-        public static final Integer LIKE = 1;
-        public static final Integer REQUEST = 2;
-        public static final Integer SYSTEM_PAWNER = 3;
-        public static final Integer SYSTEM_SHOP = 4;
-        public static final Integer LIQUIDATION = 5;
+        public static final Integer TRANSACTION_PAWNEE = 1;
+        public static final Integer ITEM_PAWNEE = 2;
+        public static final Integer TRANSACTION_SHOP = 3;
+        public static final Integer TRANSACTIONITEM_SHOP = 4;
 
     }
 
