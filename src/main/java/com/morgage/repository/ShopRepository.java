@@ -15,6 +15,16 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 //    @Query("select * from Shop sh where sh.shopName like %:input%")
 //    public List<Shop> searchShopByName(@Param("input") String input);
 
+    String SEARCH_NEARBY_QUERY =
+            " SELECT *," +
+                    " 6371 * 2 * ATAN2(SQRT(POWER(SIN(RADIANS(dest.latitude - :lat) / 2),2) + COS(RADIANS(:lat)) * COS(RADIANS(dest.latitude)) * POWER(SIN(RADIANS(dest.longtitude - :lng) / 2),2)), SQRT(1 - POWER(SIN(RADIANS(dest.latitude - :lat) / 2),2) + COS(RADIANS(:lat)) * COS(RADIANS(dest.latitude)) * POWER(SIN(RADIANS(dest.longtitude - :lng) / 2),2))) AS distance" +
+                    " FROM shop sho join address dest on sho.address_id" +
+                    " having distance < 5" +
+                    " ORDER BY distance desc;";
+
+    @Query(value = SEARCH_NEARBY_QUERY, nativeQuery = true)
+    List<Shop> searchNearby(@Param("lat") Float input, @Param("lng") Float lng);
+
     List<Shop> findAllByShopNameContaining(String name);
 
     Shop findById(int id);
@@ -49,4 +59,8 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     @Query(value = queryWithoutDistance, nativeQuery = true)
     List<Shop> suggestShopWithoutDistance();
+
+    String SHOP_INFO_QUERY = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from has_category_item f join shop sho on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId and dist.id = :disId";
+    @Query(value = SHOP_INFO_QUERY, nativeQuery = true)
+    List<Shop> getShopFilter(@Param("cateId") int cateId, @Param("disId") int disId);
 }

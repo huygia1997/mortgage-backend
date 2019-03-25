@@ -3,6 +3,7 @@ package com.morgage.controller;
 import com.morgage.model.*;
 import com.morgage.model.data.ShopData;
 import com.morgage.service.AddressService;
+import com.morgage.service.HasCategoryItemService;
 import com.morgage.service.SearchService;
 import com.morgage.service.ShopService;
 import org.springframework.http.HttpStatus;
@@ -21,39 +22,24 @@ public class SearchController {
     private final SearchService searchService;
     private final ShopService shopService;
     private final AddressService addressService;
+    private final HasCategoryItemService hasCategoryItemService;
 
 
-    public SearchController(SearchService searchService, ShopService shopService, AddressService addressService) {
+    public SearchController(SearchService searchService, ShopService shopService, AddressService addressService, HasCategoryItemService hasCategoryItemService) {
         this.searchService = searchService;
         this.shopService = shopService;
         this.addressService = addressService;
+        this.hasCategoryItemService = hasCategoryItemService;
     }
     // search shops by keyword (shopname)
     @RequestMapping("/search/shops")
-    @ResponseBody
-    public List<ShopData> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
+    public ResponseEntity<?> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
 
         try {
-            List<ShopData> listData;
             List<Shop> listShop = shopService.searchByShopName(searchValue);
-            if (listShop != null) {
-                listData = new ArrayList<>();
-                for (int i = 0; i < listShop.size(); i++) {
-                    ShopData shopData = new ShopData();
-                    // fill shop to shop data.
-                    shopData = searchService.addShopToShopData(listShop.get(i), shopData);
-                    // fill address to shop data.
-                    shopData = searchService.addAddressToShopData(listShop.get(i).getAddressId(), shopData);
-
-                    listData.add(shopData);
-                }
-
-                return listData;
-
-            }
-            return null;
+            return new ResponseEntity<List<Shop>>(listShop, HttpStatus.OK);
         } catch (Exception e) {
-            return null;
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -62,59 +48,33 @@ public class SearchController {
 
     // search shop nearby (input: lat, lng)
     @RequestMapping("/search/shops/nearby")
-    @ResponseBody
-    public List<ShopData> searchShopNearbyResult(@RequestParam Map<String,String> requestParams) {
-        String lat = requestParams.get("lat");
-        String lng = requestParams.get("lng");
-        List<ShopData> listData;
-        List<Address> listAddress = addressService.searchNearby(lat, lng);
-        if (listAddress != null) {
-            listData = new ArrayList<>();
-            for (int i = 0; i < listAddress.size(); i++) {
-                ShopData shopData = new ShopData();
-                // fill address to shop data
-                shopData = searchService.addAddressToShopData(listAddress.get(i), shopData);
-                // fill shop to shop data
-                shopData = searchService.addShopToShopData(listAddress.get(i).getId(), shopData);
-                listData.add(shopData);
-            }
+    public ResponseEntity<?> searchShopNearbyResult(@RequestParam Map<String,String> requestParams) {
+        String latString = requestParams.get("lat");
+        String lngString = requestParams.get("lng");
+        try {
+            Float lat = Float.parseFloat(latString);
+            Float lng = Float.parseFloat(lngString);
+            List<Shop> listShops = shopService.searchNearby(lat, lng);
+            return new ResponseEntity<List<Shop>>(listShops, HttpStatus.OK);
 
-
-            return listData;
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
 
-
-        return null;
     }
 
-    // search shops by keyword (shopname)
+    // search shops by filter (cateId, districtID)
     @RequestMapping("/search/shops/filters")
-    @ResponseBody
-    public List<ShopData> searchShopFilterResult(@RequestParam Map<String,String> requestParams) {
-        String districtId = requestParams.get("district");
-        String cateId = requestParams.get("cate");
+    public ResponseEntity<?> searchShopFilterResult(@RequestParam("cate") int cateId, @RequestParam("district") int disId) {
 
-        List<ShopData> listData;
-        List<Address> listAddress = addressService.searchByDistrictId(districtId);
-        List<Shop> listShop = shopService.searchByCateId(cateId);
+        try {
+            List<Shop> list = shopService.getShopFilter(cateId, disId);
+            return new ResponseEntity<List<Shop>>(list, HttpStatus.OK);
 
-        if (listAddress != null && listShop != null) {
-            listData = new ArrayList<>();
-            for (int i = 0; i < listShop.size(); i++) {
-                for (int j = 0; j < listAddress.size(); j++) {
-                    if (listShop.get(i).getAddressId() == listAddress.get(j).getId()) {
-                        ShopData shopData = new ShopData();
-                        shopData = searchService.addShopToShopData(listShop.get(i), shopData);
-                        shopData = searchService.addAddressToShopData(listAddress.get(j), shopData);
-                        listData.add(shopData);
-                    }
-                }
-            }
-            return listData;
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
-        return null;
     }
-
 
 
     //test
@@ -151,6 +111,8 @@ public class SearchController {
         List<Category> list = searchService.findAllCategory();
         return list;
     }
+
+
 
 
 }

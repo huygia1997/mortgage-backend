@@ -48,7 +48,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/tao-hop-dong", method = RequestMethod.POST)
-    public ResponseEntity<?> createTransaction(@RequestParam("pawneeId") int pawneeId, @RequestParam("shopId") int shopId, @RequestParam("itemName") String itemName, @RequestParam("pawneeInfoId") int pawneeInfoId, @RequestParam("note") String description,
+    public ResponseEntity<?> createTransaction(@RequestParam("pawneeId") int pawneeId, @RequestParam("shopId") int shopId, @RequestParam("itemName") String itemName, @RequestParam("pawneeInfoId") int pawneeInfoId, @RequestParam("note") String description, @RequestParam("basePrice") String basePrice,
                                                @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate, @RequestParam("startDate") Date startDate, @RequestParam("categoryId") int categoryId,
                                                @RequestParam("pawneeName") String pawneeName, @RequestParam("email") String userEmail, @RequestParam("phone") String userPhone, @RequestParam("address") String address, @RequestParam("identityNumber") String identityNumber
             , @RequestParam("pictures") List<String> pictures,
@@ -67,7 +67,7 @@ public class TransactionController {
                 pawneeInfoIdX = pawneeInfoId;
             }
 
-            Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, description, paymentTerm, paymentType, liquidate, startDate, categoryId, pawneeInfoIdX);
+            Transaction transaction = transactionService.createTransaction(pawneeId, shopId, itemName, description, paymentTerm, paymentType, liquidate, startDate, categoryId, pawneeInfoIdX, basePrice);
             if (transaction != null) {
                 //create trans log
                 transactionService.createTransactionLog(transaction.getStartDate(), transaction.getNextPaymentDate(), Const.TRANSACTION_LOG_STATUS.UNPAID, transaction.getId());
@@ -160,7 +160,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/checkExistPawnee", method = RequestMethod.GET)
-    public ResponseEntity<?> checkExistPawnee(@RequestParam("email") String email) {
+    public ResponseEntity<?> checkExistPawnee(@RequestParam("email") String email, @RequestParam("shopId") int shopId) {
         try {
             ExistPawneeData existPawneeData = new ExistPawneeData();
             // link with pawnee
@@ -169,7 +169,7 @@ public class TransactionController {
                 existPawneeData.setPawnee(pawneeList.get(0));
             }
             // return exist pawneeinfo data
-            List<PawneeInfo> pawneeInfos = pawneeInfoService.getPawneesByEmail(email);
+            List<PawneeInfo> pawneeInfos = pawneeInfoService.getPawneesByEmail(email, shopId);
             if (pawneeInfos.size() != 0) {
                 existPawneeData.setPawneeInfo(pawneeInfos.get(0));
             }

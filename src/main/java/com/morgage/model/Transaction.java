@@ -31,8 +31,18 @@ public class Transaction {
     private int categoryItemId;
     @Column(name = "item_name")
     private String itemName;
+    @Column(name = "base_price")
+    private String basePrice;
     @Column(name = "pawnee_info_id")
     private int pawneeInfoId;
+
+    public String getBasePrice() {
+        return basePrice;
+    }
+
+    public void setBasePrice(String basePrice) {
+        this.basePrice = basePrice;
+    }
 
     public int getPawneeInfoId() {
         return pawneeInfoId;
