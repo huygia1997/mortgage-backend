@@ -6,6 +6,7 @@ import com.morgage.model.data.SaleItemDetail;
 import com.morgage.repository.*;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -126,8 +127,8 @@ public class SaleItemService {
         return saleItemRepository.findById(id);
     }
 
-    public List<SaleItem> getItemList() {
-        return saleItemRepository.findAll();
+    public List<SaleItem> getItemList(Pageable pageable) {
+        return saleItemRepository.getAllItemPaging(pageable);
     }
 
     public List<SaleItem> suggestItem(Float lat, Float lng) {

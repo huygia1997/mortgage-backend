@@ -10,6 +10,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -110,8 +113,14 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
-    public ResponseEntity<?> changeItemStatus() {
-        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
+    public ResponseEntity<?> changeItemStatus(@RequestParam(value = "page", required = false) Integer page) {
+        if (page == null) {
+            page = 0;
+        }
+        int pageSize =2;
+        Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
+        Pageable pageable = new PageRequest(page, pageSize, sort);
+        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(pageable), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)

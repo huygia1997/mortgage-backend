@@ -42,7 +42,7 @@ public class ScheduledService {
     HashMap<Integer, Integer> shopCountNotification = new HashMap<Integer, Integer>();
 
     //    @Scheduled(cron = "0 0 2 * * *")
-    @Scheduled(fixedDelay = 1* 60 * 1000)
+//    @Scheduled(fixedDelay = 1* 60 * 1000)
     public void crateNotification() throws ParseException {
         Date parsedDate = getDateTimeFormat();
         Date endOfDay = Util.atEndOfDay(parsedDate);
