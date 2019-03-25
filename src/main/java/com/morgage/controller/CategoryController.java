@@ -49,11 +49,17 @@ public class CategoryController {
 
     @RequestMapping(value = "/tao-danh-muc", method = RequestMethod.POST)
     public ResponseEntity<?> createCategoryItem(@RequestParam("shopId") int shopId, @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate, @RequestParam("categoryId") int categoryItemId,
-                                               @RequestParam("attribute1") String attribute1, @RequestParam("attribute2") String attribute2, @RequestParam("attribute3") String attribute3, @RequestParam("attribute4") String attribute4, @RequestParam("categoryItemName") String categoryItemName) {
+                                                @RequestParam("attributes") List<String> attributes, @RequestParam("categoryItemName") String categoryItemName) {
 
         try {
+            String[] attrs = {"", "", "", ""};
+            if (attributes.size() != 0) {
+                for (int i = 0; i < attributes.size(); i++) {
+                    attrs[i] = attributes.get(i);
+                }
+            }
             HasCategoryItem hasCategoryItem = hasCategoryItemService.createItem(shopId, paymentTerm, paymentType, liquidate, categoryItemId,
-                    attribute1, attribute2, attribute3, attribute4, categoryItemName);
+                    attrs[0], attrs[1], attrs[2], attrs[3], categoryItemName);
 
             if (hasCategoryItem != null) {
                 return new ResponseEntity<Boolean>(true, HttpStatus.OK);
