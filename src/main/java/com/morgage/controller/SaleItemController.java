@@ -4,11 +4,15 @@ import com.morgage.common.Const;
 import com.morgage.model.PawnerFavoriteItem;
 import com.morgage.model.SaleItem;
 import com.morgage.model.Transaction;
+import com.morgage.model.data.SaleItemDetail;
 import com.morgage.service.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,9 +46,9 @@ public class SaleItemController {
 
     @RequestMapping(value = "/thong-tin-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId, @RequestParam(value = "userId", required = false) Integer userId) {
-        SaleItem item = saleItemService.getSaleItemInformation(itemId, userId);
+        SaleItemDetail item = saleItemService.getSaleItemInformation(itemId, userId);
         if (item != null) {
-            return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
+            return new ResponseEntity<SaleItemDetail>(item, HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Can't find item", HttpStatus.BAD_REQUEST);
         }
@@ -55,17 +59,13 @@ public class SaleItemController {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         if (transaction != null) {
             Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
-            SaleItem item = saleItemService.publicItemForSale(transaction, picUrl, price, status,timeStamp);
+            SaleItem item = saleItemService.publicItemForSale(transaction, picUrl, price, Const.ITEM_STATUS.WAIT_FOR_LIQUIDATION, timeStamp);
             if (item != null) {
-                if (status != Const.TRANSACTION_STATUS.LIQUIDATION) {
-                    return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
-                } else {
-                    transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LIQUIDATION);
-                    if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
-                        notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.LIQUIDATION, shopService.getAccountIdByShopId(transaction.getShopId()), pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
-                    }
-                    return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
+                transactionService.setTransactionStatus(transaction, Const.TRANSACTION_STATUS.LIQUIDATION);
+                if (transaction.getPawnerId() != Const.DEFAULT_PAWNEE_ID) {
+                    notificationService.createNotification(env.getProperty("notification.user"), Const.NOTIFICATION_TYPE.LIQUIDATION, shopService.getAccountIdByShopId(transaction.getShopId()), pawneeService.getAccountIdFromPawnerId(transaction.getPawnerId()), transaction.getId());
                 }
+                return new ResponseEntity<SaleItem>(item, HttpStatus.OK);
             } else return new ResponseEntity<String>("Can't find item", HttpStatus.BAD_REQUEST);
 
         } else {
@@ -113,8 +113,30 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
-    public ResponseEntity<?> getItemByCate(@RequestParam("cateId") int cateId) {
-        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
+    public ResponseEntity<?> getAllSaleItem(@RequestParam(value = "sort", required = false) Integer sortType, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "categoryid", required = false) Integer categoryId) {
+        if (page == null) {
+            page = 0;
+        }
+        Sort sort = null;
+        if (sortType == null) {
+            sort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
+        } else if (sortType == Const.SORT_ITEM.DATE_CREATED) {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "liquidationDate"));
+        } else if (sortType == Const.SORT_ITEM.LIKE) {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "favoriteCount"));
+        } else if (sortType == Const.SORT_ITEM.PRICE_ASC) {
+            sort = new Sort(new Sort.Order(Sort.Direction.ASC, "price"));
+        } else if (sortType == Const.SORT_ITEM.PRICE_DESC) {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "price"));
+        } else {
+            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "viewCount"));
+        }
+        Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
+        if (categoryId != null) {
+            return new ResponseEntity<List<SaleItem>>(saleItemService.getItemListByCategoryId(categoryId, pageable), HttpStatus.OK);
+        } else
+            return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(pageable), HttpStatus.OK);
+
     }
 
     @RequestMapping(value = "/san-pham", method = RequestMethod.GET)
@@ -123,14 +145,15 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
-    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString) {
+    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString, @RequestParam(value = "page", required = false) Integer page) {
         try {
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, null);
             if (latString.equals("none") || lngString.equals("none")) {
-                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItemWithoutDistance(), HttpStatus.OK);
+                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItemWithoutDistance(pageable), HttpStatus.OK);
             } else {
                 Float lat = Float.parseFloat(latString);
                 Float lng = Float.parseFloat(lngString);
-                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItem(lat, lng), HttpStatus.OK);
+                return new ResponseEntity<List<SaleItem>>(saleItemService.suggestItem(lat, lng, pageable), HttpStatus.OK);
             }
 
         } catch (Exception e) {

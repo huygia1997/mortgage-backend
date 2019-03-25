@@ -45,7 +45,7 @@ public class TransactionService {
                                          int pawneeInfoId, String basePrice) {
         Date nestPaymentDate = Util.getEndDay(startDate, paymentType, paymentTerm);
         Transaction transaction = new Transaction();
-        transaction.setStatus(Const.TRANSACTION_STATUS.UNPAID);
+        transaction.setStatus(Const.TRANSACTION_STATUS.NOT_YET_OVERDUE);
         transaction.setCategoryItemId(categoryItemId);
         transaction.setItemName(itemName);
         transaction.setLiquidateAfter(liquidate);
@@ -78,6 +78,7 @@ public class TransactionService {
     public List<TransactionLog> getAllTransactionLog(int transactionId) {
         return transactionLogRepository.findAllByTransactionId(transactionId);
     }
+
     public List<Transaction> getAllTransaction(int shopId) {
         return transactionRepository.findAllByShopId(shopId);
     }
@@ -102,7 +103,7 @@ public class TransactionService {
                 Date endDate = Util.getEndDay(transactionLogNew.getStartDate(), transaction.getPaymentType(), transaction.getPaymentType());
                 Timestamp end = new Timestamp(endDate.getTime());
                 transactionLogNew.setEndDate(end);
-                return  transactionLogRepository.saveAndFlush(transactionLogNew);
+                return transactionLogRepository.saveAndFlush(transactionLogNew);
             } else return null;
         } else return null;
     }
@@ -129,5 +130,17 @@ public class TransactionService {
         return transactionHistoryRepository.findTop10ByTransactionIdOrderByDateEventDesc(transId);
     }
 
+    public void createTransactionHistory(int transactionId, String status, String message) {
+        Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+        TransactionHistory transactionHistory = new TransactionHistory(timeStamp, message, status, transactionId);
+        transactionHistoryRepository.saveAndFlush(transactionHistory);
+    }
 
+    public Boolean changeTransactionStatus(int transactionId,int status) {
+        Transaction transaction = transactionRepository.findById(transactionId);
+        if (transaction != null) {
+            setTransactionStatus(transaction, status);
+            return true;
+        } else return false;
+    }
 }
