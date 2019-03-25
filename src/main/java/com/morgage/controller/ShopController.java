@@ -8,6 +8,9 @@ import com.morgage.model.data.ShopInformation;
 import com.morgage.service.AddressService;
 import com.morgage.service.PawneeService;
 import com.morgage.service.ShopService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,7 +33,7 @@ public class ShopController {
         this.pawneeService = pawneeService;
     }
 
-    @RequestMapping(value = "/thong-tin-shop", method = RequestMethod.GET)
+    @RequestMapping(value = "/thong-tin-cua-hang", method = RequestMethod.GET)
     public ResponseEntity<?> getShopInformation(@RequestParam("shopId") int shopId, @RequestParam(value = "userId", required = false) Integer userId) {
         if (userId != null) {
             ShopInformation shopInformation = shopService.showShopInformation(shopId, userId);
@@ -68,20 +71,43 @@ public class ShopController {
     }
 
     @RequestMapping(value = "/de-xuat-cua-hang", method = RequestMethod.GET)
-    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString) {
+    public ResponseEntity<?> suggestItem(@RequestParam("lat") String latString, @RequestParam("lng") String lngString, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false) Integer sortType) {
         try {
+            if (page == null) {
+                page = 0;
+            }
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, null);
             if (latString.equals("none") || lngString.equals("none")) {
-                return new ResponseEntity<List<Shop>>(shopService.suggestShopWithoutDistance(), HttpStatus.OK);
+                return new ResponseEntity<List<Shop>>(shopService.suggestShopWithoutDistance(pageable), HttpStatus.OK);
             } else {
                 Float lat = Float.parseFloat(latString);
                 Float lng = Float.parseFloat(lngString);
-                return new ResponseEntity<List<Shop>>(shopService.suggestShop(lat, lng), HttpStatus.OK);
+                return new ResponseEntity<List<Shop>>(shopService.suggestShop(lat, lng, pageable), HttpStatus.OK);
             }
 
         } catch (Exception e) {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
-
+    }
+    @RequestMapping(value = "/tat-ca-cua-hang", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllShop( @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false)Integer sortType){
+        try {
+            if (page == null) {
+                page = 0;
+            }
+            Sort sort = null;
+            if (sortType == null) {
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "id"));
+            } else if (sortType == Const.SORT_SHOP.RATING) {
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "rating"));
+            } else {
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "viewCount"));
+            }
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
+            return new ResponseEntity<List<Shop>>(shopService.findAll(pageable), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
     }
 
 
