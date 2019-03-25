@@ -113,8 +113,13 @@ public class SaleItemController {
     }
 
     @RequestMapping(value = "/hang-thanh-ly", method = RequestMethod.GET)
-    public ResponseEntity<?> changeItemStatus() {
+    public ResponseEntity<?> getItemByCate(@RequestParam("cateId") int cateId) {
         return new ResponseEntity<List<SaleItem>>(saleItemService.getItemList(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/san-pham", method = RequestMethod.GET)
+    public ResponseEntity<?> getItemByShop(@RequestParam("shopId") int shopId) {
+        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemListByShop(shopId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)

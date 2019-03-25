@@ -111,6 +111,11 @@ public class SaleItemService {
         return saleItemRepository.findAll();
     }
 
+    public List<SaleItem> getItemListByShop(int shopId) {
+        return saleItemRepository.getItemByShop(shopId);
+    }
+
+
     public List<SaleItem> suggestItem(Float lat, Float lng) {
             return saleItemRepository.suggestItem(lat, lng);
     }

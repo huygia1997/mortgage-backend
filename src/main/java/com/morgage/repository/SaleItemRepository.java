@@ -29,10 +29,15 @@ public interface SaleItemRepository extends JpaRepository<SaleItem,Integer> {
             + " from sales_item sal join transaction trans on sal.transaction_id = trans.id join shop sho on sho.id = trans.shop_id join address dest on dest.id = sho.address_id "
             + " order by point_i DESC LIMIT 10";
 
+    String queryGetItemByShop = "Select * from sales_item si join transaction trans on si.transaction_id = trans.id join shop sho on sho.id = trans.shop_id where sho.id = :shopId";
+
     @Query(value = query, nativeQuery = true)
     List<SaleItem> suggestItem(@Param("lat") Float input, @Param("lng") Float lng);
 
     @Query(value = queryWithoutDistance, nativeQuery = true)
     List<SaleItem> suggestItemWithoutDistance();
+
+    @Query(value = queryGetItemByShop, nativeQuery = true)
+    List<SaleItem> getItemByShop(@Param("shopId") int shopId);
 
 }
