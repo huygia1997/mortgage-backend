@@ -130,7 +130,6 @@ public class UserController {
     }
 
 
-
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ResponseEntity<?> displayResetPasswordPage(@RequestParam("token") String token) {
         if (userService.activeUserAccount(token)) {
@@ -182,9 +181,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/thay-doi-thong-tin-nguoi-dung", method = RequestMethod.POST)
-    public ResponseEntity<?> editUserInformation( @RequestParam("userName") String name, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
+    public ResponseEntity<?> editUserInformation(@RequestParam("userName") String name, @RequestParam("phone") String phone, @RequestParam("acountId") int acountId, @RequestParam("avaUrl") String urlAva, @RequestParam("address") String address) {
         try {
-            Pawnee pawnee = pawneeService.setPawneeInfo(acountId, phone, urlAva, address,name);
+            Pawnee pawnee = pawneeService.setPawneeInfo(acountId, phone, urlAva, address, name);
             return new ResponseEntity<Pawnee>(pawnee, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
@@ -227,6 +226,19 @@ public class UserController {
         } catch (
                 Exception e) {
             return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @RequestMapping("/danh-gia-cua-hang")
+    public ResponseEntity<?> rateShop(@RequestParam(value = "rate") int rate, @RequestParam("accountId") int accountId, @RequestParam("shopId") int shopId) {
+        try {
+            Integer rateShop = userService.rateShop(accountId, shopId, rate);
+            if (rateShop != null) {
+                return new ResponseEntity<Integer>(rateShop, HttpStatus.OK);
+            } else
+                return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
 }

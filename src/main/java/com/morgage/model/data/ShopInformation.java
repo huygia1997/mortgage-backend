@@ -20,6 +20,19 @@ public class ShopInformation {
     private Integer viewCount;
     private Boolean checkFavorite;
     private String AvaUrl;
+    private Boolean checkRate;
+
+    public String getPolicy() {
+        return policy;
+    }
+
+    public Boolean getCheckRate() {
+        return checkRate;
+    }
+
+    public void setCheckRate(Boolean checkRate) {
+        this.checkRate = checkRate;
+    }
 
     public ShopInformation(int id, String shopName, String phoneNumber, String facebook, String email, String latitude, String longtitude, String fullAddress, String avaUrl, List<Category> categoryItems) {
         this.id = id;
@@ -30,7 +43,7 @@ public class ShopInformation {
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.fullAddress = fullAddress;
-        AvaUrl = avaUrl;
+        this.AvaUrl = avaUrl;
         this.categoryItems = categoryItems;
     }
 

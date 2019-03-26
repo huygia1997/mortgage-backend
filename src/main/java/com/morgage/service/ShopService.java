@@ -20,8 +20,9 @@ public class ShopService {
     private final PawneeRepository pawneeRepository;
     private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
     private final EntityManager entityManager;
+    private final RateShopRepository rateShopRepository;
 
-    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawneeRepository pawneeRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, EntityManager entityManager) {
+    public ShopService(ShopRepository shopRepository, HasCategoryItemRepository hasCategoryItemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, PawneeRepository pawneeRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, EntityManager entityManager, RateShopRepository rateShopRepository) {
         this.shopRepository = shopRepository;
         this.hasCategoryItemRepository = hasCategoryItemRepository;
         this.addressRepository = addressRepository;
@@ -29,6 +30,7 @@ public class ShopService {
         this.pawneeRepository = pawneeRepository;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
         this.entityManager = entityManager;
+        this.rateShopRepository = rateShopRepository;
     }
 
 
@@ -125,6 +127,11 @@ public class ShopService {
                 shopInformation.setCheckFavorite(true);
             } else {
                 shopInformation.setCheckFavorite(false);
+            }
+            if (rateShopRepository.findByShop_IdAndPawnee_Id(shopId, pawnee.getId()) != null) {
+                shopInformation.setCheckRate(true);
+            } else {
+                shopInformation.setCheckRate(false);
             }
             shopInformation.setViewCount(shop.getViewCount());
             shopInformation.setAvaUrl(shop.getAvatarUrl());
