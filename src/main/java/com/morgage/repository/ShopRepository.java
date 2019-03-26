@@ -55,15 +55,16 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
             + " from shop sho join address dest on sho.address_id = dest.id "
             + "order by point_s desc";
 
+
     @Query(value = query, nativeQuery = true)
     List<Shop> suggestShop(@Param("lat") Float input, @Param("lng") Float lng, Pageable pageable);
 
     @Query(value = queryWithoutDistance, nativeQuery = true)
     List<Shop> suggestShopWithoutDistance(Pageable pageable);
 
-    String SHOP_INFO_QUERY = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from has_category_item f join shop sho on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId and dist.id = :disId";
+    String SHOP_FILTER_QUERY = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from has_category_item f join shop sho on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId and dist.id = :disId";
 
-    @Query(value = SHOP_INFO_QUERY, nativeQuery = true)
+    @Query(value = SHOP_FILTER_QUERY, nativeQuery = true)
     List<Shop> getShopFilter(@Param("cateId") int cateId, @Param("disId") int disId);
 
     @Query(value = "select s from Shop s")

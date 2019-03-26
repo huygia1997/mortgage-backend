@@ -144,7 +144,9 @@ public class Const {
 
     public static class SORT_SHOP {
         public static final Integer RATING = 1;
+
         public static final Integer VIEW = 2;
+        public static final Integer ALL = 3;
     }
 
     public static class SORT_ITEM {

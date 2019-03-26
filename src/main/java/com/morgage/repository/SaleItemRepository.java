@@ -26,6 +26,8 @@ public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
             + " from sales_item sal join transaction trans on sal.transaction_id = trans.id join shop sho on sho.id = trans.shop_id join address dest on dest.id = sho.address_id "
             + " order by point_i DESC LIMIT 10";
 
+
+
     String queryWithoutDistance = "select *, " + countPointWithoutDistance
             + " from sales_item sal join transaction trans on sal.transaction_id = trans.id join shop sho on sho.id = trans.shop_id join address dest on dest.id = sho.address_id "
             + " order by point_i DESC";
@@ -44,5 +46,7 @@ public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
     List<SaleItem> findAllByCategoryId(Pageable pageable, int categoryId);
     @Query(value = queryGetItemByShop, nativeQuery = true)
     List<SaleItem> getItemByShop(@Param("shopId") int shopId);
+
+    List<SaleItem> findAllByItemNameContaining(String searchValue);
 
 }

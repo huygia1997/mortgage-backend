@@ -148,4 +148,10 @@ public class SaleItemService {
     public List<SaleItem> suggestItemWithoutDistance(Pageable pageable) {
         return saleItemRepository.suggestItemWithoutDistance(pageable);
     }
+
+    public List<SaleItem> searchByItemName(String searchValue) {
+        List<SaleItem> listItem = saleItemRepository.findAllByItemNameContaining(searchValue);
+
+        return listItem;
+    }
 }

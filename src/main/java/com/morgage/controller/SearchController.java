@@ -1,11 +1,7 @@
 package com.morgage.controller;
 
 import com.morgage.model.*;
-import com.morgage.model.data.ShopData;
-import com.morgage.service.AddressService;
-import com.morgage.service.HasCategoryItemService;
-import com.morgage.service.SearchService;
-import com.morgage.service.ShopService;
+import com.morgage.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +18,15 @@ public class SearchController {
     private final ShopService shopService;
     private final AddressService addressService;
     private final HasCategoryItemService hasCategoryItemService;
+    private final SaleItemService saleItemService;
 
 
-    public SearchController(SearchService searchService, ShopService shopService, AddressService addressService, HasCategoryItemService hasCategoryItemService) {
+    public SearchController(SearchService searchService, ShopService shopService, AddressService addressService, HasCategoryItemService hasCategoryItemService, SaleItemService saleItemService) {
         this.searchService = searchService;
         this.shopService = shopService;
         this.addressService = addressService;
         this.hasCategoryItemService = hasCategoryItemService;
+        this.saleItemService = saleItemService;
     }
     // search shops by keyword (shopname)
     @RequestMapping("/search/shops")
@@ -44,7 +41,17 @@ public class SearchController {
 
     }
     // search items by keyword (itemname)
-//    @RequestMapping("/search/shops")
+    @RequestMapping("/search/items")
+    public ResponseEntity<?> searchItemKeywordResult(@RequestParam("keyword") String searchValue) {
+
+        try {
+            List<SaleItem> listItem = saleItemService.searchByItemName(searchValue);
+            return new ResponseEntity<List<SaleItem>>(listItem, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
     // search shop nearby (input: lat, lng)
     @RequestMapping("/search/shops/nearby")

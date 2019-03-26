@@ -97,7 +97,7 @@ public class ShopController {
                 page = 0;
             }
             Sort sort = null;
-            if (sortType == null) {
+            if (sortType == Const.SORT_SHOP.ALL) {
                 sort = new Sort(new Sort.Order(Sort.Direction.DESC, "id"));
             } else if (sortType == Const.SORT_SHOP.RATING) {
                 sort = new Sort(new Sort.Order(Sort.Direction.DESC, "rating"));
