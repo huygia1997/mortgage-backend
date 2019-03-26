@@ -1,7 +1,11 @@
 package com.morgage.controller;
 
+import com.morgage.common.Const;
 import com.morgage.model.*;
 import com.morgage.service.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +33,7 @@ public class SearchController {
         this.hasCategoryItemService = hasCategoryItemService;
         this.saleItemService = saleItemService;
     }
+
     // search shops by keyword (shopname)
     @RequestMapping("/search/shops")
     public ResponseEntity<?> searchShopKeywordResult(@RequestParam("keyword") String searchValue) {
@@ -40,6 +46,7 @@ public class SearchController {
         }
 
     }
+
     // search items by keyword (itemname)
     @RequestMapping("/search/items")
     public ResponseEntity<?> searchItemKeywordResult(@RequestParam("keyword") String searchValue) {
@@ -55,7 +62,7 @@ public class SearchController {
 
     // search shop nearby (input: lat, lng)
     @RequestMapping("/search/shops/nearby")
-    public ResponseEntity<?> searchShopNearbyResult(@RequestParam Map<String,String> requestParams) {
+    public ResponseEntity<?> searchShopNearbyResult(@RequestParam Map<String, String> requestParams) {
         String latString = requestParams.get("lat");
         String lngString = requestParams.get("lng");
         try {
@@ -72,10 +79,28 @@ public class SearchController {
 
     // search shops by filter (cateId, districtID)
     @RequestMapping("/search/shops/filters")
-    public ResponseEntity<?> searchShopFilterResult(@RequestParam("cate") int cateId, @RequestParam("district") int disId) {
-
+    public ResponseEntity<?> searchShopFilterResult(@RequestParam(value = "cate", required = false) Integer cateId, @RequestParam(value = "district", required = false) Integer disId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false) Integer sortType) {
         try {
-            List<Shop> list = shopService.getShopFilter(cateId, disId);
+            if (page == null) {
+                page = 0;
+            }
+            List<Shop> list = new ArrayList<>();
+            Sort sort = null;
+            if (sortType == Const.SORT_SHOP.ALL) {
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "id"));
+            } else if (sortType == Const.SORT_SHOP.RATING) {
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "rating"));
+            } else {
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "viewCount"));
+            }
+            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
+            if (cateId == null) {
+                list = shopService.getShopFilterWithoutCateId(disId, pageable);
+            } else if (disId == null) {
+                list = shopService.getShopFilterWithoutDisId(cateId, pageable);
+            } else {
+                list = shopService.getShopFilter(cateId, disId, pageable);
+            }
             return new ResponseEntity<List<Shop>>(list, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -118,8 +143,6 @@ public class SearchController {
         List<Category> list = searchService.findAllCategory();
         return list;
     }
-
-
 
 
 }

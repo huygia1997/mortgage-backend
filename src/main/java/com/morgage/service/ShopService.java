@@ -190,9 +190,10 @@ public class ShopService {
         } else return null;
     }
 
-    public List<Shop> suggestShop(Float lat, Float lng,Pageable pageable) {
-        return shopRepository.suggestShop(lat, lng,pageable);
+    public List<Shop> suggestShop(Float lat, Float lng, Pageable pageable) {
+        return shopRepository.suggestShop(lat, lng, pageable);
     }
+
     public List<Shop> suggestShopWithoutDistance(Pageable pageable) {
         return shopRepository.suggestShopWithoutDistance(pageable);
     }
@@ -201,8 +202,16 @@ public class ShopService {
         return shopRepository.searchNearby(lat, lng);
     }
 
-    public List<Shop> getShopFilter(int cateId, int disId) {
-        return shopRepository.getShopFilter(cateId, disId);
+    public List<Shop> getShopFilter(int cateId, int disId, Pageable pageable) {
+        return shopRepository.getShopFilter(cateId, disId, pageable);
+    }
+
+    public List<Shop> getShopFilterWithoutCateId(int disId, Pageable pageable) {
+        return shopRepository.getShopFilterWithoutCateId(disId, pageable);
+    }
+
+    public List<Shop> getShopFilterWithoutDisId(int cateId, Pageable pageable) {
+        return shopRepository.getShopFilterWithoutDisId(cateId, pageable);
     }
 
 }
