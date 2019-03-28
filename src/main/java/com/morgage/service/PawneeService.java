@@ -11,16 +11,16 @@ import java.util.List;
 @Service
 public class PawneeService {
     private final PawneeRepository pawneeRepository;
-    private final PawnerFavoriteItemRepository pawnerFavoriteItemRepository;
+    private final PawneeFavoriteItemRepository pawneeFavoriteItemRepository;
     private final PawneeFavoriteShopRepository pawneeFavoriteShopRepository;
     private final SaleItemRepository saleItemRepository;
     private final ShopRepository shopRepository;
     private final TransactionRepository transactionRepository;
     private final NotificationRepository notificationRepository;
 
-    public PawneeService(PawneeRepository pawneeRepository, PawnerFavoriteItemRepository pawnerFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, ShopRepository shopRepository, TransactionRepository transactionRepository, NotificationRepository notificationRepository) {
+    public PawneeService(PawneeRepository pawneeRepository, PawneeFavoriteItemRepository pawneeFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, ShopRepository shopRepository, TransactionRepository transactionRepository, NotificationRepository notificationRepository) {
         this.pawneeRepository = pawneeRepository;
-        this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
+        this.pawneeFavoriteItemRepository = pawneeFavoriteItemRepository;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
         this.saleItemRepository = saleItemRepository;
         this.shopRepository = shopRepository;
@@ -53,13 +53,13 @@ public class PawneeService {
         rs.setPhoneNumber(pawnee.getPhoneNumber());
         List<SaleItem> saleItemsList = new ArrayList<>();
         List<Shop> shopList = new ArrayList<>();
-        List<PawnerFavoriteItem> pawnerFavoriteItemList = pawnerFavoriteItemRepository.findAllByPawnerId(rs.getId());
-        List<PawnerFavouriteShop> pawnerFavouriteShopsList = pawneeFavoriteShopRepository.findAllByPawnerId(rs.getId());
-        for (PawnerFavoriteItem favoriteItem : pawnerFavoriteItemList) {
+        List<PawneeFavoriteItem> pawneeFavoriteItemList = pawneeFavoriteItemRepository.findAllByPawnerId(rs.getId());
+        List<PawneeFavouriteShop> pawneeFavouriteShopsList = pawneeFavoriteShopRepository.findAllByPawnerId(rs.getId());
+        for (PawneeFavoriteItem favoriteItem : pawneeFavoriteItemList) {
             saleItemsList.add(saleItemRepository.findById(favoriteItem.getId()));
         }
         rs.setListFavoriteItem(saleItemsList);
-        for (PawnerFavouriteShop favouriteShop : pawnerFavouriteShopsList) {
+        for (PawneeFavouriteShop favouriteShop : pawneeFavouriteShopsList) {
             shopList.add(shopRepository.findShopById(favouriteShop.getShopId()));
         }
         rs.setListFavoriteShop(shopList);

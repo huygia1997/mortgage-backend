@@ -17,7 +17,7 @@ public class Transaction {
     private String description;
     @Column(name = "status")
     private Integer status;
-    @Column(name = "pawner_id")
+    @Column(name = "pawnee_id")
     private int pawnerId;
     @Column(name = "shop_id")
     private Integer shopId;

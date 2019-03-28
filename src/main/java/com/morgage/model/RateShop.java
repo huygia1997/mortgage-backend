@@ -9,25 +9,30 @@ public class RateShop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name = "shop_id", referencedColumnName = "id")
-    private Shop shop;
-
-    public Pawnee getPawnee() {
-        return pawnee;
-    }
-
-    public void setPawnee(Pawnee pawnee) {
-        this.pawnee = pawnee;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "pawnee_id", referencedColumnName = "id")
-    private Pawnee pawnee;
     @Column(name = "rate")
     private int rate;
+    @Column(name = "pawnee_id")
+    private int pawneeId;
+    @Column(name = "shop_id")
+    private int shopId;
 
     public RateShop() {
+    }
+
+    public int getPawneeId() {
+        return pawneeId;
+    }
+
+    public void setPawneeId(int pawneeId) {
+        this.pawneeId = pawneeId;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
     }
 
     public Integer getId() {
@@ -38,13 +43,6 @@ public class RateShop {
         this.id = id;
     }
 
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
 
 
     public int getRate() {

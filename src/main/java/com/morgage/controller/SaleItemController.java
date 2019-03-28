@@ -1,7 +1,7 @@
 package com.morgage.controller;
 
 import com.morgage.common.Const;
-import com.morgage.model.PawnerFavoriteItem;
+import com.morgage.model.PawneeFavoriteItem;
 import com.morgage.model.SaleItem;
 import com.morgage.model.Transaction;
 import com.morgage.model.data.SaleItemDetail;
@@ -43,6 +43,7 @@ public class SaleItemController {
         this.pawneeService = pawneeService;
         this.env = env;
     }
+
 
     @RequestMapping(value = "/thong-tin-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId, @RequestParam(value = "userId", required = false) Integer userId) {
@@ -96,13 +97,13 @@ public class SaleItemController {
         SaleItem saleItem = saleItemService.changeStatusItem(itemId, status);
         if (saleItem != null) {
             //noti user who follow item
-            List<PawnerFavoriteItem> listFavorite = saleItemService.findAllFavoeiteByItemId(itemId);
+            List<PawneeFavoriteItem> listFavorite = saleItemService.findAllFavoeiteByItemId(itemId);
             if (status == Const.TRANSACTION_STATUS.LIQUIDATION) {
-                for (PawnerFavoriteItem record : listFavorite) {
+                for (PawneeFavoriteItem record : listFavorite) {
                     notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.liquidation"), Const.NOTIFICATION_TYPE.ITEM_PAWNEE, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
                 }
             } else {
-                for (PawnerFavoriteItem record : listFavorite) {
+                for (PawneeFavoriteItem record : listFavorite) {
                     notificationService.createNotification("Món hàng " + saleItem.getItemName() + " " + env.getProperty("notification.user.redeem"), Const.NOTIFICATION_TYPE.ITEM_PAWNEE, pawneeService.getAccountIdFromPawnerId(record.getPawnerId()), saleItem.getId());
                 }
             }

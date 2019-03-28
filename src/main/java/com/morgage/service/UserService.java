@@ -92,15 +92,15 @@ public class UserService {
         Shop shop = shopRepository.findById(shopId);
         Pawnee pawnee = pawnerRepository.findByAccountId(accountId);
         if (pawnee != null && shop != null) {
-            if (rateShopRepository.findByShop_IdAndPawnee_Id(shopId, pawnee.getId()) != null) {
+            if (rateShopRepository.findByShopIdAndPawneeId(shopId, pawnee.getId()) != null) {
                 return null;
             } else {
                 rateShop.setRate(rate);
-                rateShop.setShop(shop);
-                rateShop.setPawnee(pawnee);
+                rateShop.setShopId(shopId);
+                rateShop.setPawneeId(pawnee.getId());
                 rateShop = rateShopRepository.saveAndFlush(rateShop);
                 if (rateShop != null) {
-                    List<RateShop> list = rateShopRepository.findAllByShop_Id(shopId);
+                    List<RateShop> list = rateShopRepository.findAllByShopId(shopId);
                     int rateCount = 0;
                     for (RateShop item : list) {
                         rateCount += item.getRate();

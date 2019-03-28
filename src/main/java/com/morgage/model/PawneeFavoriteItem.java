@@ -3,14 +3,14 @@ package com.morgage.model;
 import javax.persistence.*;
 
 @Entity
-public class PawnerFavoriteItem {
+public class PawneeFavoriteItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private int id;
     @Column(name = "description")
     private String description;
-    @Column(name = "pawner_id")
+    @Column(name = "pawnee_id")
     private Integer pawnerId;
     @Column(name = "item_id")
     private Integer itemId;
@@ -47,6 +47,6 @@ public class PawnerFavoriteItem {
         this.description = description;
     }
 
-    public PawnerFavoriteItem() {
+    public PawneeFavoriteItem() {
     }
 }

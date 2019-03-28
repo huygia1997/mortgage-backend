@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,19 +16,20 @@ import java.util.List;
 public class SaleItemService {
     private final SaleItemRepository saleItemRepository;
     private final PawneeService pawneeService;
-    private final PawnerFavoriteItemRepository pawnerFavoriteItemRepository;
+    private final PawneeFavoriteItemRepository pawneeFavoriteItemRepository;
     private final CategoryRepository categoryRepository;
     private final TransactionRepository transactionRepository;
     private final PictureRepository pictureRepository;
 
-    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawnerFavoriteItemRepository pawnerFavoriteItemRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, PictureRepository pictureRepository) {
+    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawneeFavoriteItemRepository pawneeFavoriteItemRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, PictureRepository pictureRepository) {
         this.saleItemRepository = saleItemRepository;
         this.pawneeService = pawneeService;
-        this.pawnerFavoriteItemRepository = pawnerFavoriteItemRepository;
+        this.pawneeFavoriteItemRepository = pawneeFavoriteItemRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
         this.pictureRepository = pictureRepository;
     }
+
 
     public SaleItem publicItemForSale(Transaction transaction, String picUrl, int price, int status, Timestamp liquidationDate) {
         SaleItem item = new SaleItem();
@@ -62,7 +62,7 @@ public class SaleItemService {
             saleItemDetail.setView(saleItem.getViewCount());
             if (userId != null) {
                 Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
-                if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
+                if (pawneeFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
                     saleItemDetail.setCheckFavorite(true);
                 } else saleItemDetail.setCheckFavorite(false);
             } else saleItemDetail.setCheckFavorite(false);
@@ -82,36 +82,36 @@ public class SaleItemService {
 
     public Boolean followItem(int itemId, int userId) {
         Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
-        if (pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
+        if (pawneeFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId) != null) {
             return false;
         } else {
             SaleItem saleItem = saleItemRepository.findById(itemId);
             saleItem.setFavoriteCount(saleItem.getFavoriteCount() + 1);
             saleItemRepository.save(saleItem);
-            PawnerFavoriteItem pawnerFavoriteItem = new PawnerFavoriteItem();
-            pawnerFavoriteItem.setPawnerId(pawnee.getId());
-            pawnerFavoriteItem.setItemId(itemId);
-            pawnerFavoriteItemRepository.saveAndFlush(pawnerFavoriteItem);
+            PawneeFavoriteItem pawneeFavoriteItem = new PawneeFavoriteItem();
+            pawneeFavoriteItem.setPawnerId(pawnee.getId());
+            pawneeFavoriteItem.setItemId(itemId);
+            pawneeFavoriteItemRepository.saveAndFlush(pawneeFavoriteItem);
             return true;
         }
     }
 
     public Boolean unFollowItem(int itemId, int userId) {
         Pawnee pawnee = pawneeService.getPawneeByAccountId(userId);
-        PawnerFavoriteItem pawnerFavoriteItem = pawnerFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId);
-        if (pawnerFavoriteItem == null) {
+        PawneeFavoriteItem pawneeFavoriteItem = pawneeFavoriteItemRepository.findByPawnerIdAndItemId(pawnee.getId(), itemId);
+        if (pawneeFavoriteItem == null) {
             return false;
         } else {
             SaleItem saleItem = saleItemRepository.findById(itemId);
             saleItem.setFavoriteCount(saleItem.getFavoriteCount() - 1);
             saleItemRepository.save(saleItem);
-            pawnerFavoriteItemRepository.delete(pawnerFavoriteItem);
+            pawneeFavoriteItemRepository.delete(pawneeFavoriteItem);
             return true;
         }
     }
 
-    public List<PawnerFavoriteItem> findAllFavoeiteByItemId(int itemId) {
-        List<PawnerFavoriteItem> rs = pawnerFavoriteItemRepository.findAllByItemId(itemId);
+    public List<PawneeFavoriteItem> findAllFavoeiteByItemId(int itemId) {
+        List<PawneeFavoriteItem> rs = pawneeFavoriteItemRepository.findAllByItemId(itemId);
         return rs;
     }
 

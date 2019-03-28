@@ -128,7 +128,7 @@ public class ShopService {
             } else {
                 shopInformation.setCheckFavorite(false);
             }
-            if (rateShopRepository.findByShop_IdAndPawnee_Id(shopId, pawnee.getId()) != null) {
+            if (rateShopRepository.findByShopIdAndPawneeId(shopId, pawnee.getId()) != null) {
                 shopInformation.setCheckRate(true);
             } else {
                 shopInformation.setCheckRate(false);
@@ -147,24 +147,24 @@ public class ShopService {
             Shop shop = shopRepository.findById(shopId);
             shop.setFavoriteCount(shop.getFavoriteCount() + 1);
             shopRepository.save(shop);
-            PawnerFavouriteShop pawnerFavouriteShop = new PawnerFavouriteShop();
-            pawnerFavouriteShop.setPawnerId(pawnee.getId());
-            pawnerFavouriteShop.setShopId(shopId);
-            pawneeFavoriteShopRepository.saveAndFlush(pawnerFavouriteShop);
+            PawneeFavouriteShop pawneeFavouriteShop = new PawneeFavouriteShop();
+            pawneeFavouriteShop.setPawnerId(pawnee.getId());
+            pawneeFavouriteShop.setShopId(shopId);
+            pawneeFavoriteShopRepository.saveAndFlush(pawneeFavouriteShop);
             return true;
         }
     }
 
     public boolean unFollowShop(int userId, int shopId) {
         Pawnee pawnee = pawneeRepository.findByAccountId(userId);
-        PawnerFavouriteShop pawnerFavouriteShop = pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId());
-        if (pawnerFavouriteShop == null) {
+        PawneeFavouriteShop pawneeFavouriteShop = pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId());
+        if (pawneeFavouriteShop == null) {
             return false;
         } else {
             Shop shop = shopRepository.findById(shopId);
             shop.setFavoriteCount(shop.getFavoriteCount() - 1);
             shopRepository.save(shop);
-            pawneeFavoriteShopRepository.delete(pawnerFavouriteShop);
+            pawneeFavoriteShopRepository.delete(pawneeFavouriteShop);
             return true;
         }
     }
