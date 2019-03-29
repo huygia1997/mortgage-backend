@@ -2,11 +2,14 @@ package com.morgage.controller;
 
 import com.morgage.common.Const;
 import com.morgage.model.Address;
+import com.morgage.model.SaleItem;
 import com.morgage.model.Shop;
+import com.morgage.model.data.SaleItemDetail;
 import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
 import com.morgage.service.AddressService;
 import com.morgage.service.PawneeService;
+import com.morgage.service.SaleItemService;
 import com.morgage.service.ShopService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -26,11 +29,13 @@ public class ShopController {
     private final ShopService shopService;
     private final AddressService addressService;
     private final PawneeService pawneeService;
+    private final SaleItemService saleItemService;
 
-    public ShopController(ShopService shopService, AddressService addressService, PawneeService pawneeService) {
+    public ShopController(ShopService shopService, AddressService addressService, PawneeService pawneeService, SaleItemService saleItemService) {
         this.shopService = shopService;
         this.addressService = addressService;
         this.pawneeService = pawneeService;
+        this.saleItemService = saleItemService;
     }
 
     @RequestMapping(value = "/thong-tin-cua-hang", method = RequestMethod.GET)
@@ -130,6 +135,23 @@ public class ShopController {
             return new ResponseEntity<String>("Lỗi sever, hệ thống đang trục trặc", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @RequestMapping(value = "/tat-ca-mon-hang", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllShopItem(@RequestParam("accountId") int accountId) {
+        try {
+            Shop shop = shopService.findShopByAccountId(accountId);
+            if (shop != null) {
+                List<SaleItem> listItem = saleItemService.getItemListByShop(shop.getId());
+                List<SaleItemDetail> listRs = new ArrayList<>();
+                for (SaleItem item : listItem) {
+                    listRs.add(saleItemService.getSaleItemInformation(item.getId(), null, false));
+                }
+                return new ResponseEntity<List<SaleItemDetail>>(listRs, HttpStatus.OK);
+            } else return new ResponseEntity<String>("Lỗi dữ liệu", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Lỗi dữ liệu", HttpStatus.BAD_REQUEST);
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package com.morgage.service;
 
 import com.morgage.model.*;
+import com.morgage.model.data.SaleItemDetail;
 import com.morgage.model.data.ShopDataForGuest;
 import com.morgage.model.data.ShopInformation;
 import com.morgage.repository.*;
@@ -220,5 +221,4 @@ public class ShopService {
     public List<Shop> getShopFilterWithoutDisId(int cateId, Pageable pageable) {
         return shopRepository.getShopFilterWithoutDisId(cateId, pageable);
     }
-
 }
