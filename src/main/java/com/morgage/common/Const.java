@@ -9,6 +9,7 @@ public class Const {
 
     public static int DEFAULT_PAWNEE_ID = 4;
     public static int DEFAULT_PAWNEE_INFO_ID = 4;
+    public static int DEFAULT_TRANSACTION_ID = 4;
 
     public static class USER_ROLE {
         public static final String PAWNER = "PAWNER";
@@ -89,16 +90,14 @@ public class Const {
     }
 
     public static class TRANSACTION_STATUS {
-        //        public static final Integer UNPAID = 1;
-        //        public static final Integer PAID = 2;
         public static final Integer WAIT_FOR_LIQUIDATION = 2;
-        //        public static final Integer LIQUIDATED = 4;
         public static final Integer REDEEMED = 3;
         public static final Integer LATE = 4;
         public static final Integer LIQUIDATION = 5;
         public static final Integer CANCELED = 6;
         public static final Integer NOT_YET_OVERDUE = 1;
         public static final Integer OVERDUE = 7;
+        public static final Integer DEFAULT = 8;
 
     }
 

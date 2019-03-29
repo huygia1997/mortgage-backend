@@ -6,6 +6,7 @@ import com.morgage.model.data.UserInfoData;
 import com.morgage.model.data.UserShop;
 import com.morgage.service.PawneeService;
 import com.morgage.service.ShopService;
+import com.morgage.service.TransactionService;
 import com.morgage.service.UserService;
 import com.morgage.utils.UserValidator;
 import org.apache.http.client.ClientProtocolException;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -36,14 +38,16 @@ public class UserController {
     private final GoogleUtils googleUtils;
     private final PawneeService pawneeService;
     private final ShopService shopService;
+    private final TransactionService transactionService;
 
-    public UserController(UserService userService, JavaMailSender mailSender, Environment env, GoogleUtils googleUtils, PawneeService pawneeService, ShopService shopService) {
+    public UserController(UserService userService, JavaMailSender mailSender, Environment env, GoogleUtils googleUtils, PawneeService pawneeService, ShopService shopService, TransactionService transactionService) {
         this.userService = userService;
         this.mailSender = mailSender;
         this.env = env;
         this.googleUtils = googleUtils;
         this.pawneeService = pawneeService;
         this.shopService = shopService;
+        this.transactionService = transactionService;
     }
 
 
@@ -51,7 +55,7 @@ public class UserController {
     public ResponseEntity<?> createUser(HttpServletRequest request) {
         try {
             UserValidator validator = new UserValidator();
-            String userName = request.getParameter("username");
+            String userName = request.getParameter("email");
             String password = request.getParameter("password");
             String encryptPassword = new BCryptPasswordEncoder().encode(password);
             if (!validator.validate(userName)) {
@@ -69,8 +73,9 @@ public class UserController {
                 registerEmail.setFrom(env.getProperty("register.emailFrom"));
                 registerEmail.setTo(user.getUsername());
                 registerEmail.setSubject(env.getProperty("register.emailSubject"));
-                registerEmail.setText(env.getProperty("register.emailText") + appUrl
-                        + "/register?token=" + user.getToken());
+//                registerEmail.setText(env.getProperty("register.emailText") + appUrl
+//                        + "/register?token=" + user.getToken());
+                registerEmail.setText("http://localhost:53089/webapp/index.html?hc_reset&hc_wspath=%2Fthinhbui-OrionContent%2FMortgage-App&sap-ui-xx-componentPreload=off&origional-url=index.html&sap-ui-appCacheBuster=..%2F#/Activate/register?token="+user.getToken());
                 mailSender.send(registerEmail);
             }
             return new ResponseEntity<String>(HttpStatus.OK);
@@ -120,6 +125,10 @@ public class UserController {
                     userShop.setUser(user);
                     Shop shop = shopService.findShopByAccountId(user.getId());
                     userShop.setShop(shop);
+                    List<Transaction> transactions = transactionService.getTransByStatus(shop.getId(), Const.TRANSACTION_STATUS.DEFAULT);
+                    if (transactions.size() != 0) {
+                        userShop.setTransDefaultId(transactions.get(0).getId());
+                    }
                     return new ResponseEntity<UserShop>(userShop, HttpStatus.OK);
                 } else return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
             }

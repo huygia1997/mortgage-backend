@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
-    List<Transaction> findAllByShopId(int shopId);
+    List<Transaction> findAllByShopIdAndStatusNot(int shopId, int status);
 
     List<Transaction> findAllByNextPaymentDateBetweenAndStatus(Date start, Date end, int status);
 
     List<Transaction> findAllByNextPaymentDateBeforeAndStatus(Date date, int status);
 
-    List<Transaction> findAllByStatus(int status);
+    List<Transaction> findAllByShopIdAndStatus(int shopId, int status);
 
     Transaction findById(int id);
 

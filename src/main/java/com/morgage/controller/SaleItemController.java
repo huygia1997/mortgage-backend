@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Configuration
@@ -32,14 +33,16 @@ public class SaleItemController {
     private final TransactionService transactionService;
     private final NotificationService notificationService;
     private final ShopService shopService;
+    private final PictureService pictureService;
     private final PawneeService pawneeService;
     private final Environment env;
 
-    public SaleItemController(SaleItemService saleItemService, TransactionService transactionService, NotificationService notificationService, ShopService shopService, PawneeService pawneeService, Environment env) {
+    public SaleItemController(SaleItemService saleItemService, TransactionService transactionService, NotificationService notificationService, ShopService shopService, PictureService pictureService, PawneeService pawneeService, Environment env) {
         this.saleItemService = saleItemService;
         this.transactionService = transactionService;
         this.notificationService = notificationService;
         this.shopService = shopService;
+        this.pictureService = pictureService;
         this.pawneeService = pawneeService;
         this.env = env;
     }
@@ -74,7 +77,7 @@ public class SaleItemController {
         }
     }
 
-    @RequestMapping(value = "/theo-doi-san-pham", method = RequestMethod.POST)
+    @RequestMapping(value = "/theo-doi-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> followItem(@RequestParam("itemId") Integer itemId, @RequestParam("userId") Integer userId) {
         if (saleItemService.followItem(itemId, userId)) {
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -83,7 +86,7 @@ public class SaleItemController {
         }
     }
 
-    @RequestMapping(value = "/bo-theo-doi-san-pham", method = RequestMethod.POST)
+    @RequestMapping(value = "/bo-theo-doi-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> unFollowItem(@RequestParam("itemId") Integer itemId, @RequestParam("userId") Integer userId) {
         if (saleItemService.unFollowItem(itemId, userId)) {
             return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -144,6 +147,29 @@ public class SaleItemController {
     public ResponseEntity<?> getItemByShop(@RequestParam("shopId") int shopId) {
         return new ResponseEntity<List<SaleItem>>(saleItemService.getItemListByShop(shopId), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/tao-san-pham", method = RequestMethod.POST)
+    public ResponseEntity<?> createItem(@RequestParam("itemName") String itemName, @RequestParam("price") int price,
+                                        @RequestParam("picUrl") String picUrl, @RequestParam("categoryId") int categoryId, @RequestParam("liquidDate") Date liquidDate,
+                                        @RequestParam("pictures") List<String> pictures, @RequestParam("transId") int transId) {
+        try {
+            SaleItem saleItem = saleItemService.createItem(itemName, Const.ITEM_STATUS.WAIT_FOR_LIQUIDATION, price, liquidDate, picUrl, categoryId, transId, 0, 0);
+            if (saleItem != null) {
+                if (pictures.size() != 0) {
+                    for (int i = 0; i < pictures.size(); i++) {
+                        pictureService.savePicture(pictures.get(i), saleItem.getId(), Const.PICTURE_STATUS.ITEM);
+                    }
+                }
+                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> suggestItem(@RequestParam(value = "lat", required = false) String latString, @RequestParam(value = "lng", required = false) String lngString, @RequestParam(value = "page", required = false) Integer page) {

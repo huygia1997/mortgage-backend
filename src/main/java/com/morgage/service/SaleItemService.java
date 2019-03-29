@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -57,6 +58,7 @@ public class SaleItemService {
             saleItemDetail.setCategoryImgUrl(category.getIconUrl());
             saleItemDetail.setCategoryName(category.getCategoryName());
             saleItemDetail.setId(saleItem.getId());
+            saleItemDetail.setAvaUrl(saleItem.getPicUrl());
             saleItemDetail.setName(saleItem.getItemName());
             saleItemDetail.setPrice(saleItem.getPrice());
             saleItemDetail.setView(saleItem.getViewCount());
@@ -153,5 +155,22 @@ public class SaleItemService {
         List<SaleItem> listItem = saleItemRepository.findAllByItemNameContaining(searchValue);
 
         return listItem;
+    }
+
+    public SaleItem createItem(String itemName, int status, int price, Date liquidationDate, String picUrl, int categoryId, int transactionId, int favoriteCount, int viewCount) {
+        SaleItem saleItem = new SaleItem();
+        saleItem.setItemName(itemName);
+        saleItem.setPicUrl(picUrl);
+        saleItem.setFavoriteCount(favoriteCount);
+        saleItem.setStatus(status);
+        saleItem.setViewCount(viewCount);
+        saleItem.setCategoryId(categoryId);
+        Timestamp liquidDate = new Timestamp(liquidationDate.getTime());
+        saleItem.setLiquidationDate(liquidDate);
+        saleItem.setPrice(price);
+        saleItem.setTransactionId(transactionId);
+
+
+        return saleItemRepository.saveAndFlush(saleItem);
     }
 }

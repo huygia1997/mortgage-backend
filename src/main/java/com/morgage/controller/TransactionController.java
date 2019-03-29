@@ -84,7 +84,7 @@ public class TransactionController {
                 // insert picture to db
                 if (pictures.size() != 0) {
                     for (int i = 0; i < pictures.size(); i++) {
-                        pictureService.savePictureOfTransaction(pictures.get(i), transaction.getId(), Const.PICTURE_STATUS.TRANSACTION);
+                        pictureService.savePicture(pictures.get(i), transaction.getId(), Const.PICTURE_STATUS.TRANSACTION);
                     }
                 }
                 if (pawneeId != Const.DEFAULT_PAWNEE_ID) {
@@ -129,7 +129,7 @@ public class TransactionController {
     @RequestMapping(value = "/cam-do", method = RequestMethod.GET)
     public ResponseEntity<?> getAllTransactions(@RequestParam("shopId") int shopId) {
         try {
-            List<Transaction> rs = transactionService.getAllTransaction(shopId);
+            List<Transaction> rs = transactionService.getAllTransaction(shopId, Const.TRANSACTION_STATUS.DEFAULT);
             return new ResponseEntity<List<Transaction>>(rs, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);

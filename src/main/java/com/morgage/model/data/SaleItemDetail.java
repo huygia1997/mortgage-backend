@@ -11,6 +11,15 @@ public class SaleItemDetail {
     private String categoryName;
     private Boolean checkFavorite;
     private int shopId;
+    private String avaUrl;
+
+    public String getAvaUrl() {
+        return avaUrl;
+    }
+
+    public void setAvaUrl(String avaUrl) {
+        this.avaUrl = avaUrl;
+    }
 
     public Boolean getCheckFavorite() {
         return checkFavorite;

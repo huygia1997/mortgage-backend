@@ -16,7 +16,7 @@ public class SaleItem implements Serializable {
     private int price;
     @Column(name = "status")
     private Integer status;
-    @Column(name = "category_Id")
+    @Column(name = "category_id")
     private Integer categoryId;
     @Column(name = "view_count")
     private Integer viewCount;
@@ -30,6 +30,14 @@ public class SaleItem implements Serializable {
     private Timestamp liquidationDate;
     @Column(name = "favorite_count")
     private int favoriteCount;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
 
     public int getFavoriteCount() {
         return favoriteCount;

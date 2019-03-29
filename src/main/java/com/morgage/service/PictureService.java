@@ -19,10 +19,11 @@ public class PictureService {
         return pictureRepository.findAllByObjectIdAndStatus(transId, status);
     }
 
-    public Picture savePictureOfTransaction(String picUrl, int transId, int status) {
+    public Picture savePicture(String picUrl, int objId, int status) {
         Picture picture = new Picture();
         picture.setPictureUrl(picUrl);
-        picture.setObjectId(transId);
+        picture.setObjectId(objId);
+        picture.setStatus(status);
         return pictureRepository.saveAndFlush(picture);
     }
 }

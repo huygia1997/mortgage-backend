@@ -79,8 +79,12 @@ public class TransactionService {
         return transactionLogRepository.findAllByTransactionId(transactionId);
     }
 
-    public List<Transaction> getAllTransaction(int shopId) {
-        return transactionRepository.findAllByShopId(shopId);
+    public List<Transaction> getAllTransaction(int shopId, int status) {
+        return transactionRepository.findAllByShopIdAndStatusNot(shopId, status);
+    }
+
+    public List<Transaction> getTransByStatus(int shopId, int status) {
+        return transactionRepository.findAllByShopIdAndStatus(shopId, status);
     }
 
     public TransactionLog paymentTransaction(int transactionId, Date paidDate) {
