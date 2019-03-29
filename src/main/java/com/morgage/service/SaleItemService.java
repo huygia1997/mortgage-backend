@@ -21,14 +21,16 @@ public class SaleItemService {
     private final CategoryRepository categoryRepository;
     private final TransactionRepository transactionRepository;
     private final PictureRepository pictureRepository;
+    private final ShopRepository shopRepository;
 
-    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawneeFavoriteItemRepository pawneeFavoriteItemRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, PictureRepository pictureRepository) {
+    public SaleItemService(SaleItemRepository saleItemRepository, PawneeService pawneeService, PawneeFavoriteItemRepository pawneeFavoriteItemRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, PictureRepository pictureRepository, ShopRepository shopRepository) {
         this.saleItemRepository = saleItemRepository;
         this.pawneeService = pawneeService;
         this.pawneeFavoriteItemRepository = pawneeFavoriteItemRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
         this.pictureRepository = pictureRepository;
+        this.shopRepository = shopRepository;
     }
 
 
@@ -69,7 +71,7 @@ public class SaleItemService {
                 } else saleItemDetail.setCheckFavorite(false);
             } else saleItemDetail.setCheckFavorite(false);
             Transaction transaction = transactionRepository.findTransactionById(saleItem.getTransactionId());
-            saleItemDetail.setShopId(transaction.getShopId());
+            saleItemDetail.setShop(shopRepository.findShopById(transaction.getShopId()));
             List<Picture> listPicture = pictureRepository.findAllByObjectIdAndStatus(itemId, Const.PICTURE_STATUS.ITEM);
             List<String> listUrlPicture = new ArrayList<>();
             if (listPicture != null) {

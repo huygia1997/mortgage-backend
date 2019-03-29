@@ -1,5 +1,7 @@
 package com.morgage.model.data;
 
+import com.morgage.model.Shop;
+
 import java.util.List;
 
 public class SaleItemDetail {
@@ -10,7 +12,6 @@ public class SaleItemDetail {
     private int categoryId;
     private String categoryName;
     private Boolean checkFavorite;
-    private int shopId;
     private String avaUrl;
 
     public String getAvaUrl() {
@@ -19,6 +20,15 @@ public class SaleItemDetail {
 
     public void setAvaUrl(String avaUrl) {
         this.avaUrl = avaUrl;
+    }
+    private Shop shop;
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public Boolean getCheckFavorite() {
@@ -29,13 +39,6 @@ public class SaleItemDetail {
         this.checkFavorite = checkFavorite;
     }
 
-    public int getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(int shopId) {
-        this.shopId = shopId;
-    }
 
     public String getCategoryName() {
         return categoryName;
