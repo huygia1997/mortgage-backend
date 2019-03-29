@@ -50,7 +50,7 @@ public class SaleItemController {
 
     @RequestMapping(value = "/thong-tin-san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> getItemInformation(@RequestParam("itemId") Integer itemId, @RequestParam(value = "userId", required = false) Integer userId) {
-        SaleItemDetail item = saleItemService.getSaleItemInformation(itemId, userId);
+        SaleItemDetail item = saleItemService.getSaleItemInformation(itemId, userId, true);
         if (item != null) {
             return new ResponseEntity<SaleItemDetail>(item, HttpStatus.OK);
         } else {

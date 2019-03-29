@@ -48,11 +48,13 @@ public class SaleItemService {
         return saleItemRepository.saveAndFlush(item);
     }
 
-    public SaleItemDetail getSaleItemInformation(int itemId, Integer userId) {
+    public SaleItemDetail getSaleItemInformation(int itemId, Integer userId, Boolean isUser) {
         SaleItem saleItem = saleItemRepository.findById(itemId);
         if (saleItem != null) {
-            saleItem.setViewCount(saleItem.getViewCount() + 1);
-            saleItemRepository.save(saleItem);
+            if(isUser){
+                saleItem.setViewCount(saleItem.getViewCount() + 1);
+                saleItemRepository.save(saleItem);
+            }
             SaleItemDetail saleItemDetail = new SaleItemDetail();
             saleItemDetail.setStatus(saleItem.getStatus());
             Category category = categoryRepository.findCategoryById(saleItem.getCategoryId());
@@ -70,8 +72,10 @@ public class SaleItemService {
                     saleItemDetail.setCheckFavorite(true);
                 } else saleItemDetail.setCheckFavorite(false);
             } else saleItemDetail.setCheckFavorite(false);
-            Transaction transaction = transactionRepository.findTransactionById(saleItem.getTransactionId());
-            saleItemDetail.setShop(shopRepository.findShopById(transaction.getShopId()));
+            if(isUser){
+                Transaction transaction = transactionRepository.findTransactionById(saleItem.getTransactionId());
+                saleItemDetail.setShop(shopRepository.findShopById(transaction.getShopId()));
+            }
             List<Picture> listPicture = pictureRepository.findAllByObjectIdAndStatus(itemId, Const.PICTURE_STATUS.ITEM);
             List<String> listUrlPicture = new ArrayList<>();
             if (listPicture != null) {
