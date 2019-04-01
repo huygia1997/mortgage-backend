@@ -69,5 +69,13 @@ public class CategoryController {
         }
         return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
     }
+    @RequestMapping(value = "/get-all-category")
+    public ResponseEntity<?> getAllCategory() {
+        try {
+            return new ResponseEntity<List<Category>>(categoryService.getAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
