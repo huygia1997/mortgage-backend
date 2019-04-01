@@ -93,9 +93,16 @@ public class SearchController {
             } else {
                 sort = new Sort(new Sort.Order(Sort.Direction.DESC, "view_count"));
             }
-            Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
-            if (cateId == null) {
-                    list = shopService.getShopFilterWithoutCateId(disId, pageable);
+            Pageable pageable = null;
+            if (sort == null) {
+                pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE);
+            } else {
+                pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
+            }
+            if (cateId == null & disId == null) {
+                list = shopService.getShopFilterWithoutDisIdAndCateId(pageable);
+            } else if (cateId == null) {
+                list = shopService.getShopFilterWithoutCateId(disId, pageable);
             } else if (disId == null) {
                 list = shopService.getShopFilterWithoutDisId(cateId, pageable);
             } else {
