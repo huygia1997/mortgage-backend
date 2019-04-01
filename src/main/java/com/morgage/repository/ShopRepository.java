@@ -62,17 +62,18 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     @Query(value = queryWithoutDistance, nativeQuery = true)
     List<Shop> suggestShopWithoutDistance(Pageable pageable);
 
-    String SHOP_FILTER_QUERY = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from has_category_item f join shop sho on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId and dist.id = :disId";
+    String SHOP_FILTER_QUERY = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from shop sho join has_category_item f on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId and dist.id = :disId";
 
     @Query(value = SHOP_FILTER_QUERY, nativeQuery = true)
     List<Shop> getShopFilter(@Param("cateId") int cateId, @Param("disId") int disId, Pageable pageable);
 
-    String SHOP_FILTER_QUERY_WITHOUT_DISID = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from has_category_item f join shop sho on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId ";
+    String SHOP_FILTER_QUERY_WITHOUT_DISID = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from  shop sho  join has_category_item f on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId ";
 
     @Query(value = SHOP_FILTER_QUERY_WITHOUT_DISID, nativeQuery = true)
     List<Shop> getShopFilterWithoutDisId(@Param("cateId") int cateId, Pageable pageable);
 
-    String SHOP_FILTE_QUERY_WITHOUT_CATEID = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from has_category_item f join shop sho on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where dist.id = :disId";
+    String SHOP_FILTE_QUERY_WITHOUT_CATEID = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from shop sho  join has_category_item f  on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where dist.id = :disId";
+
     @Query(value = SHOP_FILTE_QUERY_WITHOUT_CATEID, nativeQuery = true)
     List<Shop> getShopFilterWithoutCateId(@Param("disId") int disId, Pageable pageable);
 
