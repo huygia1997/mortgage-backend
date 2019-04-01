@@ -1,5 +1,6 @@
 package com.morgage.service;
 
+import com.morgage.common.Const;
 import com.morgage.model.*;
 import com.morgage.model.data.SaleItemDetail;
 import com.morgage.model.data.ShopDataForGuest;
@@ -221,7 +222,22 @@ public class ShopService {
     public List<Shop> getShopFilterWithoutDisId(int cateId, Pageable pageable) {
         return shopRepository.getShopFilterWithoutDisId(cateId, pageable);
     }
+
     public List<Shop> getShopFilterWithoutDisIdAndCateId(Pageable pageable) {
         return shopRepository.getAllSort(pageable);
+    }
+
+    public List<Shop> getAllShopRequest() {
+        return shopRepository.findAllByStatus(Const.SHOP_STATUS.UNACTIVE);
+    }
+
+    public Shop processShopRequest(int shopId, boolean action) {
+        Shop shop = shopRepository.findShopById(shopId);
+        if (action) {
+            shop.setStatus(Const.SHOP_STATUS.ACTIVE);
+        } else {
+            shop.setStatus(Const.SHOP_STATUS.BANNED);
+        }
+        return shopRepository.save(shop);
     }
 }

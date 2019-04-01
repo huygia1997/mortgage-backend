@@ -82,4 +82,6 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
 
     @Query(value = "select s from Shop s")
     List<Shop> paging(Pageable pageable);
+
+    List<Shop> findAllByStatus(int status);
 }

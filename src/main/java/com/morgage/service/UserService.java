@@ -114,4 +114,15 @@ public class UserService {
             }
         } else return null;
     }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User setUserRole(User user, int roleId) {
+        Role role = roleRepository.findById(roleId);
+        user.setRole(role);
+        userRepository.save(user);
+        return user;
+    }
 }
