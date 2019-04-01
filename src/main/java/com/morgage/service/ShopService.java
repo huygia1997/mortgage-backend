@@ -221,4 +221,7 @@ public class ShopService {
     public List<Shop> getShopFilterWithoutDisId(int cateId, Pageable pageable) {
         return shopRepository.getShopFilterWithoutDisId(cateId, pageable);
     }
+    public List<Shop> getShopFilterWithoutDisIdAndCateId(Pageable pageable) {
+        return shopRepository.getAllSort(pageable);
+    }
 }
