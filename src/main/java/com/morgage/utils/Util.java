@@ -1,13 +1,14 @@
 package com.morgage.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.morgage.common.Const;
+import com.morgage.service.PictureService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 public class Util {
     /////calculate “time ago”
@@ -108,5 +109,39 @@ public class Util {
             calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + paymentTerm * 1);
         }
         return calendar.getTime();
+    }
+
+    public Boolean insertPicturesToDB(PictureService pictureService, String pictures, int ObjId, int type) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList array = mapper.readValue(pictures, ArrayList.class);
+            if (array.size() != 0) {
+                for (int i=0; i<array.size(); i++) {
+                    HashMap<String, String> map = (HashMap<String, String>) array.get(i);
+                    String picUrlX = "";
+                    String idCloud= "";
+                    String deleteHash= "";
+                    for(Map.Entry<String, String> entry : map.entrySet()) {
+                        if (entry.getKey().equals("pictureUrl")) {
+                            picUrlX = entry.getValue();
+                        }
+                        if (entry.getKey().equals("idCloud")) {
+                            idCloud = entry.getValue();
+                        }
+                        if (entry.getKey().equals("deleteHash")) {
+                            deleteHash = entry.getValue();
+                        }
+                        pictureService.savePicture(picUrlX, ObjId, type, idCloud, deleteHash);
+                    }
+
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return false;
     }
 }

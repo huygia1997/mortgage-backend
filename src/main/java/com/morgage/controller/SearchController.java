@@ -91,7 +91,7 @@ public class SearchController {
             } else if (sortType == Const.SORT_SHOP.RATING) {
                 sort = new Sort(new Sort.Order(Sort.Direction.DESC, "rating"));
             } else {
-                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "viewCount"));
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC, "view_count"));
             }
             Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
             if (cateId == null) {

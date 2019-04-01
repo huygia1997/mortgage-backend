@@ -1,11 +1,13 @@
 package com.morgage.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.morgage.common.Const;
 import com.morgage.model.*;
 import com.morgage.model.data.CategoryData;
 import com.morgage.model.data.ExistPawneeData;
 import com.morgage.model.data.TransactionDetail;
 import com.morgage.service.*;
+import com.morgage.utils.Util;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -18,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.core.env.Environment;
 
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @PropertySource(value = "classpath:messages.properties", encoding = "UTF-8")
@@ -51,7 +51,7 @@ public class TransactionController {
     public ResponseEntity<?> createTransaction(@RequestParam("pawneeId") int pawneeId, @RequestParam("shopId") int shopId, @RequestParam("itemName") String itemName, @RequestParam("pawneeInfoId") int pawneeInfoId, @RequestParam("note") String description, @RequestParam("basePrice") String basePrice,
                                                @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate, @RequestParam("startDate") Date startDate, @RequestParam("categoryId") int categoryId,
                                                @RequestParam("pawneeName") String pawneeName, @RequestParam("email") String userEmail, @RequestParam("phone") String userPhone, @RequestParam("address") String address, @RequestParam("identityNumber") String identityNumber
-            , @RequestParam("pictures") List<String> pictures,
+            , @RequestParam("pictures") String pictures,
                                                @RequestParam("attributes") List<String> attributes) {
         //test
 //        Calendar calendar = Calendar.getInstance();
@@ -82,11 +82,8 @@ public class TransactionController {
                     }
                 }
                 // insert picture to db
-                if (pictures.size() != 0) {
-                    for (int i = 0; i < pictures.size(); i++) {
-                        pictureService.savePicture(pictures.get(i), transaction.getId(), Const.PICTURE_STATUS.TRANSACTION);
-                    }
-                }
+                Util util = new Util();
+                util.insertPicturesToDB(pictureService, pictures, transaction.getId(), Const.PICTURE_STATUS.TRANSACTION);
                 if (pawneeId != Const.DEFAULT_PAWNEE_ID) {
                     notificationService.createNotification(env.getProperty("acceptMessage"), Const.NOTIFICATION_TYPE.TRANSACTION_PAWNEE, pawneeService.getAccountIdFromPawnerId(pawneeId), transaction.getId());
                     return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -145,7 +142,7 @@ public class TransactionController {
                 rs.setTransaction(transaction);
                 List<TransactionLog> transactionLogs = transactionService.getAllTransactionLog(transId);
                 rs.setTransactionLogs(transactionLogs);
-                List<Picture> pictures = pictureService.getAllPicturesByTransId(transId, Const.PICTURE_STATUS.TRANSACTION);
+                List<Picture> pictures = pictureService.findAllByObjectIdAndStatus(transId, Const.PICTURE_STATUS.TRANSACTION);
                 rs.setPictureList(pictures);
                 List<TransactionItemAttribute> transactionItemAttributes = transactionService.getAllTransAttr(transId);
                 rs.setTransactionItemAttributes(transactionItemAttributes);

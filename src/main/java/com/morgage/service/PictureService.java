@@ -14,16 +14,18 @@ public class PictureService {
         this.pictureRepository = pictureRepository;
     }
 
-    public List<Picture> getAllPicturesByTransId(int transId, int status) {
+    public List<Picture> findAllByObjectIdAndStatus(int objId, int status) {
 
-        return pictureRepository.findAllByObjectIdAndStatus(transId, status);
+        return pictureRepository.findAllByObjectIdAndStatus(objId, status);
     }
 
-    public Picture savePicture(String picUrl, int objId, int status) {
+    public Picture savePicture(String picUrl, int objId, int status, String idCloud, String deleteHash) {
         Picture picture = new Picture();
         picture.setPictureUrl(picUrl);
         picture.setObjectId(objId);
         picture.setStatus(status);
+        picture.setIdCloud(idCloud);
+        picture.setDeleteHash(deleteHash);
         return pictureRepository.saveAndFlush(picture);
     }
 }

@@ -1,11 +1,23 @@
 package com.morgage.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.api.client.json.Json;
+import com.google.api.client.json.JsonGenerator;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.morgage.common.Const;
 import com.morgage.model.PawneeFavoriteItem;
+import com.morgage.model.Picture;
 import com.morgage.model.SaleItem;
 import com.morgage.model.Transaction;
+import com.morgage.model.data.SaleItemDataForShop;
 import com.morgage.model.data.SaleItemDetail;
 import com.morgage.service.*;
+import com.morgage.utils.Util;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -20,9 +32,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @PropertySource(value = "classpath:messages.properties", encoding = "UTF-8")
@@ -145,21 +157,35 @@ public class SaleItemController {
 
     @RequestMapping(value = "/san-pham", method = RequestMethod.GET)
     public ResponseEntity<?> getItemByShop(@RequestParam("shopId") int shopId) {
-        return new ResponseEntity<List<SaleItem>>(saleItemService.getItemListByShop(shopId), HttpStatus.OK);
+        try {
+            List<SaleItem> saleItems = saleItemService.getItemListByShop(shopId);
+            List<SaleItemDataForShop> saleItemDataForShops = new ArrayList<>();
+            if (saleItems.size() != 0) {
+                for (int i=0; i<saleItems.size(); i++) {
+                    SaleItemDataForShop saleItemDataForShop = new SaleItemDataForShop();
+                    saleItemDataForShop.setSaleItem(saleItems.get(i));
+                    saleItemDataForShop.setPictureList(pictureService.findAllByObjectIdAndStatus(saleItems.get(i).getId(), Const.PICTURE_STATUS.ITEM));
+                    saleItemDataForShops.add(saleItemDataForShop);
+                }
+            }
+            return new ResponseEntity<List<SaleItemDataForShop>>(saleItemDataForShops, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
     @RequestMapping(value = "/tao-san-pham", method = RequestMethod.POST)
     public ResponseEntity<?> createItem(@RequestParam("itemName") String itemName, @RequestParam("price") int price,
                                         @RequestParam("picUrl") String picUrl, @RequestParam("categoryId") int categoryId, @RequestParam("liquidDate") Date liquidDate,
-                                        @RequestParam("pictures") List<String> pictures, @RequestParam("transId") int transId) {
+                                        @RequestParam("pictures") String pictures, @RequestParam("transId") int transId) {
         try {
             SaleItem saleItem = saleItemService.createItem(itemName, Const.ITEM_STATUS.WAIT_FOR_LIQUIDATION, price, liquidDate, picUrl, categoryId, transId, 0, 0);
             if (saleItem != null) {
-                if (pictures.size() != 0) {
-                    for (int i = 0; i < pictures.size(); i++) {
-                        pictureService.savePicture(pictures.get(i), saleItem.getId(), Const.PICTURE_STATUS.ITEM);
-                    }
-                }
+                //insert pictures to db:
+                Util util = new Util();
+                util.insertPicturesToDB(pictureService, pictures, saleItem.getId(), Const.PICTURE_STATUS.ITEM);
                 return new ResponseEntity<Boolean>(true, HttpStatus.OK);
             } else {
                 return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
@@ -169,6 +195,7 @@ public class SaleItemController {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
+
 
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
