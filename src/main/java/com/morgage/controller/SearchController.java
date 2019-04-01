@@ -95,7 +95,7 @@ public class SearchController {
             }
             Pageable pageable = new PageRequest(page, Const.DEFAULT_ITEM_PER_PAGE, sort);
             if (cateId == null) {
-                list = shopService.getShopFilterWithoutCateId(disId, pageable);
+                    list = shopService.getShopFilterWithoutCateId(disId, pageable);
             } else if (disId == null) {
                 list = shopService.getShopFilterWithoutDisId(cateId, pageable);
             } else {
