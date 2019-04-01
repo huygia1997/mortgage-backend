@@ -131,11 +131,13 @@ public class Util {
                         if (entry.getKey().equals("deleteHash")) {
                             deleteHash = entry.getValue();
                         }
-                        pictureService.savePicture(picUrlX, ObjId, type, idCloud, deleteHash);
-                    }
 
-                    return true;
+                    }
+                    pictureService.savePicture(picUrlX, ObjId, type, idCloud, deleteHash);
+
+
                 }
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -177,9 +177,9 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/tra-lai", method = RequestMethod.POST)
-    public ResponseEntity<?> paymentTransaction(@RequestParam("transactionid") int transactionId, @RequestParam("date") Date date) {
+    public ResponseEntity<?> paymentTransaction(@RequestParam("transactionId") int transactionId, @RequestParam("date") Date date, @RequestParam("description") String  description) {
         try {
-            TransactionLog transactionLog = transactionService.paymentTransaction(transactionId, date);
+            TransactionLog transactionLog = transactionService.paymentTransaction(transactionId, date, description);
             if (transactionLog != null) {
                 //create trans his
                 transactionService.createTransactionHistory(transactionId, Const.TRANSACTION_HISTORY.PAID, env.getProperty("paid"));
@@ -190,7 +190,7 @@ public class TransactionController {
         }
     }
     @RequestMapping(value = "/dong-hop-dong", method = RequestMethod.POST)
-    public ResponseEntity<?> closeTransaction(@RequestParam("transactionid") int transactionId) {
+    public ResponseEntity<?> closeTransaction(@RequestParam("transactionId") int transactionId) {
         try {
              if(transactionService.changeTransactionStatus(transactionId,Const.TRANSACTION_STATUS.CANCELED)){
                  transactionService.createTransactionHistory(transactionId, Const.TRANSACTION_HISTORY.CLOSE, env.getProperty("close"));

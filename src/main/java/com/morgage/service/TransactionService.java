@@ -87,11 +87,11 @@ public class TransactionService {
         return transactionRepository.findAllByShopIdAndStatus(shopId, status);
     }
 
-    public TransactionLog paymentTransaction(int transactionId, Date paidDate) {
+    public TransactionLog paymentTransaction(int transactionId, Date paidDate, String description) {
         Transaction transaction = transactionRepository.findById(transactionId);
         if (transaction != null) {
-            Date nestPaymentDate = Util.getEndDay(transaction.getNextPaymentDate(), transaction.getPaymentType(), transaction.getPaymentTerm());
-            Timestamp timeStamp = new Timestamp(nestPaymentDate.getTime());
+            Date nextPaymentDate = Util.getEndDay(transaction.getNextPaymentDate(), transaction.getPaymentType(), transaction.getPaymentTerm());
+            Timestamp timeStamp = new Timestamp(nextPaymentDate.getTime());
             transaction.setNextPaymentDate(timeStamp);
             transactionRepository.save(transaction);
             TransactionLog transactionLog = transactionLogRepository.findByStatusAndTransactionId(Const.TRANSACTION_LOG_STATUS.UNPAID, transactionId);
@@ -99,14 +99,16 @@ public class TransactionService {
                 transactionLog.setStatus(Const.TRANSACTION_LOG_STATUS.PAID);
                 Timestamp paidDateTimeStamp = new Timestamp(paidDate.getTime());
                 transactionLog.setPaidDate(paidDateTimeStamp);
+                transactionLog.setDescription(description);
                 transactionLogRepository.save(transactionLog);
                 TransactionLog transactionLogNew = new TransactionLog();
                 transactionLogNew.setTransactionId(transaction.getId());
                 transactionLogNew.setStatus(Const.TRANSACTION_LOG_STATUS.UNPAID);
                 transactionLogNew.setStartDate(transactionLog.getEndDate());
-                Date endDate = Util.getEndDay(transactionLogNew.getStartDate(), transaction.getPaymentType(), transaction.getPaymentType());
+                Date endDate = Util.getEndDay(transactionLogNew.getStartDate(), transaction.getPaymentType(), transaction.getPaymentTerm());
                 Timestamp end = new Timestamp(endDate.getTime());
                 transactionLogNew.setEndDate(end);
+
                 return transactionLogRepository.saveAndFlush(transactionLogNew);
             } else return null;
         } else return null;

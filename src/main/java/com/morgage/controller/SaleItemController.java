@@ -172,8 +172,6 @@ public class SaleItemController {
         } catch (Exception e) {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
-
-
     }
 
     @RequestMapping(value = "/tao-san-pham", method = RequestMethod.POST)
