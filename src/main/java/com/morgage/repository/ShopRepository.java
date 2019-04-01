@@ -46,7 +46,7 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     String countPointWithoutDistance = "(0.4 * (0.2 * " + viewSelect + " + 01 * " + favoriteSelect + " + 0.7 * 10 * " + rateSelect + "))";
 
 
-    // 0.4 x (0.2 x view + 01 x like + 0.7 x 10 x rate) + 0.6 x (4.8 - dist)
+    // 0.4 x (0.182 x view + 0.091 x like + 0.727 x 10 x rate) + 0.6 x (2.805 - dist)
     String query = "select *, " + countPoint + " as point_s"
             + " from shop sho join address dest on sho.address_id = dest.id "
             + "order by point_s desc";
