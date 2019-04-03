@@ -40,20 +40,11 @@ public class ShopController {
 
     @RequestMapping(value = "/thong-tin-cua-hang", method = RequestMethod.GET)
     public ResponseEntity<?> getShopInformation(@RequestParam("shopId") int shopId, @RequestParam(value = "userId", required = false) Integer userId) {
-        if (userId != null) {
-            ShopInformation shopInformation = shopService.showShopInformation(shopId, userId);
-            if (shopInformation != null) {
-                return new ResponseEntity<ShopInformation>(shopInformation, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
-            }
+        ShopInformation shopInformation = shopService.showShopInformation(shopId, userId);
+        if (shopInformation != null) {
+            return new ResponseEntity<ShopInformation>(shopInformation, HttpStatus.OK);
         } else {
-            ShopDataForGuest shopInformation = shopService.showShopInformationForGuest(shopId);
-            if (shopInformation != null) {
-                return new ResponseEntity<ShopDataForGuest>(shopInformation, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
-            }
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -125,4 +125,14 @@ public class UserService {
         userRepository.save(user);
         return user;
     }
+
+    public User setUserRolebyUSerId(int userId, int roleId) {
+        User user = userRepository.findById(userId);
+        Role role = roleRepository.findById(roleId);
+        if (user != null && role != null) {
+            user.setRole(role);
+            userRepository.save(user);
+            return user;
+        } else return null;
+    }
 }
