@@ -87,6 +87,10 @@ public class ShopService {
         return shopRepository.paging(pageable);
     }
 
+    public List<Shop> getAll() {
+        return shopRepository.findAll();
+    }
+
     public Shop findShopByAccountId(int accId) {
         return shopRepository.findByAccountId(accId);
     }
@@ -124,16 +128,18 @@ public class ShopService {
             }
             shop.setViewCount(shop.getViewCount() + 1);
             shopRepository.save(shop);
-            Pawnee pawnee = pawneeRepository.findByAccountId(userId);
-            if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId()) != null) {
-                shopInformation.setCheckFavorite(true);
-            } else {
-                shopInformation.setCheckFavorite(false);
-            }
-            if (rateShopRepository.findByShopIdAndPawneeId(shopId, pawnee.getId()) != null) {
-                shopInformation.setCheckRate(true);
-            } else {
-                shopInformation.setCheckRate(false);
+            if(userId!=null){
+                Pawnee pawnee = pawneeRepository.findByAccountId(userId);
+                if (pawneeFavoriteShopRepository.findByShopIdAndPawnerId(shopId, pawnee.getId()) != null) {
+                    shopInformation.setCheckFavorite(true);
+                } else {
+                    shopInformation.setCheckFavorite(false);
+                }
+                if (rateShopRepository.findByShopIdAndPawneeId(shopId, pawnee.getId()) != null) {
+                    shopInformation.setCheckRate(true);
+                } else {
+                    shopInformation.setCheckRate(false);
+                }
             }
             shopInformation.setViewCount(shop.getViewCount());
             shopInformation.setAvaUrl(shop.getAvatarUrl());
@@ -171,25 +177,25 @@ public class ShopService {
         }
     }
 
-    public ShopDataForGuest showShopInformationForGuest(int shopId) {
-        Shop shop = shopRepository.findById(shopId);
-        if (shop == null) {
-            return null;
-        } else {
-            Address address = addressRepository.findAddressById(shop.getAddressId());
-            List<Category> listCategoryName = new ArrayList<>();
-            List<Integer> listCategory = entityManager.createQuery("SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
-            if (listCategory != null) {
-                for (int item : listCategory) {
-                    listCategoryName.add(categoryRepository.findById(item));
-                }
-            }
-            shop.setViewCount(shop.getViewCount() + 1);
-            shopRepository.save(shop);
-            ShopDataForGuest shopDataForGuest = new ShopDataForGuest(shop.getId(), shop.getShopName(), shop.getPhoneNumber(), shop.getFacebook(), shop.getEmail(), address.getLatitude(), address.getLongtitude(), address.getFullAddress(), shop.getAvatarUrl(), listCategoryName);
-            return shopDataForGuest;
-        }
-    }
+//    public ShopDataForGuest showShopInformationForGuest(int shopId) {
+//        Shop shop = shopRepository.findById(shopId);
+//        if (shop == null) {
+//            return null;
+//        } else {
+//            Address address = addressRepository.findAddressById(shop.getAddressId());
+//            List<Category> listCategoryName = new ArrayList<>();
+//            List<Integer> listCategory = entityManager.createQuery("SELECT  DISTINCT idCategoryItem from HasCategoryItem  where id_shop= :id").setParameter("id", shopId).getResultList();
+//            if (listCategory != null) {
+//                for (int item : listCategory) {
+//                    listCategoryName.add(categoryRepository.findById(item));
+//                }
+//            }
+//            shop.setViewCount(shop.getViewCount() + 1);
+//            shopRepository.save(shop);
+//            ShopDataForGuest shopDataForGuest = new ShopDataForGuest(shop.getId(), shop.getShopName(), shop.getPhoneNumber(), shop.getFacebook(), shop.getEmail(), address.getLatitude(), address.getLongtitude(), address.getFullAddress(), shop.getAvatarUrl(), listCategoryName);
+//            return shopDataForGuest;
+//        }
+//    }
 
     public Integer getAccountIdByShopId(int shopId) {
         Shop shop = new Shop();
@@ -252,11 +258,13 @@ public class ShopService {
 
     public Shop processShopRequest(int shopId, boolean action) {
         Shop shop = shopRepository.findShopById(shopId);
-        if (action) {
-            shop.setStatus(Const.SHOP_STATUS.ACTIVE);
-        } else {
-            shop.setStatus(Const.SHOP_STATUS.BANNED);
-        }
-        return shopRepository.save(shop);
+        if (shop != null) {
+            if (action) {
+                shop.setStatus(Const.SHOP_STATUS.ACTIVE);
+            } else {
+                shop.setStatus(Const.SHOP_STATUS.BANNED);
+            }
+            return shopRepository.save(shop);
+        } else return null;
     }
 }

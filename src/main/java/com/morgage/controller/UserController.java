@@ -75,7 +75,7 @@ public class UserController {
                 registerEmail.setSubject(env.getProperty("register.emailSubject"));
 //                registerEmail.setText(env.getProperty("register.emailText") + appUrl
 //                        + "/register?token=" + user.getToken());
-                registerEmail.setText("http://localhost:53089/webapp/index.html?hc_reset&hc_wspath=%2Fthinhbui-OrionContent%2FMortgage-App&sap-ui-xx-componentPreload=off&origional-url=index.html&sap-ui-appCacheBuster=..%2F#/Activate/register?token="+user.getToken());
+                registerEmail.setText("http://localhost:53089/webapp/index.html?hc_reset&hc_wspath=%2Fthinhbui-OrionContent%2FMortgage-App&sap-ui-xx-componentPreload=off&origional-url=index.html&sap-ui-appCacheBuster=..%2F#/Activate/register?token=" + user.getToken());
                 mailSender.send(registerEmail);
             }
             return new ResponseEntity<String>(HttpStatus.OK);
@@ -117,22 +117,24 @@ public class UserController {
             if (user == null) {
                 return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
             } else if (user.getStatus() == Const.USER_STATUS.NOT_ACTIVE) {
-                return new ResponseEntity<String>("Unactive account", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<String>("inactive account", HttpStatus.UNAUTHORIZED);
             } else {
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
                 if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
                     UserShop userShop = new UserShop();
                     userShop.setUser(user);
                     Shop shop = shopService.findShopByAccountId(user.getId());
-                    userShop.setShop(shop);
-                    List<Transaction> transactions = transactionService.getTransByStatus(shop.getId(), Const.TRANSACTION_STATUS.DEFAULT);
-                    if (transactions.size() != 0) {
-                        userShop.setTransDefaultId(transactions.get(0).getId());
-                    }
-                    return new ResponseEntity<UserShop>(userShop, HttpStatus.OK);
-                } else return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
-            }
+                    if (shop.getStatus() == Const.SHOP_STATUS.ACTIVE){
+                        userShop.setShop(shop);
+                        List<Transaction> transactions = transactionService.getTransByStatus(shop.getId(), Const.TRANSACTION_STATUS.DEFAULT);
+                        if (transactions.size() != 0) {
+                            userShop.setTransDefaultId(transactions.get(0).getId());
+                        }
+                        return new ResponseEntity<UserShop>(userShop, HttpStatus.OK);
+                    }else return new ResponseEntity<String>("Shop inactive", HttpStatus.UNAUTHORIZED);
 
+                } else return new ResponseEntity<String>("Wrong password", HttpStatus.UNAUTHORIZED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
         }

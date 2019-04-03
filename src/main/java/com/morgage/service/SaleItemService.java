@@ -62,6 +62,8 @@ public class SaleItemService {
             saleItemDetail.setCategoryImgUrl(category.getIconUrl());
             saleItemDetail.setCategoryName(category.getCategoryName());
             saleItemDetail.setId(saleItem.getId());
+            saleItemDetail.setDescription(saleItem.getDescription());
+            saleItemDetail.setLiquidationDate(saleItem.getLiquidationDate());
             saleItemDetail.setAvaUrl(saleItem.getPicUrl());
             saleItemDetail.setName(saleItem.getItemName());
             saleItemDetail.setPrice(saleItem.getPrice());

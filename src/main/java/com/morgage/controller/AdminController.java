@@ -1,5 +1,6 @@
 package com.morgage.controller;
 
+import com.morgage.common.Const;
 import com.morgage.model.Category;
 import com.morgage.model.Shop;
 import com.morgage.model.User;
@@ -54,7 +55,7 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "sua-thong-tin-nguoi-dung")
+    @RequestMapping(value = "/sua-thong-tin-nguoi-dung")
     public ResponseEntity<?> editUserRole(@RequestParam("roleId") int role, @RequestParam("email") String email) {
         try {
             User user = userService.getUserByUsername(email);
@@ -67,21 +68,24 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "yeu-cau-tro-thanh-cua-hang")
+    @RequestMapping(value = "/yeu-cau-tro-thanh-cua-hang")
     public ResponseEntity<?> managerShop() {
         try {
-            return new ResponseEntity<List<Shop>>(shopService.getAllShopRequest(), HttpStatus.OK);
-
+            return new ResponseEntity<List<Shop>>(shopService.getAll(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("False", HttpStatus.BAD_REQUEST);
-
         }
     }
 
     @RequestMapping(value = "/xu-ly-yeu-cau")
     public ResponseEntity<?> processRequest(@RequestParam("shopId") int shopId, @RequestParam("action") boolean action) {
         try {
-            return new ResponseEntity<Shop>(shopService.processShopRequest(shopId, action),HttpStatus.OK);
+            Shop shop = shopService.processShopRequest(shopId, action);
+            if (shop != null) {
+                userService.setUserRolebyUSerId(shopId, Const.ROLE_TYPE.SHOP.getRoleID());
+                return new ResponseEntity<Shop>(shop, HttpStatus.OK);
+            } else return new ResponseEntity<String>("False", HttpStatus.BAD_REQUEST);
+
         } catch (Exception e) {
             return new ResponseEntity<String>("False", HttpStatus.BAD_REQUEST);
 

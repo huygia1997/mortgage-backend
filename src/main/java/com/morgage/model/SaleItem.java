@@ -30,6 +30,16 @@ public class SaleItem implements Serializable {
     private Timestamp liquidationDate;
     @Column(name = "favorite_count")
     private int favoriteCount;
+@Column(name = "description")
+private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @ManyToOne
     @JoinColumn(name = "category_id", insertable = false, updatable = false)

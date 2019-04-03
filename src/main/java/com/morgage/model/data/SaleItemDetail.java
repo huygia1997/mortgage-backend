@@ -2,6 +2,7 @@ package com.morgage.model.data;
 
 import com.morgage.model.Shop;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class SaleItemDetail {
@@ -13,6 +14,24 @@ public class SaleItemDetail {
     private String categoryName;
     private Boolean checkFavorite;
     private String avaUrl;
+    private String description;
+    private Timestamp liquidationDate;
+
+    public Timestamp getLiquidationDate() {
+        return liquidationDate;
+    }
+
+    public void setLiquidationDate(Timestamp liquidationDate) {
+        this.liquidationDate = liquidationDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getAvaUrl() {
         return avaUrl;
