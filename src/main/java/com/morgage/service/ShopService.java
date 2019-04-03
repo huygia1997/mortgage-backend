@@ -224,8 +224,27 @@ public class ShopService {
     }
 
     public List<Shop> getShopFilterWithoutDisIdAndCateId(Pageable pageable) {
-        return shopRepository.getAllSort(pageable);
+        return shopRepository.getAllShop(pageable);
     }
+
+
+    public List<Shop> getShopMapFilter(int cateId, int disId) {
+        return shopRepository.getShopMapFilter(cateId, disId);
+    }
+
+    public List<Shop> getShopMapFilterWithoutCateId(int disId) {
+        return shopRepository.getShopMapFilterWithoutCateId(disId);
+    }
+
+    public List<Shop> getShopMapFilterWithoutDisId(int cateId) {
+        return shopRepository.getShopMapFilterWithoutDisId(cateId);
+    }
+
+    public List<Shop> getShopMapFilterWithoutDisIdAndCateId() {
+        return shopRepository.getAllMapShop();
+    }
+
+
 
     public List<Shop> getAllShopRequest() {
         return shopRepository.findAllByStatus(Const.SHOP_STATUS.UNACTIVE);

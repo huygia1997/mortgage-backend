@@ -67,6 +67,9 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     @Query(value = SHOP_FILTER_QUERY, nativeQuery = true)
     List<Shop> getShopFilter(@Param("cateId") int cateId, @Param("disId") int disId, Pageable pageable);
 
+
+
+
     String SHOP_FILTER_QUERY_WITHOUT_DISID = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from  shop sho  join has_category_item f on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id where f.id_category_item = :cateId ";
 
     @Query(value = SHOP_FILTER_QUERY_WITHOUT_DISID, nativeQuery = true)
@@ -78,10 +81,23 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     List<Shop> getShopFilterWithoutCateId(@Param("disId") int disId, Pageable pageable);
     String SHOP_FILTER_QUERY_WITHOUT_DISID_CATEID = "SELECT DISTINCT sho.id, sho.shop_name, sho.phone_number, sho.facebook, sho.email, sho.status, sho.rating, sho.policy, sho.account_id, sho.address_id, sho.view_count, sho.avatar_url, sho.favorite_count from  shop sho  join has_category_item f on sho.id = f.id_shop join address addr on sho.address_id = addr.id join district dist on dist.id = addr.district_id ";
     @Query(value = SHOP_FILTER_QUERY_WITHOUT_DISID_CATEID, nativeQuery = true)
-    List<Shop> getAllSort(Pageable pageable);
+    List<Shop> getAllShop(Pageable pageable);
 
     @Query(value = "select s from Shop s")
     List<Shop> paging(Pageable pageable);
 
     List<Shop> findAllByStatus(int status);
+
+    //for map view
+    @Query(value = SHOP_FILTER_QUERY, nativeQuery = true)
+    List<Shop> getShopMapFilter(@Param("cateId") int cateId, @Param("disId") int disId);
+
+    @Query(value = SHOP_FILTER_QUERY_WITHOUT_DISID, nativeQuery = true)
+    List<Shop> getShopMapFilterWithoutDisId(@Param("cateId") int cateId);
+
+    @Query(value = SHOP_FILTE_QUERY_WITHOUT_CATEID, nativeQuery = true)
+    List<Shop> getShopMapFilterWithoutCateId(@Param("disId") int disId);
+
+    @Query(value = SHOP_FILTER_QUERY_WITHOUT_DISID_CATEID, nativeQuery = true)
+    List<Shop> getAllMapShop();
 }

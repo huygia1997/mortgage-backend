@@ -77,8 +77,8 @@ public class SearchController {
 
     }
 
-    // search shops by filter (cateId, districtID)
-    @RequestMapping("/search/shops/filters")
+    // search shops by filter on list view (cateId, districtID, page, sort)
+    @RequestMapping("/search/shops/listfilters")
     public ResponseEntity<?> searchShopFilterResult(@RequestParam(value = "cate", required = false) Integer cateId, @RequestParam(value = "district", required = false) Integer disId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "sort", required = false) Integer sortType) {
         try {
             if (page == null) {
@@ -110,6 +110,27 @@ public class SearchController {
             }
             return new ResponseEntity<List<Shop>>(list, HttpStatus.OK);
 
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // search shops by filter on map view (cateId, districtID)
+    @RequestMapping("/search/shops/mapfilters")
+    public ResponseEntity<?> searchShopFilterResult(@RequestParam(value = "cate", required = false) Integer cateId, @RequestParam(value = "district", required = false) Integer disId) {
+
+        try {
+            List<Shop> list = new ArrayList<>();
+            if (cateId == null & disId == null) {
+                list = shopService.getShopMapFilterWithoutDisIdAndCateId();
+            } else if (cateId == null) {
+                list = shopService.getShopMapFilterWithoutCateId(disId);
+            } else if (disId == null) {
+                list = shopService.getShopMapFilterWithoutDisId(cateId);
+            } else {
+                list = shopService.getShopMapFilter(cateId, disId);
+            }
+            return new ResponseEntity<List<Shop>>(list, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
