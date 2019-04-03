@@ -13,6 +13,15 @@ public class SaleItemDetail {
     private String categoryName;
     private Boolean checkFavorite;
     private String avaUrl;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getAvaUrl() {
         return avaUrl;
