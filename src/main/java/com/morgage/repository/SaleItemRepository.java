@@ -19,7 +19,7 @@ public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
     String favoriteSelect = "sal.favorite_count";
 
     // 0.519 x (0.117 x view + 0.883 x follow ) / time + 0.481 x ( 8.88 - dist )
-    String countPoint = "(0.4 * (0.4 * " + viewSelect + " + 0.6 * " + favoriteSelect + " ) / " + timeSelect + " + 0.6 * ( 8.2 - " + distanceSelect + " ) ) as point_i";
+    String countPoint = "(0.519 * (0.117 * " + viewSelect + " + 0.883 * " + favoriteSelect + " ) / " + timeSelect + " + 0.481 * ( 8.88 - " + distanceSelect + " ) ) as point_i";
     String countPointWithoutDistance = "((0.4 * sal.view_count + 0.6 * " + favoriteSelect + " ) / " + timeSelect + " ) as point_i";
 
     String query = "select *, " + countPoint
