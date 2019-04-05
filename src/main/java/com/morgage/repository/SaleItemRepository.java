@@ -24,7 +24,7 @@ public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
 
     String query = "select *, " + countPoint
             + " from sales_item sal join transaction trans on sal.transaction_id = trans.id join shop sho on sho.id = trans.shop_id join address dest on dest.id = sho.address_id "
-            + " order by point_i DESC LIMIT 10";
+            + " order by point_i DESC";
 
 
 
