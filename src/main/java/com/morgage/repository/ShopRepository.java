@@ -41,9 +41,9 @@ public interface ShopRepository extends JpaRepository<Shop, Integer> {
     String viewSelect = "sho.view_count";
     String favoriteSelect = "sho.favorite_count";
 
-    String countPoint = "(0.4 * (0.2 * " + viewSelect + " + 01 * " + favoriteSelect + " + 0.7 * 10 * " + rateSelect + ") + 0.6 * (4.8 - " + distanceSelect + "))";
+    String countPoint = "(0.4 * (0.182 * " + viewSelect + " + 0.091 * " + favoriteSelect + " + 0.727 * 10 * " + rateSelect + ") + 0.6 * (2.805 - " + distanceSelect + "))";
 
-    String countPointWithoutDistance = "(0.4 * (0.2 * " + viewSelect + " + 01 * " + favoriteSelect + " + 0.7 * 10 * " + rateSelect + "))";
+    String countPointWithoutDistance = "(0.182 * " + viewSelect + " + 0.091 * " + favoriteSelect + " + 0.727 * 10 * " + rateSelect + ")";
 
 
     // 0.4 x (0.182 x view + 0.091 x like + 0.727 x 10 x rate) + 0.6 x (2.805 - dist)
