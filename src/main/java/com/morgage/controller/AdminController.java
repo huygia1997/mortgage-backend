@@ -4,8 +4,10 @@ import com.morgage.common.Const;
 import com.morgage.model.Category;
 import com.morgage.model.Shop;
 import com.morgage.model.User;
+import com.morgage.model.data.UserInfoData;
 import com.morgage.repository.RoleRepository;
 import com.morgage.service.CategoryService;
+import com.morgage.service.PawneeService;
 import com.morgage.service.ShopService;
 import com.morgage.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -21,12 +24,14 @@ public class AdminController {
     private final ShopService shopService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final PawneeService pawneeService;
     private final RoleRepository roleRepository;
 
-    public AdminController(ShopService shopService, CategoryService categoryService, UserService userService, RoleRepository roleRepository) {
+    public AdminController(ShopService shopService, CategoryService categoryService, UserService userService, PawneeService pawneeService, RoleRepository roleRepository) {
         this.shopService = shopService;
         this.categoryService = categoryService;
         this.userService = userService;
+        this.pawneeService = pawneeService;
         this.roleRepository = roleRepository;
     }
 
@@ -49,7 +54,12 @@ public class AdminController {
     @RequestMapping(value = "/danh-sach-nguoi-dung")
     public ResponseEntity<?> getAllUser() {
         try {
-            return new ResponseEntity<List<User>>(userService.findAll(), HttpStatus.OK);
+            List<UserInfoData> listrs = new ArrayList<>();
+            List<User> lisetUser = userService.findAll();
+            for (User user : lisetUser) {
+                listrs.add(pawneeService.getUserInfo(user.getId()));
+            }
+            return new ResponseEntity<List<UserInfoData>>(listrs, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<String>("False", HttpStatus.BAD_REQUEST);
         }
