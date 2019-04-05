@@ -75,7 +75,7 @@ public class UserController {
                 registerEmail.setSubject(env.getProperty("register.emailSubject"));
 //                registerEmail.setText(env.getProperty("register.emailText") + appUrl
 //                        + "/register?token=" + user.getToken());
-                registerEmail.setText("http://localhost:53089/webapp/index.html?hc_reset&hc_wspath=%2Fthinhbui-OrionContent%2FMortgage-App&sap-ui-xx-componentPreload=off&origional-url=index.html&sap-ui-appCacheBuster=..%2F#/Activate/register?token=" + user.getToken());
+                registerEmail.setText(env.getProperty("register.emailText") + "https://mortgage.dfksoft.com/#/Activate/register?token=" + user.getToken());
                 mailSender.send(registerEmail);
             }
             return new ResponseEntity<String>(HttpStatus.OK);

@@ -78,7 +78,7 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "/yeu-cau-tro-thanh-cua-hang")
+    @RequestMapping(value = "/quan-ly-cua-hang")
     public ResponseEntity<?> managerShop() {
         try {
             return new ResponseEntity<List<Shop>>(shopService.getAll(), HttpStatus.OK);
