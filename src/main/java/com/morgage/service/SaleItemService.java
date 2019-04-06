@@ -165,7 +165,7 @@ public class SaleItemService {
         return listItem;
     }
 
-    public SaleItem createItem(String itemName, int status, int price, Date liquidationDate, String picUrl, int categoryId, int transactionId, int favoriteCount, int viewCount) {
+    public SaleItem createItem(String itemName, int status, int price, Date liquidationDate, String picUrl, int categoryId, int transactionId, int favoriteCount, int viewCount, String description) {
         SaleItem saleItem = new SaleItem();
         saleItem.setItemName(itemName);
         saleItem.setPicUrl(picUrl);
@@ -177,6 +177,7 @@ public class SaleItemService {
         saleItem.setLiquidationDate(liquidDate);
         saleItem.setPrice(price);
         saleItem.setTransactionId(transactionId);
+        saleItem.setDescription(description);
 
 
         return saleItemRepository.saveAndFlush(saleItem);

@@ -21,22 +21,14 @@ import java.util.List;
 @EnableConfigurationProperties
 @Controller
 public class CategoryController {
-    private final HasCategoryItemService hasCategoryItemService;
+
     private final CategoryService categoryService;
 
-    public CategoryController(HasCategoryItemService hasCategoryItemService, CategoryService categoryService) {
-        this.hasCategoryItemService = hasCategoryItemService;
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    @RequestMapping(value = "/danh-muc", method = RequestMethod.GET)
-    public ResponseEntity<?> getCategoryItem(@RequestParam("shopId") int shopId) {
-        try {
-            return new ResponseEntity<List<CategoryData>>(hasCategoryItemService.getAllCategoryItem(shopId), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
-        }
-    }
+
 
     @RequestMapping(value = "/tao-danh-muc", method = RequestMethod.GET)
     public ResponseEntity<?> getCategory() {
@@ -47,28 +39,10 @@ public class CategoryController {
         }
     }
 
-    @RequestMapping(value = "/tao-danh-muc", method = RequestMethod.POST)
-    public ResponseEntity<?> createCategoryItem(@RequestParam("shopId") int shopId, @RequestParam("paymentTerm") int paymentTerm, @RequestParam("paymentType") int paymentType, @RequestParam("liquidateAfter") int liquidate, @RequestParam("categoryId") int categoryItemId,
-                                                @RequestParam("attributes") List<String> attributes, @RequestParam("categoryItemName") String categoryItemName) {
 
-        try {
-            String[] attrs = {"", "", "", ""};
-            if (attributes.size() != 0) {
-                for (int i = 0; i < attributes.size(); i++) {
-                    attrs[i] = attributes.get(i);
-                }
-            }
-            HasCategoryItem hasCategoryItem = hasCategoryItemService.createItem(shopId, paymentTerm, paymentType, liquidate, categoryItemId,
-                    attrs[0], attrs[1], attrs[2], attrs[3], categoryItemName);
 
-            if (hasCategoryItem != null) {
-                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
-    }
+
+
     @RequestMapping(value = "/get-all-category")
     public ResponseEntity<?> getAllCategory() {
         try {

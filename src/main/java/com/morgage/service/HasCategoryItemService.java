@@ -13,11 +13,9 @@ import java.util.List;
 @Service
 public class HasCategoryItemService {
     private final HasCategoryItemRepository hasCategoryItemRepository;
-    private final CategoryRepository categoryRepository;
 
-    public HasCategoryItemService(HasCategoryItemRepository hasCategoryItemRepository, CategoryRepository categoryRepository) {
+    public HasCategoryItemService(HasCategoryItemRepository hasCategoryItemRepository) {
         this.hasCategoryItemRepository = hasCategoryItemRepository;
-        this.categoryRepository = categoryRepository;
     }
 
     public List<CategoryData> getAllCategoryItem(int shopId) {
@@ -43,7 +41,7 @@ public class HasCategoryItemService {
     }
 
     public HasCategoryItem createItem(int shopId, int paymentTerm, int paymentType, int liquidate, int categoryItemId,
-                                      String attribute1, String attribute2, String attribute3, String attribute4, String categoryItemName) {
+                                      String attribute1, String attribute2, String attribute3, String attribute4, String categoryItemName, int status) {
         HasCategoryItem hasCategoryItem = new HasCategoryItem();
         hasCategoryItem.setAttribute1Name(attribute1);
         hasCategoryItem.setAttribute2Name(attribute2);
@@ -55,6 +53,29 @@ public class HasCategoryItemService {
         hasCategoryItem.setPaymentTerm(paymentTerm);
         hasCategoryItem.setPaymentType(paymentType);
         hasCategoryItem.setLiquidateAfter(liquidate);
+        hasCategoryItem.setStatus(status);
+        return hasCategoryItemRepository.saveAndFlush(hasCategoryItem);
+    }
+
+    public HasCategoryItem updateItem(int cateConfigId, int paymentTerm, int paymentType, int liquidate,
+                                      String attribute1, String attribute2, String attribute3, String attribute4, String categoryItemName) {
+
+        HasCategoryItem hasCategoryItem = hasCategoryItemRepository.findById(cateConfigId);
+        hasCategoryItem.setAttribute1Name(attribute1);
+        hasCategoryItem.setAttribute2Name(attribute2);
+        hasCategoryItem.setAttribute3Name(attribute3);
+        hasCategoryItem.setAttribute4Name(attribute4);
+        hasCategoryItem.setCategoryItemName(categoryItemName);
+        hasCategoryItem.setPaymentTerm(paymentTerm);
+        hasCategoryItem.setPaymentType(paymentType);
+        hasCategoryItem.setLiquidateAfter(liquidate);
+        return hasCategoryItemRepository.saveAndFlush(hasCategoryItem);
+    }
+
+    public HasCategoryItem updateStatus(int cateConfigId, int status) {
+
+        HasCategoryItem hasCategoryItem = hasCategoryItemRepository.findById(cateConfigId);
+        hasCategoryItem.setStatus(status);
         return hasCategoryItemRepository.saveAndFlush(hasCategoryItem);
     }
 

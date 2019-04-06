@@ -105,6 +105,7 @@ public class Const {
         public static final Integer UNACTIVE = 1;
         public static final Integer ACTIVE = 2;
         public static final Integer BANNED = 3;
+        public static final Integer PENDING = 4;
     }
 
     public static class ITEM_STATUS {
@@ -128,6 +129,11 @@ public class Const {
         public static final Integer TRANSACTION = 1;
         public static final Integer ITEM = 2;
         public static final Integer SHOP = 3;
+    }
+
+    public static class CATEGORY_CONFIG_STATUS {
+        public static final Integer ACTIVE = 1;
+        public static final Integer INACTIVE = 2;
     }
 
     public static class TRANSACTION_HISTORY {

@@ -176,9 +176,9 @@ public class SaleItemController {
     @RequestMapping(value = "/tao-san-pham", method = RequestMethod.POST)
     public ResponseEntity<?> createItem(@RequestParam("itemName") String itemName, @RequestParam("price") int price,
                                         @RequestParam("picUrl") String picUrl, @RequestParam("categoryId") int categoryId, @RequestParam("liquidDate") Date liquidDate,
-                                        @RequestParam("pictures") String pictures, @RequestParam("transId") int transId) {
+                                        @RequestParam("pictures") String pictures, @RequestParam("transId") int transId, @RequestParam("description") String description) {
         try {
-            SaleItem saleItem = saleItemService.createItem(itemName, Const.ITEM_STATUS.WAIT_FOR_LIQUIDATION, price, liquidDate, picUrl, categoryId, transId, 0, 0);
+            SaleItem saleItem = saleItemService.createItem(itemName, Const.ITEM_STATUS.WAIT_FOR_LIQUIDATION, price, liquidDate, picUrl, categoryId, transId, 0, 0, description);
             if (saleItem != null) {
                 //insert pictures to db:
                 Util util = new Util();

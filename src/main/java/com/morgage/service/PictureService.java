@@ -28,4 +28,19 @@ public class PictureService {
         picture.setDeleteHash(deleteHash);
         return pictureRepository.saveAndFlush(picture);
     }
+
+    public Picture updatePicture(int picId, String picUrl, String idCloud, String deleteHash) {
+        Picture picture = pictureRepository.findById(picId);
+        if (picture != null) {
+            picture.setPictureUrl(picUrl);
+            picture.setIdCloud(idCloud);
+            picture.setDeleteHash(deleteHash);
+            return pictureRepository.saveAndFlush(picture);
+        }
+        return null;
+    }
+
+    public void deletePicture(int picId) {
+        pictureRepository.deleteById(picId);
+    }
 }
