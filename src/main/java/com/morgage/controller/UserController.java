@@ -252,4 +252,17 @@ public class UserController {
             return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value = "/chinh-sua-thong-tin-cua-hang", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateShop(@RequestParam(value = "rate") int rate, @RequestParam("accountId") int accountId, @RequestParam("shopId") int shopId) {
+        try {
+            Integer rateShop = userService.rateShop(accountId, shopId, rate);
+            if (rateShop != null) {
+                return new ResponseEntity<Integer>(rateShop, HttpStatus.OK);
+            } else
+                return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("Fail", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

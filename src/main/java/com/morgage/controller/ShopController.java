@@ -145,5 +145,18 @@ public class ShopController {
         }
     }
 
+    @RequestMapping(value = "/thay-doi-thong-tin-cua-hang", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateShopInfo(@RequestParam("shopId") int shopId, @RequestParam("shopName") String shopName, @RequestParam("facebook") String facebook, @RequestParam("email") String email, @RequestParam("phoneNumber") String phone,@RequestParam("addressId") int addressId, @RequestParam("districtId") int districtId,
+                                            @RequestParam("policy") String policy, @RequestParam("address") String fullAddress, @RequestParam("longtitude") String longtitude, @RequestParam("latitude") String latitude, @RequestParam("avaUrl") String avaUrl) {
+        try {
+            addressService.updateAddress(addressId, longtitude, latitude, fullAddress, districtId);
+            Shop shop = shopService.updateShopInfo(shopId, policy, facebook, shopName, email, phone, avaUrl);
+            return new ResponseEntity<Shop>(shop, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 
 }

@@ -50,4 +50,25 @@ public class AddressService {
         }
 
     }
+
+    public Address findAddressById(int addressId) {
+        return addressRepository.findAddressById(addressId);
+    }
+
+    public Address updateAddress(int addressId, String longtitude, String latitude, String fullAddress, int districtId) {
+        if (longtitude == null || latitude == null) {
+            return null;
+        } else {
+            Address address = addressRepository.findAddressById(addressId);
+            if (address != null) {
+                address.setLatitude(latitude);
+                address.setLongtitude(longtitude);
+                address.setFullAddress(fullAddress);
+                address.setDistrictId(districtId);
+            }
+            return addressRepository.saveAndFlush(address);
+
+        }
+
+    }
 }

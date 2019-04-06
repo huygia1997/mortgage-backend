@@ -44,4 +44,15 @@ public class PictureController {
             return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value = "/them-anh", method = RequestMethod.POST)
+    public ResponseEntity<?> addPic(@RequestParam("idCloud") String idCloud, @RequestParam("deleteHash") String deleteHash,
+                                    @RequestParam("picUrl") String picUrl, int objId, int type) {
+        try {
+            pictureService.savePicture(picUrl, objId, type, idCloud, deleteHash);
+            return new ResponseEntity<Boolean>(true, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

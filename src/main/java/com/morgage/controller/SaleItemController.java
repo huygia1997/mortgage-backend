@@ -193,6 +193,15 @@ public class SaleItemController {
         }
     }
 
+    @RequestMapping(value = "/chinh-sua-san-pham", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateItem(@RequestParam("description") String description, @RequestParam("avaUrl") String avaUrl, @RequestParam("itemId") int itemId, @RequestParam("itemName") String itemName, @RequestParam("price") int price) {
+        try {
+            SaleItem saleItem = saleItemService.updateItem(itemId, itemName, price, avaUrl, description);
+            return new ResponseEntity<SaleItem>(saleItem, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @RequestMapping(value = "/de-xuat-san-pham", method = RequestMethod.GET)
@@ -215,4 +224,6 @@ public class SaleItemController {
         }
 
     }
+
+
 }

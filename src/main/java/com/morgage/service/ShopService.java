@@ -58,6 +58,21 @@ public class ShopService {
             return null;
     }
 
+    public Shop updateShopInfo(int shopId, String policy, String facebook, String shopName, String email, String phone, String avaUrl) {
+        Shop shop = shopRepository.findShopById(shopId);
+        if (shop != null) {
+            shop.setAvatarUrl(avaUrl);
+            shop.setEmail(email);
+            shop.setFacebook(facebook);
+            shop.setPhoneNumber(phone);
+            shop.setPolicy(policy);
+            shop.setShopName(shopName);
+            shop.setStatus(Const.SHOP_STATUS.PENDING);
+        }
+
+        return shopRepository.saveAndFlush(shop);
+    }
+
     public List<Shop> searchByShopName(String searchValue) {
         List<Shop> listShop = shopRepository.findAllByShopNameContaining(searchValue);
 

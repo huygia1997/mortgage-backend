@@ -111,7 +111,7 @@ public class Util {
         return calendar.getTime();
     }
 
-    public Boolean insertPicturesToDB(PictureService pictureService, String pictures, int ObjId, int type) {
+    public Boolean insertPicturesToDB(PictureService pictureService, String pictures, int objId, int type) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ArrayList array = mapper.readValue(pictures, ArrayList.class);
@@ -133,7 +133,7 @@ public class Util {
                         }
 
                     }
-                    pictureService.savePicture(picUrlX, ObjId, type, idCloud, deleteHash);
+                    pictureService.savePicture(picUrlX, objId, type, idCloud, deleteHash);
 
 
                 }

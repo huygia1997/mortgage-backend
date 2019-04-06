@@ -182,4 +182,16 @@ public class SaleItemService {
 
         return saleItemRepository.saveAndFlush(saleItem);
     }
+
+    public SaleItem updateItem(int itemId, String itemName, int price, String avaUrl, String description) {
+        SaleItem saleItem = saleItemRepository.findById(itemId);
+        if (saleItem != null) {
+            saleItem.setPrice(price);
+            saleItem.setItemName(itemName);
+            saleItem.setPicUrl(avaUrl);
+            saleItem.setDescription(description);
+        }
+
+        return saleItemRepository.saveAndFlush(saleItem);
+    }
 }
