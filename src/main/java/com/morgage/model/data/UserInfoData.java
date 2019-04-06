@@ -1,9 +1,6 @@
 package com.morgage.model.data;
 
-import com.morgage.model.Notification;
-import com.morgage.model.SaleItem;
-import com.morgage.model.Shop;
-import com.morgage.model.Transaction;
+import com.morgage.model.*;
 
 import java.util.List;
 
@@ -15,6 +12,16 @@ public class UserInfoData {
     private Integer accountId;
     private String avaURL;
     private String address;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    private Role role;
     private List<SaleItem> listFavoriteItem;
     private List<Shop> listFavoriteShop;
     private List<Notification> listNotification;

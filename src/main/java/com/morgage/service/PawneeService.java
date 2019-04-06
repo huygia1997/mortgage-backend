@@ -17,8 +17,9 @@ public class PawneeService {
     private final ShopRepository shopRepository;
     private final TransactionRepository transactionRepository;
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
-    public PawneeService(PawneeRepository pawneeRepository, PawneeFavoriteItemRepository pawneeFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, ShopRepository shopRepository, TransactionRepository transactionRepository, NotificationRepository notificationRepository) {
+    public PawneeService(PawneeRepository pawneeRepository, PawneeFavoriteItemRepository pawneeFavoriteItemRepository, PawneeFavoriteShopRepository pawneeFavoriteShopRepository, SaleItemRepository saleItemRepository, ShopRepository shopRepository, TransactionRepository transactionRepository, NotificationRepository notificationRepository, UserRepository userRepository) {
         this.pawneeRepository = pawneeRepository;
         this.pawneeFavoriteItemRepository = pawneeFavoriteItemRepository;
         this.pawneeFavoriteShopRepository = pawneeFavoriteShopRepository;
@@ -26,46 +27,54 @@ public class PawneeService {
         this.shopRepository = shopRepository;
         this.transactionRepository = transactionRepository;
         this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
     }
 
     public Pawnee setPawneeInfo(int accountId, String phoneNumber, String avaURL, String address, String name) {
         Pawnee pawnee = getPawneeByAccountId(accountId);
-            pawnee.setAddress(address);
+        pawnee.setAddress(address);
         pawnee.setPhoneNumber(phoneNumber);
         pawnee.setAvaURL(avaURL);
         pawnee.setName(name);
         return pawneeRepository.save(pawnee);
     }
 
-    public Pawnee   getPawneeByAccountId(int accountId) {
+    public Pawnee getPawneeByAccountId(int accountId) {
         return pawneeRepository.findByAccountId(accountId);
     }
 
     public UserInfoData getUserInfo(int accountId) {
         Pawnee pawnee = getPawneeByAccountId(accountId);
-        UserInfoData rs = new UserInfoData();
-        rs.setAccountId(pawnee.getAccountId());
-        rs.setAddress(pawnee.getAddress());
-        rs.setAvaURL(pawnee.getAvaURL());
-        rs.setEmail(pawnee.getEmail());
-        rs.setId(pawnee.getId());
-        rs.setName(pawnee.getName());
-        rs.setPhoneNumber(pawnee.getPhoneNumber());
-        List<SaleItem> saleItemsList = new ArrayList<>();
-        List<Shop> shopList = new ArrayList<>();
-        List<PawneeFavoriteItem> pawneeFavoriteItemList = pawneeFavoriteItemRepository.findAllByPawnerId(rs.getId());
-        List<PawneeFavouriteShop> pawneeFavouriteShopsList = pawneeFavoriteShopRepository.findAllByPawnerId(rs.getId());
-        for (PawneeFavoriteItem favoriteItem : pawneeFavoriteItemList) {
-            saleItemsList.add(saleItemRepository.findById(favoriteItem.getId()));
-        }
-        rs.setListFavoriteItem(saleItemsList);
-        for (PawneeFavouriteShop favouriteShop : pawneeFavouriteShopsList) {
-            shopList.add(shopRepository.findShopById(favouriteShop.getShopId()));
-        }
-        rs.setListFavoriteShop(shopList);
-        rs.setListTransaction(transactionRepository.findAllByPawnerId(rs.getId()));
-        rs.setListNotification(notificationRepository.findAllByReceiverIdOrderByCreateTimeDesc(rs.getId()));
-        return rs;
+        if (pawnee != null) {
+            UserInfoData rs = new UserInfoData();
+            rs.setAccountId(pawnee.getAccountId());
+            rs.setAddress(pawnee.getAddress());
+            rs.setAvaURL(pawnee.getAvaURL());
+            rs.setEmail(pawnee.getEmail());
+            rs.setId(pawnee.getId());
+            rs.setName(pawnee.getName());
+            rs.setPhoneNumber(pawnee.getPhoneNumber());
+            List<SaleItem> saleItemsList = new ArrayList<>();
+            List<Shop> shopList = new ArrayList<>();
+            List<PawneeFavoriteItem> pawneeFavoriteItemList = pawneeFavoriteItemRepository.findAllByPawnerId(rs.getId());
+            List<PawneeFavouriteShop> pawneeFavouriteShopsList = pawneeFavoriteShopRepository.findAllByPawnerId(rs.getId());
+            for (PawneeFavoriteItem favoriteItem : pawneeFavoriteItemList) {
+                saleItemsList.add(saleItemRepository.findById(favoriteItem.getId()));
+            }
+            rs.setListFavoriteItem(saleItemsList);
+            for (PawneeFavouriteShop favouriteShop : pawneeFavouriteShopsList) {
+                shopList.add(shopRepository.findShopById(favouriteShop.getShopId()));
+            }
+            rs.setListFavoriteShop(shopList);
+            rs.setListTransaction(transactionRepository.findAllByPawnerId(rs.getId()));
+            rs.setListNotification(notificationRepository.findAllByReceiverIdOrderByCreateTimeDesc(rs.getId()));
+            //get role user
+            User user = userRepository.findById(accountId);
+            if (user != null) {
+                rs.setRole(user.getRole());
+            }
+            return rs;
+        } else return null;
     }
 
     public Integer getAccountIdFromPawnerId(int pawnerId) {
